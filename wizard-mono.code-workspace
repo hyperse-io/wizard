@@ -1,0 +1,96 @@
+{
+  "folders": [
+    {
+      "name": "website",
+      "path": "website",
+    },
+    {
+      "name": "wizard",
+      "path": "packages/wizard",
+    },
+    {
+      "name": "wizard-core",
+      "path": "packages/wizard-core",
+    },
+    {
+      "name": "wizard-utils",
+      "path": "packages/wizard-utils",
+    },
+    {
+      "name": "wizard-plugin-help",
+      "path": "packages/wizard-plugin-help",
+    },
+    {
+      "name": "wizard-plugin-version",
+      "path": "packages/wizard-plugin-version",
+    },
+    {
+      "name": "wizard-plugin-error",
+      "path": "packages/wizard-plugin-error",
+    },
+    {
+      "name": "wizard-plugin-bash",
+      "path": "packages/wizard-plugin-bash",
+    },
+    {
+      "name": "root",
+      "path": ".",
+    },
+  ],
+  "extensions": {
+    "recommendations": [
+      "dbaeumer.vscode-eslint"
+    ],
+  },
+  "settings": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint",
+    "editor.codeActionsOnSave": {
+      "source.fixAll": "explicit",
+      "source.organizeImports": "never",
+    },
+    "files.associations": {
+      "*.css": "tailwindcss",
+    },
+    "tailwindCSS.classFunctions": ["tw", "tv", "clsx", "twMerge", "extendVariants"],
+    "tailwindCSS.classAttributes": [
+      "class",
+      "className",
+      "classNames"
+    ],
+    "tailwindCSS.experimental.configFile": {
+      "website/src/app/globals.css": "website/src/**"
+    },
+    // Disable vscode formatting for js,jsx,ts,tsx files
+    // to allow dbaeumer.vscode-eslint to format them
+    "[javascript]": {
+      "editor.formatOnSave": false,
+    },
+    "[typescript]": {
+      "editor.formatOnSave": true,
+    },
+    "[rust]": {
+      "editor.formatOnSave": true,
+      "editor.defaultFormatter": "rust-lang.rust-analyzer"
+    },
+    "[json]": {
+      "editor.formatOnSave": false,
+    },
+    "[jsonc]": {
+      "editor.formatOnSave": false,
+    },
+    "typescript.enablePromptUseWorkspaceTsdk": true,
+    // https://github.com/Microsoft/vscode-eslint#mono-repository-setup
+    "eslint.workingDirectories": [
+      "./website",
+      "./packages/wizard",
+      "./packages/wizard-core",
+      "./packages/wizard-utils",
+      "./packages/wizard-plugin-help",
+      "./packages/wizard-plugin-version",
+      "./packages/wizard-plugin-error",
+      "./packages/wizard-plugin-bash",
+    ],
+    "typescript.tsdk": "root/node_modules/typescript/lib"
+  },
+}
