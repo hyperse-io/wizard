@@ -1,5 +1,5 @@
 import nextra from 'nextra';
-import { z } from 'zod';
+import { z } from 'zod/v4';
 import { createNextConfig, createNextConfigEnv } from '@hyperse/next-config';
 
 const withNextra = nextra({
@@ -24,7 +24,7 @@ const buildEnv = createNextConfigEnv(
 
 export default createNextConfig(
   {
-    basePath: '/nextra-mono-starter',
+    basePath: '/wizard',
     output: buildEnv.NEXT_BUILD_ENV_OUTPUT,
     images: {
       unoptimized:

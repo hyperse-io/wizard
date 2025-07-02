@@ -5,11 +5,11 @@
   "private": true,
   "homepage": "https://github.com/hyperse-io/wizard#readme",
   "bugs": {
-    "url": "https://github.com/hyperse-io/nextra-starter/issues"
+    "url": "https://github.com/hyperse-io/wizard/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:hyperse-io/nextra-starter.git"
+    "url": "git@github.com:hyperse-io/wizard.git"
   },
   "license": "MIT",
   "type": "module",
@@ -35,29 +35,29 @@
     "@heroui/react": "^2.7.11",
     "@tailwindcss/typography": "^0.5.16",
     "clsx": "^2.1.1",
-    "framer-motion": "^12.19.1",
+    "framer-motion": "^12.19.2",
     "next": "^15.3.4",
     "nextra": "alpha",
     "nextra-theme-docs": "alpha",
     "postcss": "^8.5.6",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "tailwindcss": "^4.1.10"
+    "tailwindcss": "^4.1.11"
   },
   "devDependencies": {
     "@changesets/changelog-github": "0.5.1",
     "@commitlint/cli": "^19.8.1",
     "@commitlint/config-conventional": "^19.8.1",
     "@hyperse/eslint-config-hyperse": "^1.4.5",
-    "@hyperse/next-config": "^1.0.4",
-    "@tailwindcss/postcss": "^4.1.10",
-    "@types/node": "^24.0.3",
+    "@hyperse/next-config": "^1.0.5",
+    "@tailwindcss/postcss": "^4.1.11",
+    "@types/node": "^24.0.7",
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
     "commitizen": "^4.3.1",
     "cross-env": "^7.0.3",
     "cz-conventional-changelog": "^3.3.0",
-    "eslint": "^9.29.0",
+    "eslint": "^9.30.0",
     "lint-staged": "^16.1.2",
     "next-sitemap": "^4.2.3",
     "pagefind": "^1.3.0",

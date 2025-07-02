@@ -33,6 +33,10 @@
       "path": "packages/wizard-plugin-bash",
     },
     {
+      "name": "wizard-plugin-loader",
+      "path": "packages/wizard-plugin-loader",
+    },
+    {
       "name": "root",
       "path": ".",
     },
@@ -87,9 +91,10 @@
       "./packages/wizard-core",
       "./packages/wizard-utils",
       "./packages/wizard-plugin-help",
-      "./packages/wizard-plugin-version",
       "./packages/wizard-plugin-error",
       "./packages/wizard-plugin-bash",
+      "./packages/wizard-plugin-loader",
+      "./packages/wizard-plugin-version"
     ],
     "typescript.tsdk": "root/node_modules/typescript/lib"
   },
