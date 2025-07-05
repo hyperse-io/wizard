@@ -36,7 +36,7 @@ export class Wizard<
   //     this.#handleError(e);
   //   }
   // );
-  private logger: ReturnType<Logger['build']>;
+  private logger: Logger;
 
   constructor(private options: WizardOptions) {
     this.#locale = resolveLocale();
