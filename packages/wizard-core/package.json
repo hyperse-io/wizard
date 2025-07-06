@@ -44,12 +44,12 @@
     "typecheck": "tsc --project ./tsconfig.json --noEmit"
   },
   "dependencies": {
-    "@hyperse/logger": "^1.1.1",
-    "@hyperse/logger-plugin-stdout": "^1.0.5",
+    "@hyperse/deep-merge": "^1.0.1",
+    "@hyperse/logger": "^1.1.3",
+    "@hyperse/logger-plugin-stdout": "^1.0.7",
     "@hyperse/pipeline": "^1.0.6",
     "@hyperse/translator": "^1.2.3",
     "@hyperse/wizard-utils": "workspace:*",
-    "defu": "^6.1.4",
     "is-platform": "^1.0.0",
     "type-flag": "^3.0.0"
   },
