@@ -1,4 +1,4 @@
-import type { MaybeArray } from '../types/typeUtils.js';
+import type { MaybeArray } from '../types/type-utils.js';
 
 /**
  * @description

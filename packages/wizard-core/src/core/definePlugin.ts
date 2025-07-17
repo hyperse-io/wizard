@@ -1,5 +1,5 @@
-import type { Plugin } from '../types/typePlugin.js';
-import type { Wizard } from './Wizard.js';
+import type { Plugin } from '../types/type-plugin.js';
+import type { MapToCommandMapping } from './Wizard.js';
 
 /**
  * @description
@@ -19,4 +19,23 @@ import type { Wizard } from './Wizard.js';
  * @param plugin - The plugin to define.
  * @returns The plugin.
  */
-export const definePlugin = <T extends Wizard>(plugin: Plugin<T>) => plugin;
+export const definePlugin = <
+  CommandMapping extends MapToCommandMapping,
+  Result extends MapToCommandMapping,
+>(
+  plugin: Plugin<CommandMapping, Result>
+) => plugin;
+
+// export function definePlugin<
+//   Cli extends Wizard<any>,
+//   Result extends Wizard<any>,
+// >(plugin: Plugin<Cli, Result>): Plugin<Cli, Result>;
+
+// export function definePlugin<
+//   Cli extends Wizard<any>,
+//   Result extends Wizard<any>,
+// >(name: string, options: CommandBuilderOptions): Plugin<Cli, Result>;
+
+// export function definePlugin(plugin: any): any {
+//   return plugin;
+// }

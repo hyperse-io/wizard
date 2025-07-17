@@ -1,5 +1,7 @@
 import type { LogLevel } from '@hyperse/logger';
 import type { Root } from '../constants.js';
+import type { CommandContext } from './type-command.js';
+import type { Flags } from './type-flag.js';
 
 /**
  * @description
@@ -23,6 +25,7 @@ export type WizardOptions = {
   version: string;
   thresholdLogLevel?: LogLevel;
   noColor?: boolean;
+  errorHandler?: (err: unknown) => void;
 };
 
 /**
@@ -35,4 +38,14 @@ export type WizardOptions = {
 export type ParseOptions = {
   argv?: string[];
   run?: boolean;
+};
+
+export type PipelineContext = {
+  args: string[];
+  eofArgs: string[];
+  flags: Flags;
+  unknownFlags?: {
+    [flagName: string]: (string | boolean)[];
+  };
+  ctx?: CommandContext;
 };

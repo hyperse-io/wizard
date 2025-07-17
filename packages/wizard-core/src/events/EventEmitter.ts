@@ -2,7 +2,7 @@ import type {
   EventEmitterOptions,
   EventListener,
   EventMap,
-} from '../types/typeEvent.js';
+} from '../types/type-event.js';
 
 /**
  * @description

@@ -1,4 +1,4 @@
-import type { WizardOptions } from '../types/typeWizard.js';
+import type { WizardOptions } from '../types/type-wizard.js';
 import { Wizard } from './Wizard.js';
 
 /**

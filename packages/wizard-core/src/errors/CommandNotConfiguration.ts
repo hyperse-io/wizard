@@ -4,17 +4,17 @@ import { CommandI18nError } from './CommandI18nError.js';
 
 /**
  * @description
- * This error should be thrown when a command is not found.
+ * This error should be thrown when a command is not configured.
  *
  * @docsCategory errors
  * @docsPage Error Types
  */
-export class CommandNotFoundError extends CommandI18nError {
+export class CommandNotConfigurationError extends CommandI18nError {
   constructor(
     locale: string,
     variables: { [key: string]: string | number } = {}
   ) {
     const t = useLocale(locale);
-    super(t('command.notFound', variables), LogLevel.Error);
+    super(t('command.notConfiguration', variables), LogLevel.Error);
   }
 }

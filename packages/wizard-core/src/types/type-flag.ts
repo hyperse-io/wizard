@@ -1,18 +1,14 @@
-import type { ARGUMENT, KNOWN_FLAG, UNKNOWN_FLAG } from '../constants.js';
-import type { Dict, Equals } from './typeUtils.js';
-
-export const DOUBLE_DASH = '--';
+import type { Dict } from './type-utils.js';
 
 export type TypeFunction<ReturnType = any> = (value: any) => ReturnType;
 
 export type TypeFunctionArray<ReturnType> = readonly [TypeFunction<ReturnType>];
 
-export type FlagOptions = FlagSchema & {
-  description: string;
-};
-
 export type Flag = FlagOptions & {
   name: string;
+};
+export type FlagOptions = FlagSchema & {
+  description: string;
 };
 
 export type Flags = Dict<FlagOptions>;
@@ -75,15 +71,6 @@ export type FlagSchema<TF = FlagType> =
   | FlagSchemaBase<TF>
   | FlagSchemaDefault<TF>;
 
-export type FlagTypeOrSchema<ExtraOptions = Record<string, unknown>> =
-  | FlagType
-  | (FlagSchema & ExtraOptions);
-
-export type SchemaFlags<ExtraOptions = Record<string, unknown>> = Record<
-  string,
-  FlagTypeOrSchema<ExtraOptions>
->;
-
 export type InferFlagType<Flag extends FlagTypeOrSchema> = Flag extends
   | TypeFunctionArray<infer T>
   | FlagSchema<TypeFunctionArray<infer T>>
@@ -96,39 +83,6 @@ export type InferFlagType<Flag extends FlagTypeOrSchema> = Flag extends
       : T | undefined
     : never;
 
-export interface ParsedFlags<Schemas = Record<string, unknown>> {
-  flags: Schemas;
-  unknownFlags: Record<string, (string | boolean)[]>;
-  _: string[] & {
-    [DOUBLE_DASH]: string[];
-  };
-}
-
-export type TypeFlag<Schemas extends SchemaFlags> = ParsedFlags<{
-  [flag in keyof Schemas]: InferFlagType<Schemas[flag]>;
-}>;
-
-export interface IgnoreFunction {
-  (type: typeof ARGUMENT, argvElement: string): boolean | void;
-  (
-    type: typeof KNOWN_FLAG | typeof UNKNOWN_FLAG,
-    flagName: string,
-    flagValue: string | undefined
-  ): boolean | void;
-}
-
-export interface TypeFlagOptions {
-  /**
-   * Which argv elements to ignore from parsing
-   */
-  ignore?: IgnoreFunction;
-}
-
-export type FallbackFlags<F extends Flags | undefined> =
-  Equals<NonNullableFlag<F>['flags'], {}> extends true
-    ? Dict<any>
-    : NonNullableFlag<F>['flags'];
-
-export type NonNullableFlag<F extends Flags | undefined> = TypeFlag<
-  NonNullable<F>
->;
+export type FlagTypeOrSchema<ExtraOptions = Record<string, unknown>> =
+  | FlagType
+  | (FlagSchema & ExtraOptions);

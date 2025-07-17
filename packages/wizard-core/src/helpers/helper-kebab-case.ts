@@ -1,4 +1,4 @@
-import type { KebabCase } from '../types/typeCase.js';
+import type { KebabCase } from '../types/type-case.js';
 
 /**
  * @description

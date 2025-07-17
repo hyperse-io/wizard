@@ -1,4 +1,4 @@
-import { resolveArgv } from '../../src/utils/resolveArgv.js';
+import { resolveArgv } from '../src/helpers/helper-resolve-argv.js';
 
 describe('resolveArgv', () => {
   it('should return empty array if not Node or Deno', () => {
@@ -18,7 +18,6 @@ describe('resolveArgv', () => {
       IS_ELECTRON: false,
     }));
     process.argv = ['node', 'script.js', 'arg1', 'arg2'];
-    console.log(resolveArgv());
     expect(resolveArgv()).toEqual(['arg1', 'arg2']);
   });
 

@@ -1,11 +1,9 @@
+import type { CommandContext } from '../types/type-command.js';
 import type {
-  Command,
-  CommandOptions,
-  CommandWithHandler,
-  HandlerContext,
-  HandlerInCommand,
-} from '../types/typeCommand.js';
-import type { RootType } from '../types/typeWizard.js';
+  CommandBuilder as CommandBuilderType,
+  CommandBuilderOptions,
+} from '../types/type-command-builder.js';
+import { CommandBuilder } from './CommandBuilder.js';
 
 /**
  * @description
@@ -17,16 +15,9 @@ import type { RootType } from '../types/typeWizard.js';
  * @param handler The handler for the command.
  * @returns The command.
  */
-export const defineCommand = <
-  N extends string | RootType,
-  O extends CommandOptions<[...P]>,
-  P extends string[],
->(
-  command: Command<N, O & CommandOptions<[...P]>>,
-  handler?: HandlerInCommand<
-    HandlerContext<Record<N, Command<N, O>> & Record<never, never>, N>
-  >
-): CommandWithHandler<N, O & CommandOptions<[...P]>> => ({
-  ...command,
-  handler,
-});
+export const defineCommand = <Name extends string, Ctx extends object>(
+  name: Name,
+  options: CommandBuilderOptions
+): CommandBuilderType<Name, CommandContext<Ctx>> => {
+  return new CommandBuilder(name, options);
+};
