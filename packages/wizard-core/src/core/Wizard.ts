@@ -2,6 +2,7 @@ import { createLogger, type Logger, LogLevel } from '@hyperse/logger';
 import { createStdoutPlugin } from '@hyperse/logger-plugin-stdout';
 import { Pipeline } from '@hyperse/pipeline';
 import { Root, WizardName } from '../constants.js';
+import { CommandHandlerNotFoundError } from '../errors/CommandHandlerNotFoundError.js';
 import { EventEmitter } from '../events/EventEmitter.js';
 import { collectCommandFlags } from '../helpers/helper-collect-command-flags.js';
 import { getAllCommandMap } from '../helpers/helper-command-map.js';
@@ -14,10 +15,18 @@ import { resolveArgv } from '../helpers/helper-resolve-argv.js';
 import { resolveCommandPipeline } from '../helpers/helper-resolve-command-pipeline.js';
 import { resolveLocale } from '../helpers/helper-resolve-locale.js';
 import { resolveOptionsOrArgv } from '../helpers/helper-resolve-options-or-argv.js';
-import { validateCommandPipeline } from '../helpers/helper-validate-command-pipeline.js';
+import { searchEventName } from '../helpers/helper-search-event-name.js';
+import {
+  formatCommandName,
+  validateCommandPipeline,
+} from '../helpers/helper-validate-command-pipeline.js';
 import { useLocale } from '../i18n/index.js';
 import type { Command, CommandContext } from '../types/type-command.js';
-import type { CommandBuilder as CommandBuilderType } from '../types/type-command-builder.js';
+import type {
+  CommandBuilder as CommandBuilderType,
+  CommandNameToContext,
+  GetCommandNameToContext,
+} from '../types/type-command-builder.js';
 import type { Plugin } from '../types/type-plugin.js';
 import type { MergeCommandMapping } from '../types/type-utils.js';
 import type {
@@ -26,12 +35,7 @@ import type {
   RootType,
   WizardOptions,
 } from '../types/type-wizard.js';
-import { CommandBuilder } from './CommandBuilder.js';
-
-export type GetCtxFromBuilder<B> =
-  B extends CommandBuilderType<any, any, any, infer map, any> ? map : never;
-
-export type MapToCommandMapping = Record<string, CommandContext>;
+import { createCommandBuilder } from './CommandBuilder.js';
 
 /**
  * @example
@@ -45,8 +49,8 @@ export type MapToCommandMapping = Record<string, CommandContext>;
  * .parse();
  */
 export class Wizard<
-  CommandMapping extends MapToCommandMapping = {},
-> extends EventEmitter<CommandMapping> {
+  NameToContext extends CommandNameToContext = {},
+> extends EventEmitter<NameToContext> {
   private logger: Logger;
   private locale = 'en';
   private errorHandler: ((err: unknown) => void) | undefined;
@@ -74,30 +78,33 @@ export class Wizard<
     if (this.commandBuilder) {
       return;
     }
-    this.commandBuilder = new CommandBuilder<string | RootType>(Root, {
-      description: 'root command',
+    this.commandBuilder = createCommandBuilder<string | RootType>(Root, {
+      description: formatCommandName(Root),
     });
   }
 
   register<CommandBuilder extends CommandBuilderType<any, any, any, any, any>>(
     builder: CommandBuilder
   ): Wizard<
-    MergeCommandMapping<CommandMapping, GetCtxFromBuilder<CommandBuilder>>
+    MergeCommandMapping<NameToContext, GetCommandNameToContext<CommandBuilder>>
   > {
     this.commandBuilder = this.commandBuilder.use(builder);
     return this as unknown as Wizard<
-      MergeCommandMapping<CommandMapping, GetCtxFromBuilder<CommandBuilder>>
+      MergeCommandMapping<
+        NameToContext,
+        GetCommandNameToContext<CommandBuilder>
+      >
     >;
   }
 
-  use<PluginCommandMapping extends MapToCommandMapping>(
+  use<PluginCommandMapping extends CommandNameToContext>(
     plugin: Plugin<
-      CommandMapping,
-      MergeCommandMapping<CommandMapping, PluginCommandMapping>
+      NameToContext,
+      MergeCommandMapping<NameToContext, PluginCommandMapping>
     >
-  ): Wizard<MergeCommandMapping<CommandMapping, PluginCommandMapping>> {
+  ): Wizard<MergeCommandMapping<NameToContext, PluginCommandMapping>> {
     return plugin.setup(this) as unknown as Wizard<
-      MergeCommandMapping<CommandMapping, PluginCommandMapping>
+      MergeCommandMapping<NameToContext, PluginCommandMapping>
     >;
   }
 
@@ -121,12 +128,13 @@ export class Wizard<
 
     for (const command of commandPipeline) {
       this.cliPipeline.use(async (ctx, next) => {
-        await this.executeResolveOrHandler(command, ctx, next);
+        await this.executeResolveOrHandler(commandPipeline, command, ctx, next);
       });
     }
   }
 
   private async executeResolveOrHandler(
+    commandPipeline: Command<string | RootType>[],
     command: Command<string | RootType>,
     ctx: PipelineContext,
     next: Parameters<Parameters<Pipeline<PipelineContext>['use']>[number]>[1]
@@ -140,7 +148,7 @@ export class Wizard<
     if (subCommands.length > 0) {
       // check has subCommand
       const resolver = command.getResolver() || (() => {});
-      let resolverResult: any;
+      let resolverResult: CommandContext;
       if (typeof resolver === 'function') {
         resolverResult = await resolver({
           ctx: ctx.ctx,
@@ -159,7 +167,9 @@ export class Wizard<
     const handler = command.getHandler();
 
     if (!handler) {
-      throw new Error(`Handler for command ${String(name)} not found`);
+      throw new CommandHandlerNotFoundError(this.locale, {
+        cmdName: formatCommandName(name),
+      });
     }
 
     await handler({
@@ -171,6 +181,8 @@ export class Wizard<
       locale: this.locale,
     });
 
+    const eventName = searchEventName(command, commandPipeline);
+    this.emit(eventName, ctx.ctx as NameToContext[keyof NameToContext]);
     await next();
   }
 

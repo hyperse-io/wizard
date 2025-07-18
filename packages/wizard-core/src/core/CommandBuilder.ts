@@ -7,28 +7,29 @@ import type {
   ResolverContext,
 } from '../types/type-command.js';
 import type {
-  CommandBuilder as CommandBuilderType,
+  CommandBuilder,
   CommandBuilderOptions,
+  CommandNameToContext,
   ReturnTypeForUseFunction,
 } from '../types/type-command-builder.js';
 import type { Flags } from '../types/type-flag.js';
 import type { RootType } from '../types/type-wizard.js';
-import { Command } from './Command.js';
+import { createCommand } from './Command.js';
 
-export class CommandBuilder<
+class CommandBuilderImpl<
   Name extends string | RootType = string,
   Context extends CommandContext = CommandContext,
   SubCommandContext extends object = object,
-  CommandMapping extends Record<string, CommandContext> = {
+  NameToContext extends CommandNameToContext = {
     [K in Name]: Context;
   },
   CommandFlags extends Flags = Flags,
 > implements
-    CommandBuilderType<
+    CommandBuilder<
       Name,
       Context,
       SubCommandContext,
-      CommandMapping,
+      NameToContext,
       CommandFlags
     >
 {
@@ -46,7 +47,7 @@ export class CommandBuilder<
     this.options = options;
     this.command =
       command ||
-      new Command<Name, Context, SubCommandContext, CommandFlags>(
+      createCommand<Name, Context, SubCommandContext, CommandFlags>(
         name,
         options
       );
@@ -56,17 +57,17 @@ export class CommandBuilder<
     this.command.setSubCommands(subCommands || []);
   }
 
-  use<SubCommandBuilders extends CommandBuilderType<any, any, any, any>[]>(
+  use<SubCommandBuilders extends CommandBuilder<any, any, any, any>[]>(
     ...subCommands: SubCommandBuilders
   ): ReturnTypeForUseFunction<
     Name,
     Context,
     SubCommandContext,
-    CommandMapping,
+    NameToContext,
     SubCommandBuilders,
     CommandFlags
   > {
-    return new CommandBuilder(
+    return new CommandBuilderImpl(
       this.name,
       this.options,
       this.command,
@@ -75,7 +76,7 @@ export class CommandBuilder<
       Name,
       Context,
       SubCommandContext,
-      CommandMapping,
+      NameToContext,
       SubCommandBuilders,
       CommandFlags
     >;
@@ -83,11 +84,11 @@ export class CommandBuilder<
 
   resolver(
     fn: CommandResolverFunction<ResolverContext<Context>, SubCommandContext>
-  ): CommandBuilderType<
+  ): CommandBuilder<
     Name,
     Context,
     SubCommandContext,
-    CommandMapping,
+    NameToContext,
     CommandFlags
   > {
     this.command.setResolver(fn);
@@ -96,11 +97,11 @@ export class CommandBuilder<
 
   handler(
     fn: CommandHandlerFunction<HandlerContext<Name, Context, CommandFlags>>
-  ): CommandBuilderType<
+  ): CommandBuilder<
     Name,
     Context,
     SubCommandContext,
-    CommandMapping,
+    NameToContext,
     CommandFlags
   > {
     this.command.setHandler(fn);
@@ -113,7 +114,7 @@ export class CommandBuilder<
     Name,
     Context,
     SubCommandContext,
-    CommandMapping,
+    NameToContext,
     SetupFlags
   > {
     this.command.setFlags(flags as unknown as CommandFlags);
@@ -121,7 +122,7 @@ export class CommandBuilder<
       Name,
       Context,
       SubCommandContext,
-      CommandMapping,
+      NameToContext,
       SetupFlags
     >;
   }
@@ -131,139 +132,22 @@ export class CommandBuilder<
   }
 }
 
-// const rootCmd = defineCommand<'startCmd', { start: string }>(
-//   'startCmd',
-//   'start command description'
-// ).use(
-//   defineCommand<'aCmd', { a: string; b: number }>(
-//     'aCmd',
-//     'a command description'
-//   )
-//     .use(
-//       defineCommand<'wCmd', { w: { w1: string } }>(
-//         'wCmd',
-//         'w command description'
-//       ).use(
-//         defineCommand<'MMCmd', { MM: { MM1: string } }>(
-//           'MMCmd',
-//           'MM command description'
-//         ),
-//         defineCommand<'WWCmd', { WW: { WW1: string } }>(
-//           'WWCmd',
-//           'WW command description'
-//         ),
-//         defineCommand<'WW2Cmd', { WW2: { WW21: string } }>(
-//           'WW2Cmd',
-//           'WW2 command description'
-//         ),
-//         defineCommand<'WW3Cmd', { WW3: { WW31: string } }>(
-//           'WW3Cmd',
-//           'WW3 command description'
-//         )
-//       )
-//     )
-//     .flags({
-//       projectCwd: {
-//         type: String,
-//         default: () => '/a/b/c',
-//         description: 'project cwd',
-//       },
-//     })
-//     .handler((ctx) => {
-//       console.log(ctx);
-//     }),
-//   defineCommand<'wCmd', { w: { w1: string } }>('wCmd', 'w command description')
-//     .use(
-//       defineCommand<'MMCmd', { MM: { MM1: string } }>(
-//         'MMCmd',
-//         'MM command description'
-//       ),
-//       defineCommand<'WWCmd', { WW: { WW1: string } }>(
-//         'WWCmd',
-//         'WW command description'
-//       ),
-//       defineCommand<'WW2Cmd', { WW2: { WW21: string } }>(
-//         'WW2Cmd',
-//         'WW2 command description'
-//       ),
-//       defineCommand<'WW3Cmd', { WW3: { WW31: string } }>(
-//         'WW3Cmd',
-//         'WW3 command description'
-//       )
-//     )
-//     .use(
-//       defineCommand<'YYCmd', { YY: { YY1: string } }>(
-//         'YYCmd',
-//         'YY command description'
-//       ).use(
-//         defineCommand<'ZZCmd', { ZZ: { ZZ1: string } }>(
-//           'ZZCmd',
-//           'ZZ command description'
-//         )
-//       )
-//     )
-//     // .resolver({
-//     //   MM: {
-//     //     MM1: '12',
-//     //   },
-//     //   WW: {
-//     //     WW1: 'WW1',
-//     //   },
-//     //   WW2: {
-//     //     WW21: 'WW21',
-//     //   },
-//     //   WW3: {
-//     //     WW31: 'WW31',
-//     //   },
-//     //   YY: {
-//     //     YY1: 'YY1',
-//     //   },
-//     // })
-//     .resolver((ctx) => {
-//       return {
-//         WIZARD: 'WIZARD',
-//         MM: {
-//           MM1: '12',
-//         },
-//         WW: {
-//           WW1: 'WW1',
-//         },
-//         WW2: {
-//           WW21: 'WW21',
-//         },
-//         WW3: {
-//           WW31: 'WW31',
-//         },
-//         YY: {
-//           YY1: 'YY1',
-//         },
-//       };
-//     })
-//     .handler((ctx) => {
-//       console.log(ctx);
-//     })
-// );
-
-// type AllMap =
-//   typeof rootCmd extends CommandBuilderType<any, any, any, infer AM>
-//     ? AM
-//     : never;
-
-// type Keys = keyof AllMap;
-
-// type aCmdValue = AllMap['startCmd.wCmd.WWCmd'];
-
-// const md2 = defineCommand<'aCmd', { a: string; b: number }>(
-//   'aCmd',
-//   'a command description'
-// ).flags({
-//   projectCwd: {
-//     type: String,
-//     default: () => '/a/b/c',
-//     description: 'project cwd',
-//   },
-// });
-
-// md2.handler((ctx) => {
-//   console.log(ctx);
-// });
+export const createCommandBuilder = <
+  Name extends string | RootType = string,
+  Context extends CommandContext = CommandContext,
+  SubCommandContext extends object = object,
+  NameToContext extends CommandNameToContext = {
+    [K in Name]: Context;
+  },
+  CommandFlags extends Flags = Flags,
+>(
+  name: Name,
+  options: CommandBuilderOptions
+) =>
+  new CommandBuilderImpl<
+    Name,
+    Context,
+    SubCommandContext,
+    NameToContext,
+    CommandFlags
+  >(name, options);

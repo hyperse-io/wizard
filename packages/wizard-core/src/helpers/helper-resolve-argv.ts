@@ -1,11 +1,8 @@
 import { IS_DENO, IS_ELECTRON, IS_NODE } from 'is-platform';
 
 /**
- * @description
- * Resolve the argv from the platform.
+ * Resolves the argv from the platform.
  *
- * @docsCategory utils
- * @docsPage Resolve Argv
  * @returns The argv from the platform.
  */
 export const resolveArgv = (): string[] =>

@@ -1,5 +1,5 @@
+import type { CommandNameToContext } from '../types/type-command-builder.js';
 import type { Plugin } from '../types/type-plugin.js';
-import type { MapToCommandMapping } from './Wizard.js';
 
 /**
  * @description
@@ -20,8 +20,8 @@ import type { MapToCommandMapping } from './Wizard.js';
  * @returns The plugin.
  */
 export const definePlugin = <
-  CommandMapping extends MapToCommandMapping,
-  Result extends MapToCommandMapping,
+  CommandMapping extends CommandNameToContext,
+  Result extends CommandNameToContext,
 >(
   plugin: Plugin<CommandMapping, Result>
 ) => plugin;

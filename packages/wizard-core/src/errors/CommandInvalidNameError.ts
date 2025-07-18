@@ -6,8 +6,8 @@ import { CommandI18nError } from './CommandI18nError.js';
  * @description
  * This error should be thrown when a command name is invalid.
  *
- * @docsCategory errors
- * @docsPage Error Types
+ * @example
+ * throw new InvalidCommandNameError('en', { cmdName: 'build' });
  */
 export class InvalidCommandNameError extends CommandI18nError {
   constructor(

@@ -4,6 +4,49 @@ import { definePlugin } from '../src/index.js';
 
 describe('cli', () => {
   it('should be able to parse the cli', () => {
+    const miniCmd = defineCommand<'mini', { miniConfig: { miniKey: string } }>(
+      'mini',
+      {
+        description: 'mini description description description description',
+      }
+    )
+      .flags({
+        version: {
+          type: String,
+          alias: 'v',
+          description: 'version with 1.0.0 or 2.0.0',
+          default: '1.0.0',
+        },
+      })
+      .handler((ctx) => {
+        console.log('====>>>mini ctx', ctx.flags.version);
+      });
+
+    const evolveCmd = defineCommand<'evolve', { root1: { root11: string } }>(
+      'evolve',
+      {
+        description: 'evolve description description description description',
+      }
+    )
+      .flags({
+        compiler: {
+          type: String,
+          alias: 'c',
+          description: 'compiler with rspack or vite',
+          default: 'rspack',
+        },
+        env: {
+          type: String,
+          alias: 'e',
+          description: 'env with dev or prod',
+          default: 'dev',
+        },
+      })
+      .use(miniCmd)
+      .resolver(() => {
+        return { miniConfig: { miniKey: 'mini' } };
+      });
+
     const buildCmd = defineCommand<'build', { root: { root1: string } }>(
       'build',
       {
@@ -15,48 +58,10 @@ describe('cli', () => {
           alias: 'p',
           type: String,
           description: 'project cwd',
-          default: 'a/b/v/d',
+          default: 'user/project/foo',
         },
       })
-      .use(
-        defineCommand<'evolve', { root1: { root11: string } }>('evolve', {
-          description: 'evolve description description description description',
-        })
-          .flags({
-            compiler: {
-              type: String,
-              alias: 'c',
-              description: 'compiler with rspack or vite',
-              default: 'rspack',
-            },
-            env: {
-              type: String,
-              alias: 'e',
-              description: 'env with dev or prod',
-              default: 'dev',
-            },
-          })
-          .use(
-            defineCommand<'mini', { root12: { root112: string } }>('mini', {
-              description:
-                'mini description description description description',
-            })
-              .flags({
-                version: {
-                  type: String,
-                  alias: 'v',
-                  description: 'version with 1.0.0 or 2.0.0',
-                  default: '1.0.0',
-                },
-              })
-              .handler((ctx) => {
-                console.log('====>>>mini ctx', ctx.flags.version);
-              })
-          )
-          .resolver(() => {
-            return { root12: { root112: 'mini' } };
-          })
-      )
+      .use(evolveCmd)
       .handler((ctx) => {
         console.log('====>>>mini ctx', ctx.flags.projectCwd);
       });
@@ -127,8 +132,17 @@ describe('cli', () => {
       );
 
     newCli
-      .on('deploy', (ctx) => {
-        console.log(ctx?.root1.root11);
+      .on('build', (ctx) => {
+        console.log('build', ctx);
+      })
+      .on('build.evolve', (ctx) => {
+        console.log('build.evolve', ctx);
+      })
+      .on('build.evolve.mini', (ctx) => {
+        console.log('build.evolve.mini', ctx);
+      })
+      .on('error', (err) => {
+        console.log('error', err);
       })
       .parse(argv);
 

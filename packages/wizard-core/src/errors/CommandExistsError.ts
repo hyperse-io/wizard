@@ -6,8 +6,8 @@ import { CommandI18nError } from './CommandI18nError.js';
  * @description
  * This error should be thrown when a command already exists.
  *
- * @docsCategory errors
- * @docsPage Error Types
+ * @example
+ * throw new CommandExistsError('en', { cmdName: 'build' });
  */
 export class CommandExistsError extends CommandI18nError {
   constructor(

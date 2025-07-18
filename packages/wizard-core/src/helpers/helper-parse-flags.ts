@@ -2,6 +2,13 @@ import { typeFlag } from 'type-flag';
 import type { Flags } from '../types/type-flag.js';
 import type { InferFlagType } from '../types/type-flag.js';
 
+/**
+ * @description
+ * Parses the flags from the given arguments.
+ *
+ * @docsCategory utils
+ * @docsPage Parse Flags
+ */
 export type ParseFlagsResult<DefinedFlags extends Flags = Flags> = {
   args: string[];
   eofArgs: string[];

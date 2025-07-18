@@ -12,7 +12,15 @@ import type { RootType } from './type-wizard.js';
 export type CommandBuilderOptions = {
   description: string;
   example?: string;
+  help?: string;
 };
+
+export type GetCommandNameToContext<Builder> =
+  Builder extends CommandBuilder<any, any, any, infer NameToContext, any>
+    ? NameToContext
+    : never;
+
+export type CommandNameToContext = Record<string, CommandContext>;
 
 export type GetSelfContext<T> =
   T extends CommandBuilder<any, infer S, any, any, any> ? S : never;
@@ -25,40 +33,40 @@ export type MergeSelfContexts<T extends any[]> = T extends [
   : {};
 
 export type PrefixPluginMap<
-  T extends Record<string, object>,
+  T extends CommandNameToContext,
   Prefix extends string | RootType,
 > = {
   [K in keyof T as K extends string ? `${Prefix & string}.${K}` : never]: T[K];
 };
 
-export type MergeCommandMap<T extends Record<string, object>[]> = T extends [
+export type MergeCommandMap<T extends CommandNameToContext[]> = T extends [
   infer First,
   ...infer Rest,
 ]
-  ? First & (Rest extends Record<string, object>[] ? MergeCommandMap<Rest> : {})
+  ? First & (Rest extends CommandNameToContext[] ? MergeCommandMap<Rest> : {})
   : {};
 
 export type ReturnTypeForUseFunction<
   Name extends string | RootType,
   Context extends CommandContext,
   SubCommandContext extends object,
-  PluginMap extends Record<string, object>,
+  NameToContext extends CommandNameToContext,
   Plugins extends CommandBuilder<any, any, any, any, any>[],
   CommandFlags extends Flags,
 > = CommandBuilder<
   Name,
   Context,
   SubCommandContext & MergeSelfContexts<Plugins>,
-  PluginMap &
+  NameToContext &
     MergeCommandMap<{
       [K in keyof Plugins]: Plugins[K] extends CommandBuilder<
         any,
         any,
         any,
-        infer SubPluginMap,
+        infer InnerNameToContext,
         any
       >
-        ? PrefixPluginMap<SubPluginMap, Name>
+        ? PrefixPluginMap<InnerNameToContext, Name>
         : {};
     }>,
   CommandFlags
@@ -68,7 +76,7 @@ export interface CommandBuilder<
   Name extends string | RootType = string,
   Context extends CommandContext = CommandContext,
   SubCommandContext extends object = object,
-  CommandMapping extends Record<string, CommandContext> = {
+  NameToContext extends CommandNameToContext = {
     [K in Name]: Context;
   },
   CommandFlags extends Flags = Flags,
@@ -79,14 +87,14 @@ export interface CommandBuilder<
     Name,
     Context,
     SubCommandContext,
-    CommandMapping,
+    NameToContext,
     SubCommandBuilders,
     CommandFlags
   >;
 
   flags<T extends Flags>(
     flags: T
-  ): CommandBuilder<Name, Context, SubCommandContext, CommandMapping, T>;
+  ): CommandBuilder<Name, Context, SubCommandContext, NameToContext, T>;
 
   resolver(
     fn: CommandResolverFunction<ResolverContext<Context>, SubCommandContext>
@@ -94,7 +102,7 @@ export interface CommandBuilder<
     Name,
     Context,
     SubCommandContext,
-    CommandMapping,
+    NameToContext,
     CommandFlags
   >;
 
@@ -104,7 +112,7 @@ export interface CommandBuilder<
     Name,
     Context,
     SubCommandContext,
-    CommandMapping,
+    NameToContext,
     CommandFlags
   >;
 

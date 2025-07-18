@@ -40,6 +40,13 @@ export type ParseOptions = {
   run?: boolean;
 };
 
+/**
+ * @description
+ * The context for the pipeline.
+ *
+ * @docsCategory types
+ * @docsPage Pipeline Context
+ */
 export type PipelineContext = {
   args: string[];
   eofArgs: string[];

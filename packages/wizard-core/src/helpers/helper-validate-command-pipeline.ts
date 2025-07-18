@@ -4,16 +4,25 @@ import { CommandNotFoundError } from '../errors/CommandNotFoundError.js';
 import type { Command } from '../types/type-command.js';
 import type { RootType } from '../types/type-wizard.js';
 
+/**
+ * @description
+ * Validate the command pipeline.
+ *
+ * @param locale The locale to use.
+ * @param inputNameList The input name list to validate.
+ * @param commandPipeline The command pipeline to validate.
+ * @returns True if the command pipeline is valid, false otherwise.
+ */
 export const validateCommandPipeline = <Name extends string | RootType>(
   locale: string,
-  inputNameList?: Name[],
+  inputNameList?: Name | string[],
   commandPipeline?: Command<Name>[]
 ) => {
-  if (!inputNameList || inputNameList.length === 0) {
+  if (!inputNameList) {
     return true;
   }
 
-  const inputNameListString = inputNameList.join(' ');
+  const inputNameListString = formatCommandName(inputNameList);
 
   if (!commandPipeline || commandPipeline.length === 0) {
     throw new CommandNotConfigurationError(locale, {

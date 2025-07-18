@@ -2,12 +2,10 @@ import type { ParseOptions } from '../types/type-wizard.js';
 import { resolveArgv } from './helper-resolve-argv.js';
 
 /**
- * @description
- * Resolve the options from the platform.
+ * Resolves the options or argv.
  *
- * @docsCategory utils
- * @docsPage Resolve Options
- * @returns The options from the platform.
+ * @param optionsOrArgv The options or argv to resolve.
+ * @returns The resolved options or argv.
  */
 export const resolveOptionsOrArgv = (
   optionsOrArgv: string[] | ParseOptions

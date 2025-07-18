@@ -6,8 +6,8 @@ import { CommandI18nError } from './CommandI18nError.js';
  * @description
  * This error should be thrown when a command is not found.
  *
- * @docsCategory errors
- * @docsPage Error Types
+ * @example
+ * throw new CommandNotFoundError('en', { cmdName: 'build' });
  */
 export class CommandNotFoundError extends CommandI18nError {
   constructor(

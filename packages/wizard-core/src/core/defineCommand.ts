@@ -3,7 +3,7 @@ import type {
   CommandBuilder as CommandBuilderType,
   CommandBuilderOptions,
 } from '../types/type-command-builder.js';
-import { CommandBuilder } from './CommandBuilder.js';
+import { createCommandBuilder } from './CommandBuilder.js';
 
 /**
  * @description
@@ -19,5 +19,5 @@ export const defineCommand = <Name extends string, Ctx extends object>(
   name: Name,
   options: CommandBuilderOptions
 ): CommandBuilderType<Name, CommandContext<Ctx>> => {
-  return new CommandBuilder(name, options);
+  return createCommandBuilder(name, options);
 };

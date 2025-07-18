@@ -1,4 +1,5 @@
-import type { MapToCommandMapping, Wizard } from '../core/Wizard.js';
+import type { Wizard } from '../core/Wizard.js';
+import type { CommandNameToContext } from './type-command-builder.js';
 
 /**
  * @description
@@ -8,8 +9,8 @@ import type { MapToCommandMapping, Wizard } from '../core/Wizard.js';
  * @docsPage Plugin
  */
 export interface Plugin<
-  CommandMapping extends MapToCommandMapping,
-  Result extends MapToCommandMapping,
+  NameToContext extends CommandNameToContext,
+  Result extends CommandNameToContext,
 > {
-  setup: (cli: Wizard<CommandMapping>) => Wizard<Result>;
+  setup: (cli: Wizard<NameToContext>) => Wizard<Result>;
 }

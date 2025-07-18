@@ -1,5 +1,5 @@
 import type {
-  Command as CommandType,
+  Command,
   CommandContext,
   CommandHandlerFunction,
   CommandResolverFunction,
@@ -10,12 +10,12 @@ import type { CommandBuilderOptions } from '../types/type-command-builder.js';
 import type { Flags } from '../types/type-flag.js';
 import type { RootType } from '../types/type-wizard.js';
 
-export class Command<
+class CommandImpl<
   Name extends string | RootType = string,
   Context extends CommandContext = CommandContext,
   SubCommandContext extends object = object,
   CommandFlags extends Flags = Flags,
-> implements CommandType<Name, Context, SubCommandContext, CommandFlags>
+> implements Command<Name, Context, SubCommandContext, CommandFlags>
 {
   private name: Name;
   private options: CommandBuilderOptions;
@@ -27,8 +27,8 @@ export class Command<
     HandlerContext<Name, Context, CommandFlags>
   >;
   private flags: CommandFlags;
-  private subCommands: CommandType<any, any, any, any>[] = [];
-  private parentCommand: CommandType<any, any, any, any>;
+  private subCommands: Command<any, any, any, any>[] = [];
+  private parentCommand: Command<any, any, any, any>;
 
   constructor(name: Name, options: CommandBuilderOptions) {
     this.name = name;
@@ -55,7 +55,7 @@ export class Command<
     return this.parentCommand;
   }
 
-  setParentCommand<ParentCommandType extends CommandType<any, any, any, any>>(
+  setParentCommand<ParentCommandType extends Command<any, any, any, any>>(
     parentCommand: ParentCommandType
   ) {
     this.parentCommand = parentCommand;
@@ -65,7 +65,7 @@ export class Command<
     return this.subCommands;
   }
 
-  setSubCommands<SubCommandType extends CommandType<any, any, any, any>>(
+  setSubCommands<SubCommandType extends Command<any, any, any, any>>(
     subCommands: SubCommandType[]
   ) {
     this.subCommands = [...this.subCommands, ...subCommands];
@@ -91,3 +91,17 @@ export class Command<
     return this.handlerFn;
   }
 }
+
+export const createCommand = <
+  Name extends string | RootType = string,
+  Context extends CommandContext = CommandContext,
+  SubCommandContext extends object = object,
+  CommandFlags extends Flags = Flags,
+>(
+  name: Name,
+  options: CommandBuilderOptions
+) =>
+  new CommandImpl<Name, Context, SubCommandContext, CommandFlags>(
+    name,
+    options
+  );

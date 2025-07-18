@@ -1,10 +1,13 @@
 import { Root } from '../src/constants.js';
-import { CommandBuilder } from '../src/core/CommandBuilder.js';
+import { createCommandBuilder } from '../src/core/CommandBuilder.js';
 import { collectCommandFlags } from '../src/helpers/helper-collect-command-flags.js';
 import { getAllCommandMap } from '../src/helpers/helper-command-map.js';
 import { parseFlags } from '../src/helpers/helper-parse-flags.js';
 import { resolveCommandPipeline } from '../src/helpers/helper-resolve-command-pipeline.js';
-import { validateCommandPipeline } from '../src/helpers/helper-validate-command-pipeline.js';
+import {
+  formatCommandName,
+  validateCommandPipeline,
+} from '../src/helpers/helper-validate-command-pipeline.js';
 import { defineCommand } from '../src/index.js';
 import type { RootType } from '../src/types/type-wizard.js';
 
@@ -47,7 +50,7 @@ describe('Command Pipeline Validation and Parsing', () => {
     );
 
   it('should throw a descriptive error when the command is not configured (both en and zh)', () => {
-    const rootCommandBuilder = new CommandBuilder<string | RootType>(Root, {
+    const rootCommandBuilder = createCommandBuilder<string | RootType>(Root, {
       description: 'root command',
     });
     const rootCmd = [rootCommandBuilder.getCommand()];
@@ -81,10 +84,9 @@ describe('Command Pipeline Validation and Parsing', () => {
     }
   });
   it('should parse a complex CLI command pipeline and validate not found errors (both en and zh)', () => {
-    const rootCommandBuilder: CommandBuilder<any, any, any, any, any> =
-      new CommandBuilder(Root, {
-        description: 'root command',
-      });
+    const rootCommandBuilder = createCommandBuilder<string | RootType>(Root, {
+      description: formatCommandName(Root),
+    });
     rootCommandBuilder.use(buildCmd);
 
     const commandMap = getAllCommandMap(rootCommandBuilder);

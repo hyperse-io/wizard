@@ -6,8 +6,8 @@ import { CommandI18nError } from './CommandI18nError.js';
  * @description
  * This error should be thrown when a command is not configured.
  *
- * @docsCategory errors
- * @docsPage Error Types
+ * @example
+ * throw new CommandNotConfigurationError('en', { cmdName: 'build' });
  */
 export class CommandNotConfigurationError extends CommandI18nError {
   constructor(

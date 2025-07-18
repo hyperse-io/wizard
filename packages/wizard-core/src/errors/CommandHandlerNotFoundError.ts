@@ -4,17 +4,17 @@ import { CommandI18nError } from './CommandI18nError.js';
 
 /**
  * @description
- * This error should be thrown when a command name conflicts with a built-in command.
+ * This error should be thrown when a command is not found.
  *
  * @example
- * throw new CommandNameConflictError('en', { cmdName: 'build' });
+ * throw new CommandHandlerNotFoundError('en', { cmdName: 'build' });
  */
-export class CommandNameConflictError extends CommandI18nError {
+export class CommandHandlerNotFoundError extends CommandI18nError {
   constructor(
     locale: string,
     variables: { [key: string]: string | number } = {}
   ) {
     const t = useLocale(locale);
-    super(t('command.nameConflict', variables), LogLevel.Error);
+    super(t('command.handlerNotFound', variables), LogLevel.Error);
   }
 }

@@ -5,10 +5,12 @@ import { messages } from './messages.js';
  * @description
  * Use the locale.
  *
- * @docsCategory i18n
- * @docsPage Use Locale
  * @param locale The locale to use.
  * @returns The translator.
+ *
+ * @example
+ * const t = useLocale('en');
+ * t('command.notFound', { cmdName: 'build' });
  */
 export const useLocale = (locale: string) => {
   return createTranslator({
