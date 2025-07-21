@@ -2,6 +2,7 @@ import { Root } from '../constants.js';
 import { CommandNotConfigurationError } from '../errors/CommandNotConfiguration.js';
 import { CommandNotFoundError } from '../errors/CommandNotFoundError.js';
 import type { Command } from '../types/type-command.js';
+import type { LocaleMessagesKeys } from '../types/type-locale-messages.js';
 import type { RootType } from '../types/type-wizard.js';
 
 /**
@@ -14,7 +15,7 @@ import type { RootType } from '../types/type-wizard.js';
  * @returns True if the command pipeline is valid, false otherwise.
  */
 export const validateCommandPipeline = <Name extends string | RootType>(
-  locale: string,
+  locale: LocaleMessagesKeys,
   inputNameList?: Name | string[],
   commandPipeline?: Command<Name>[]
 ) => {

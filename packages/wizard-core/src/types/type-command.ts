@@ -1,5 +1,8 @@
 import type { Logger } from '@hyperse/logger';
+import type { useLocale } from '../i18n/use-locale.js';
+import type { CommandBuilderOptions } from './type-command-builder.js';
 import type { Flags } from './type-flag.js';
+import type { I18n, LocaleMessagesKeys } from './type-locale-messages.js';
 import type { MaybePromise } from './type-utils.js';
 import type { RootType } from './type-wizard.js';
 
@@ -9,27 +12,32 @@ export interface HandlerContext<
   Name extends string | RootType,
   Context extends CommandContext,
   CommandFlags extends Flags,
-> {
+> extends CommandBuilderOptions {
   ctx?: Context;
   name: Name;
-  description: string;
   flags: CommandFlags;
   logger: Logger;
-  locale: string;
+  locale: LocaleMessagesKeys;
+  i18n: I18n;
 }
 
 export type CommandHandlerFunction<
   handlerContext extends HandlerContext<any, any, any>,
 > = (ctx: handlerContext) => MaybePromise<void>;
 
-export interface ResolverContext<Context extends CommandContext> {
+export interface ResolverContext<
+  Name extends string | RootType,
+  Context extends CommandContext,
+> extends CommandBuilderOptions {
   ctx?: Context;
+  name: Name;
   logger: Logger;
-  locale: string;
+  locale: LocaleMessagesKeys;
+  i18n: I18n;
 }
 
 export type CommandResolverFunction<
-  resolverContext extends ResolverContext<any>,
+  resolverContext extends ResolverContext<any, any>,
   SubCommandContext extends object,
 > =
   | SubCommandContext
@@ -43,7 +51,7 @@ export interface Command<
 > {
   getName(): Name;
 
-  getDescription(): string;
+  getExtraOptions(): CommandBuilderOptions;
 
   setFlags(flags: CommandFlags): void;
 
@@ -62,11 +70,14 @@ export interface Command<
   ): void;
 
   setResolver(
-    fn: CommandResolverFunction<ResolverContext<Context>, SubCommandContext>
+    fn: CommandResolverFunction<
+      ResolverContext<Name, Context>,
+      SubCommandContext
+    >
   ): void;
 
   getResolver(): CommandResolverFunction<
-    ResolverContext<Context>,
+    ResolverContext<Name, Context>,
     SubCommandContext
   >;
 

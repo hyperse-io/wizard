@@ -52,6 +52,7 @@
     "@hyperse/translator": "^1.2.3",
     "@hyperse/wizard-utils": "workspace:*",
     "is-platform": "^1.0.0",
+    "type-fest": "^4.41.0",
     "type-flag": "^3.0.0"
   },
   "devDependencies": {

@@ -13,37 +13,37 @@ import type { RootType } from '../src/types/type-wizard.js';
 
 describe('Command Pipeline Validation and Parsing', () => {
   const buildCmd = defineCommand('build', {
-    description: 'Build the project',
+    description: () => 'Build the project',
   })
     .use(
       defineCommand('A1', {
-        description: 'A1 the project',
+        description: () => 'A1 the project',
       })
     )
     .use(
       defineCommand('A2', {
-        description: 'A2 the project',
+        description: () => 'A2 the project',
       }).use(
         defineCommand('A2-1', {
-          description: 'A2-1 the project',
+          description: () => 'A2-1 the project',
         })
       )
     )
     .use(
       defineCommand('A3', {
-        description: 'A3 the project',
+        description: () => 'A3 the project',
       })
         .use(
           defineCommand('A3-1', {
-            description: 'A3-1 the project',
+            description: () => 'A3-1 the project',
           })
         )
         .use(
           defineCommand('A3-2', {
-            description: 'A3-2 the project',
+            description: () => 'A3-2 the project',
           }).use(
             defineCommand('A3-2-1', {
-              description: 'A3-2-1 the project',
+              description: () => 'A3-2-1 the project',
             })
           )
         )
@@ -51,7 +51,7 @@ describe('Command Pipeline Validation and Parsing', () => {
 
   it('should throw a descriptive error when the command is not configured (both en and zh)', () => {
     const rootCommandBuilder = createCommandBuilder<string | RootType>(Root, {
-      description: 'root command',
+      description: () => 'root command',
     });
     const rootCmd = [rootCommandBuilder.getCommand()];
 
@@ -85,7 +85,7 @@ describe('Command Pipeline Validation and Parsing', () => {
   });
   it('should parse a complex CLI command pipeline and validate not found errors (both en and zh)', () => {
     const rootCommandBuilder = createCommandBuilder<string | RootType>(Root, {
-      description: formatCommandName(Root),
+      description: () => formatCommandName(Root),
     });
     rootCommandBuilder.use(buildCmd);
 

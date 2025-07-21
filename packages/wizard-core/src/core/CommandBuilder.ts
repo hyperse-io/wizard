@@ -83,7 +83,10 @@ class CommandBuilderImpl<
   }
 
   resolver(
-    fn: CommandResolverFunction<ResolverContext<Context>, SubCommandContext>
+    fn: CommandResolverFunction<
+      ResolverContext<Name, Context>,
+      SubCommandContext
+    >
   ): CommandBuilder<
     Name,
     Context,

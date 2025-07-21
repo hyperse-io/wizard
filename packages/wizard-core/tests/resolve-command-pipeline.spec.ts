@@ -8,32 +8,32 @@ describe('resolveCommandPipeline', () => {
   it('should return the command and its parent chain in correct order', () => {
     // Create parent and child commands
     const parent = createCommand('parent', {
-      description: 'parent command',
+      description: () => 'parent command',
     });
     const child = createCommand('child', {
-      description: 'child command',
+      description: () => 'child command',
     });
 
     const childA = createCommand('childA', {
-      description: 'childA command',
+      description: () => 'childA command',
     });
 
     const childA_1 = createCommand('childA_1', {
-      description: 'childA_1 command',
+      description: () => 'childA_1 command',
     });
     const childA_2 = createCommand('childA_2', {
-      description: 'childA_2 command',
+      description: () => 'childA_2 command',
     });
 
     const childA_1_1 = createCommand('childA_1_1', {
-      description: 'childA_1_1 command',
+      description: () => 'childA_1_1 command',
     });
     const childA_1_2 = createCommand('childA_1_2', {
-      description: 'childA_1_2 command',
+      description: () => 'childA_1_2 command',
     });
 
     const childB = createCommand('childB', {
-      description: 'childB command',
+      description: () => 'childB command',
     });
 
     parent.setSubCommands([child]);
@@ -95,7 +95,7 @@ describe('resolveCommandPipeline', () => {
 
   it('should return only the command if it has no parent', () => {
     const single = createCommand<string>('single', {
-      description: 'single command',
+      description: () => 'single command',
     });
     const commandMap: Record<string, Command<string>> = { single };
     const result = resolveCommandPipeline(
@@ -118,7 +118,7 @@ describe('resolveCommandPipeline', () => {
     // Simulate RootType usage
     const rootSymbol = Symbol.for('Wizard.Root');
     const root = createCommand<any>(rootSymbol, {
-      description: 'root command',
+      description: () => 'root command',
     });
     const commandMap: Record<any, Command<any>> = {
       [rootSymbol as any]: root,

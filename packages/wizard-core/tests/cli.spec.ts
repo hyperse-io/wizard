@@ -1,151 +1,258 @@
+import { createWizard } from '../src/core/createWizard.js';
 import { defineCommand } from '../src/core/defineCommand.js';
-import { Wizard } from '../src/core/Wizard.js';
 import { definePlugin } from '../src/index.js';
+import { sleep } from './utils/test-utils.js';
 
 describe('cli', () => {
-  it('should be able to parse the cli', () => {
-    const miniCmd = defineCommand<'mini', { miniConfig: { miniKey: string } }>(
-      'mini',
-      {
-        description: 'mini description description description description',
-      }
-    )
-      .flags({
-        version: {
-          type: String,
-          alias: 'v',
-          description: 'version with 1.0.0 or 2.0.0',
-          default: '1.0.0',
-        },
-      })
-      .handler((ctx) => {
-        console.log('====>>>mini ctx', ctx.flags.version);
-      });
+  const miniHandler = vi.fn();
+  const evolveHandler = vi.fn();
+  const buildHandler = vi.fn();
+  const deployHandler = vi.fn();
+  const buildEvolveMiniEvent = vi.fn();
+  const buildEvent = vi.fn();
+  const buildEvolveEvent = vi.fn();
+  const errorEvent = vi.fn();
 
-    const evolveCmd = defineCommand<'evolve', { root1: { root11: string } }>(
-      'evolve',
-      {
-        description: 'evolve description description description description',
-      }
-    )
-      .flags({
-        compiler: {
-          type: String,
-          alias: 'c',
-          description: 'compiler with rspack or vite',
-          default: 'rspack',
-        },
-        env: {
-          type: String,
-          alias: 'e',
-          description: 'env with dev or prod',
-          default: 'dev',
-        },
-      })
-      .use(miniCmd)
-      .resolver(() => {
-        return { miniConfig: { miniKey: 'mini' } };
-      });
+  beforeEach(() => {});
 
-    const buildCmd = defineCommand<'build', { root: { root1: string } }>(
-      'build',
-      {
-        description: 'build description description description description',
-      }
-    )
-      .flags({
-        projectCwd: {
-          alias: 'p',
-          type: String,
-          description: 'project cwd',
-          default: 'user/project/foo',
-        },
-      })
-      .use(evolveCmd)
-      .handler((ctx) => {
-        console.log('====>>>mini ctx', ctx.flags.projectCwd);
-      });
+  afterEach(() => {
+    vi.resetAllMocks();
+    vi.clearAllMocks();
+  });
 
-    const deployCmd = defineCommand<'deploy', { root1: { root11: string } }>(
-      'deploy',
-      {
-        description: 'deploy description description description description',
-      }
-    )
-      .flags({
-        fileType: {
-          type: String,
-          alias: 'f',
-          description: 'file type with js or ts',
-          default: 'js',
-        },
-        ossType: {
-          type: String,
-          alias: 'o',
-          description: 'oss type with aliyun or tencent',
-          default: 'aliyun',
-        },
-      })
-      .handler((ctx) => {
-        console.log('====>>>deploy ctx', ctx.flags.ossType);
-      });
-
-    const wWizard = new Wizard({
-      name: 'wWizard',
-      description: 'wWizard description',
-      version: '1.0.0',
-      errorHandler: (err) => {
-        console.log('====>>> err', err);
+  const miniCmd = defineCommand<'mini', { miniConfig: { miniKey: string } }>(
+    'mini',
+    {
+      description: () => 'mini description',
+    }
+  )
+    .flags({
+      version: {
+        type: String,
+        alias: 'v',
+        description: 'version with 1.0.0 or 2.0.0',
+        default: '1.0.0',
       },
-    });
+    })
+    .handler((ctx) => miniHandler(ctx));
 
-    const argv = [
-      'build',
-      'evolve',
-      '--compiler',
-      'vite',
-      '--version',
-      '1.0.1',
-      '--',
-      'mini',
-    ];
+  const evolveCmd = defineCommand<'evolve', { root1: { root11: string } }>(
+    'evolve',
+    {
+      description: () => 'evolve description',
+    }
+  )
+    .flags({
+      compiler: {
+        type: String,
+        alias: 'c',
+        description: 'compiler with rspack or vite',
+        default: 'rspack',
+      },
+      env: {
+        type: String,
+        alias: 'e',
+        description: 'env with dev or prod',
+        default: 'dev',
+      },
+    })
+    .use(miniCmd)
+    .resolver(() => {
+      ///
+      return { miniConfig: { miniKey: 'mini' } };
+    })
+    .handler((ctx) => evolveHandler(ctx));
 
-    const newCli = wWizard
+  const buildCmd = defineCommand<'build', { root: { root1: string } }>(
+    'build',
+    {
+      description: () => 'build description',
+    }
+  )
+    .flags({
+      projectCwd: {
+        alias: 'p',
+        type: String,
+        description: 'project cwd',
+        default: 'user/project/foo',
+      },
+    })
+    .use(evolveCmd)
+    .resolver(() => {
+      return { root1: { root11: 'root11' } };
+    })
+    .handler((ctx) => buildHandler(ctx));
+
+  const deployCmd = defineCommand<'deploy', { root1: { root11: string } }>(
+    'deploy',
+    {
+      description: () => 'deploy description',
+    }
+  )
+    .flags({
+      fileType: {
+        type: String,
+        alias: 'f',
+        description: 'file type with js or ts',
+        default: 'js',
+      },
+      ossType: {
+        type: String,
+        alias: 'o',
+        description: 'oss type with aliyun or tencent',
+        default: 'aliyun',
+      },
+    })
+    .handler((ctx) => deployHandler(ctx));
+
+  it('test command build', async () => {
+    const cli = createWizard({
+      name: () => 'wWizard',
+      description: () => 'wWizard description',
+      version: () => '1.0.0',
+      errorHandler: errorEvent,
+    })
       .use(
         definePlugin({
-          setup: (wizard) => {
-            const cli = wizard.register(buildCmd);
-            cli.on('build.evolve.mini', (ctx) => {
-              console.log('====>>> ctx', ctx);
-            });
-            return cli;
-          },
+          setup: (wizard) => wizard.register(buildCmd),
         })
       )
       .use(
         definePlugin({
-          setup: (wizard) => {
-            const cli = wizard.register(deployCmd);
-            return cli;
-          },
+          setup: (wizard) => wizard.register(deployCmd),
         })
-      );
+      )
+      .on('build', buildEvent)
+      .on('build.evolve', buildEvolveEvent)
+      .on('build.evolve.mini', buildEvolveMiniEvent)
+      .on('error', errorEvent);
 
-    newCli
+    // cmd: build
+    cli.parse(['build']);
+    await sleep();
+    expect(miniHandler).not.toHaveBeenCalled();
+    expect(evolveHandler).not.toHaveBeenCalled();
+    expect(buildHandler).toHaveBeenCalled();
+    expect(buildHandler.mock.lastCall?.[0]).toMatchObject({
+      locale: 'en',
+      ctx: undefined,
+      flags: { projectCwd: 'user/project/foo' },
+      name: 'build',
+      description: 'build description',
+    });
+  });
+
+  it('test command build evolve', async () => {
+    const cli = createWizard({
+      name: 'core.cli.parseMustBeCalled',
+      description: 'core.cli.parseMustBeCalled',
+      version: () => '1.0.0',
+      errorHandler: errorEvent,
+    })
+      .use(
+        definePlugin({
+          setup: (wizard) => wizard.register(buildCmd),
+        })
+      )
+      .use(
+        definePlugin({
+          setup: (wizard) => wizard.register(deployCmd),
+        })
+      )
+      .on('build', buildEvent)
+      .on('build.evolve', buildEvolveEvent)
+      .on('build.evolve.mini', buildEvolveMiniEvent)
+      .on('error', errorEvent);
+
+    // cmd: build evolve mini
+    cli.parse(['build', 'evolve']);
+    await sleep();
+    expect(buildHandler).not.toHaveBeenCalled();
+    expect(miniHandler).not.toHaveBeenCalled();
+    expect(evolveHandler).toHaveBeenCalled();
+    expect(evolveHandler.mock.lastCall?.[0]).toMatchObject({
+      locale: 'en',
+      ctx: { root1: { root11: 'root11' } },
+      flags: { compiler: 'rspack', env: 'dev' },
+      name: 'evolve',
+      description: 'evolve description',
+    });
+  });
+
+  it('test command build evolve mini', async () => {
+    const cli = createWizard({
+      name: () => 'cli',
+      description: () => 'wWizard description',
+      version: () => '1.0.0',
+      errorHandler: errorEvent,
+    })
+      .use(
+        definePlugin({
+          setup: (wizard) => wizard.register(buildCmd),
+        })
+      )
+      .use(
+        definePlugin({
+          setup: (wizard) => wizard.register(deployCmd),
+        })
+      )
       .on('build', (ctx) => {
-        console.log('build', ctx);
+        ctx.i18n.t('core.command.notConfiguration');
       })
-      .on('build.evolve', (ctx) => {
-        console.log('build.evolve', ctx);
-      })
-      .on('build.evolve.mini', (ctx) => {
-        console.log('build.evolve.mini', ctx);
-      })
-      .on('error', (err) => {
-        console.log('error', err);
-      })
-      .parse(argv);
+      .on('build.evolve', buildEvolveEvent)
+      .on('build.evolve.mini', buildEvolveMiniEvent)
+      .on('error', errorEvent);
 
-    expect(true).toBe(true);
+    // cmd: build evolve mini
+    cli.parse(['build', 'evolve', 'mini']);
+    await sleep();
+    expect(buildHandler).not.toHaveBeenCalled();
+    expect(evolveHandler).not.toHaveBeenCalled();
+    expect(miniHandler).toHaveBeenCalled();
+    expect(miniHandler.mock.lastCall?.[0]).toMatchObject({
+      locale: 'en',
+      ctx: { miniConfig: { miniKey: 'mini' } },
+      flags: { version: '1.0.0' },
+      name: 'mini',
+      description: 'mini description',
+    });
+  });
+
+  it('test command deploy', async () => {
+    const cli = createWizard({
+      name: () => 'wWizard',
+      description: () => 'wWizard description',
+      version: () => '1.0.0',
+      errorHandler: errorEvent,
+    })
+      .use(
+        definePlugin({
+          setup: (wizard) => wizard.register(buildCmd),
+        })
+      )
+      .use(
+        definePlugin({
+          setup: (wizard) => wizard.register(deployCmd),
+        })
+      )
+      .on('build', buildEvent)
+      .on('build.evolve', buildEvolveEvent)
+      .on('build.evolve.mini', buildEvolveMiniEvent)
+      .on('error', errorEvent);
+
+    // cmd: build evolve mini
+    cli.parse(['deploy']);
+    await sleep();
+    expect(buildHandler).not.toHaveBeenCalled();
+    expect(evolveHandler).not.toHaveBeenCalled();
+    expect(miniHandler).not.toHaveBeenCalled();
+    expect(deployHandler).toHaveBeenCalled();
+    expect(deployHandler.mock.lastCall?.[0]).toMatchObject({
+      locale: 'en',
+      ctx: undefined,
+      flags: { fileType: 'js', ossType: 'aliyun' },
+      name: 'deploy',
+      description: 'deploy description',
+    });
   });
 });

@@ -5,17 +5,17 @@ import { CommandI18nError } from './CommandI18nError.js';
 
 /**
  * @description
- * This error should be thrown when a command is not configured.
+ * This error should be thrown when a command is not found locale.
  *
  * @example
- * throw new CommandNotConfigurationError('en', { cmdName: 'build' });
+ * throw new CommandLocaleNotFoundError('en', { cmdName: 'build' });
  */
-export class CommandNotConfigurationError extends CommandI18nError {
+export class CommandLocaleNotFoundError extends CommandI18nError {
   constructor(
     locale: LocaleMessagesKeys,
     variables: { [key: string]: string | number } = {}
   ) {
     const t = useLocale(locale);
-    super(t('core.command.notConfiguration', variables), LogLevel.Error);
+    super(t('core.command.localeNotFound', variables), LogLevel.Error);
   }
 }

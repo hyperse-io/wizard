@@ -20,7 +20,7 @@ class CommandImpl<
   private name: Name;
   private options: CommandBuilderOptions;
   private resolverFn: CommandResolverFunction<
-    ResolverContext<Context>,
+    ResolverContext<Name, Context>,
     SubCommandContext
   >;
   private handlerFn: CommandHandlerFunction<
@@ -39,8 +39,8 @@ class CommandImpl<
     return this.name;
   }
 
-  getDescription() {
-    return this.options.description;
+  getExtraOptions() {
+    return this.options;
   }
 
   setFlags(flags: CommandFlags): void {
@@ -72,7 +72,10 @@ class CommandImpl<
   }
 
   setResolver(
-    fn: CommandResolverFunction<ResolverContext<Context>, SubCommandContext>
+    fn: CommandResolverFunction<
+      ResolverContext<Name, Context>,
+      SubCommandContext
+    >
   ) {
     this.resolverFn = fn;
   }

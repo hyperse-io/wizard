@@ -7,12 +7,13 @@ import type {
   ResolverContext,
 } from './type-command.js';
 import type { Flags } from './type-flag.js';
+import type { LocaleMessageResolver } from './type-locale-messages.js';
 import type { RootType } from './type-wizard.js';
 
 export type CommandBuilderOptions = {
-  description: string;
-  example?: string;
-  help?: string;
+  description: LocaleMessageResolver;
+  example?: LocaleMessageResolver;
+  help?: LocaleMessageResolver;
 };
 
 export type GetCommandNameToContext<Builder> =
@@ -97,7 +98,10 @@ export interface CommandBuilder<
   ): CommandBuilder<Name, Context, SubCommandContext, NameToContext, T>;
 
   resolver(
-    fn: CommandResolverFunction<ResolverContext<Context>, SubCommandContext>
+    fn: CommandResolverFunction<
+      ResolverContext<Name, Context>,
+      SubCommandContext
+    >
   ): CommandBuilder<
     Name,
     Context,

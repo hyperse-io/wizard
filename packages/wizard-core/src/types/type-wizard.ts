@@ -1,28 +1,38 @@
-import type { LogLevel } from '@hyperse/logger';
+import type { Logger, LogLevel } from '@hyperse/logger';
 import type { Root } from '../constants.js';
 import type { CommandContext } from './type-command.js';
+import type { CommandNameToContext } from './type-command-builder.js';
 import type { Flags } from './type-flag.js';
+import type {
+  I18n,
+  LocaleMessageResolver,
+  LocaleMessagesKeys,
+} from './type-locale-messages.js';
 
 /**
  * @description
  * The root type of the wizard.
  *
- * @docsCategory types
- * @docsPage Root Type
  */
 export type RootType = typeof Root;
+
+export type WizardEventContext<NameToContext extends CommandNameToContext> = {
+  [K in keyof NameToContext]: { ctx: NameToContext[K] } & {
+    logger: Logger;
+    locale: LocaleMessagesKeys;
+    i18n: I18n;
+  };
+};
 
 /**
  * @description
  * The options for the wizard.
  *
- * @docsCategory types
- * @docsPage Wizard Options
  */
 export type WizardOptions = {
-  name: string;
-  description: string;
-  version: string;
+  name: LocaleMessageResolver;
+  description: LocaleMessageResolver;
+  version: LocaleMessageResolver;
   thresholdLogLevel?: LogLevel;
   noColor?: boolean;
   errorHandler?: (err: unknown) => void;
@@ -32,8 +42,6 @@ export type WizardOptions = {
  * @description
  * The options for the parse method.
  *
- * @docsCategory types
- * @docsPage Wizard Options
  */
 export type ParseOptions = {
   argv?: string[];
@@ -55,4 +63,5 @@ export type PipelineContext = {
     [flagName: string]: (string | boolean)[];
   };
   ctx?: CommandContext;
+  optionsOrArgv: string[] | ParseOptions;
 };

@@ -1,5 +1,10 @@
 import { createTranslator } from '@hyperse/translator';
-import { messages } from './messages.js';
+import type {
+  I18n,
+  LocaleMessagesKeys,
+  LocaleMessagesObject,
+} from '../types/type-locale-messages.js';
+import { messages as defaultMessages } from './messages.js';
 
 /**
  * @description
@@ -12,10 +17,13 @@ import { messages } from './messages.js';
  * const t = useLocale('en');
  * t('command.notFound', { cmdName: 'build' });
  */
-export const useLocale = (locale: string) => {
-  return createTranslator({
+export const useLocale = (
+  locale: LocaleMessagesKeys,
+  messages: LocaleMessagesObject = defaultMessages as unknown as LocaleMessagesObject
+): I18n['t'] => {
+  return createTranslator<LocaleMessagesObject, LocaleMessagesKeys>({
     locale: locale,
     messages: messages,
-    namespace: locale as 'en',
+    namespace: locale,
   });
 };
