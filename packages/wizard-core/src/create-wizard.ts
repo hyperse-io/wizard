@@ -1,12 +1,10 @@
-import type { WizardOptions } from '../types/type-wizard.js';
-import { Wizard } from './Wizard.js';
+import { Wizard } from './core/Wizard.js';
+import type { WizardOptions } from './types/type-wizard.js';
 
 /**
  * @description
  * Create a new wizard instance.
  *
- * @docsCategory core
- * @docsPage Create Wizard
  * @param options The options for the wizard.
  * @returns The wizard instance.
  */

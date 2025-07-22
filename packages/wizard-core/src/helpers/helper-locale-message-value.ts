@@ -1,24 +1,22 @@
-import { CommandLocaleNotFoundError } from '../errors/CommandLocaleNotFoundError.js';
 import type {
   I18n,
   LocaleMessageResolver,
-  LocaleMessagesKeys,
 } from '../types/type-locale-messages.js';
 
+/**
+ * @description
+ * Resolves the value of a locale message.
+ *
+ * @param t The i18n instance.
+ * @param localResolver The locale message resolver.
+ * @returns The value of the locale message.
+ */
 export const localeMessageValue = (
-  localKey: string,
-  locale: LocaleMessagesKeys,
   t: I18n['t'],
   localResolver: LocaleMessageResolver
 ) => {
-  try {
-    if (typeof localResolver === 'function') {
-      return localResolver(t);
-    }
-    return t(localResolver);
-  } catch {
-    throw new CommandLocaleNotFoundError(locale, {
-      cmdName: localKey,
-    });
+  if (typeof localResolver === 'function') {
+    return localResolver(t);
   }
+  return t(localResolver);
 };

@@ -1,9 +1,14 @@
+import type { DeepPartial } from '@hyperse/deep-merge';
 import type { Logger, LogLevel } from '@hyperse/logger';
 import type { Root } from '../constants.js';
-import type { CommandContext } from './type-command.js';
+import type {
+  CommandBasicInfoWithI18n,
+  CommandContext,
+} from './type-command.js';
 import type { CommandNameToContext } from './type-command-builder.js';
 import type { Flags } from './type-flag.js';
 import type {
+  DefaultLocaleMessages,
   I18n,
   LocaleMessageResolver,
   LocaleMessagesKeys,
@@ -16,25 +21,63 @@ import type {
  */
 export type RootType = typeof Root;
 
+/**
+ * @description
+ * The event context for the wizard.
+ *
+ * @template NameToContext - The type of the command name to context.
+ * @returns {WizardEventContext} The event context.
+ */
 export type WizardEventContext<NameToContext extends CommandNameToContext> = {
   [K in keyof NameToContext]: { ctx: NameToContext[K] } & {
+    /**
+     * Logger instance for outputting logs within the handler.
+     */
     logger: Logger;
+    /**
+     * The current locale key for i18n messages.
+     */
     locale: LocaleMessagesKeys;
+    /**
+     * I18n instance for retrieving localized messages.
+     */
     i18n: I18n;
-  };
+  } & CommandBasicInfoWithI18n;
 };
 
 /**
  * @description
  * The options for the wizard.
- *
  */
 export type WizardOptions = {
+  /**
+   * The name of the wizard.
+   */
   name: LocaleMessageResolver;
+  /**
+   * The description of the wizard.
+   */
   description: LocaleMessageResolver;
+  /**
+   * The version of the wizard.
+   */
   version: LocaleMessageResolver;
+  /**
+   * The threshold log level.
+   */
   thresholdLogLevel?: LogLevel;
+  /**
+   * Whether to use color.
+   */
   noColor?: boolean;
+  /**
+   * The override messages.
+   *
+   */
+  overrideMessages?: DeepPartial<DefaultLocaleMessages>;
+  /**
+   * The error handler.
+   */
   errorHandler?: (err: unknown) => void;
 };
 
@@ -52,16 +95,32 @@ export type ParseOptions = {
  * @description
  * The context for the pipeline.
  *
- * @docsCategory types
- * @docsPage Pipeline Context
  */
 export type PipelineContext = {
+  /**
+   * The arguments.
+   */
   args: string[];
+  /**
+   * The end of file arguments.
+   */
   eofArgs: string[];
+  /**
+   * The flags.
+   */
   flags: Flags;
+  /**
+   * The unknown flags.
+   */
   unknownFlags?: {
     [flagName: string]: (string | boolean)[];
   };
+  /**
+   * The context.
+   */
   ctx?: CommandContext;
+  /**
+   * The options or arguments.
+   */
   optionsOrArgv: string[] | ParseOptions;
 };

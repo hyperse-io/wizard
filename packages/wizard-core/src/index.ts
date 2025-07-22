@@ -1,5 +1,5 @@
-export { defineCommand } from './core/defineCommand.js';
-export { definePlugin } from './core/definePlugin.js';
-export { createWizard } from './core/index.js';
+export { createWizard } from './create-wizard.js';
+export { defineCommand } from './define-command.js';
+export { definePlugin } from './define-plugin.js';
 export * from './i18n/index.js';
 export * from './types/index.js';

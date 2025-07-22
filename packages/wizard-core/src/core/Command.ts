@@ -2,23 +2,33 @@ import type {
   Command,
   CommandContext,
   CommandHandlerFunction,
+  CommandName,
+  CommandOptions,
   CommandResolverFunction,
   HandlerContext,
   ResolverContext,
 } from '../types/type-command.js';
-import type { CommandBuilderOptions } from '../types/type-command-builder.js';
 import type { Flags } from '../types/type-flag.js';
-import type { RootType } from '../types/type-wizard.js';
+import type { I18n } from '../types/type-locale-messages.js';
 
+/**
+ * @description
+ * The implementation of the command.
+ *
+ * @template Name - The type of the command name.
+ * @template Context - The type of the command context.
+ * @template SubCommandContext - The type of the sub-command context.
+ * @template CommandFlags - The type of the command flags.
+ */
 class CommandImpl<
-  Name extends string | RootType = string,
+  Name extends CommandName = string,
   Context extends CommandContext = CommandContext,
   SubCommandContext extends object = object,
   CommandFlags extends Flags = Flags,
 > implements Command<Name, Context, SubCommandContext, CommandFlags>
 {
-  private name: Name;
-  private options: CommandBuilderOptions;
+  private commandName: Name;
+  private options: CommandOptions;
   private resolverFn: CommandResolverFunction<
     ResolverContext<Name, Context>,
     SubCommandContext
@@ -29,18 +39,27 @@ class CommandImpl<
   private flags: CommandFlags;
   private subCommands: Command<any, any, any, any>[] = [];
   private parentCommand: Command<any, any, any, any>;
+  private I18n: I18n;
 
-  constructor(name: Name, options: CommandBuilderOptions) {
-    this.name = name;
+  constructor(name: Name, options: CommandOptions) {
+    this.commandName = name;
     this.options = options;
   }
 
-  getName() {
-    return this.name;
+  get name(): Name {
+    return this.commandName;
   }
 
-  getExtraOptions() {
-    return this.options;
+  get description() {
+    return this.options.description;
+  }
+
+  get example() {
+    return this.options.example;
+  }
+
+  get help() {
+    return this.options.help;
   }
 
   setFlags(flags: CommandFlags): void {
@@ -95,14 +114,29 @@ class CommandImpl<
   }
 }
 
+/**
+ * @description
+ * Create a command instance.
+ *
+ * This function initializes and returns a command instance (CommandImpl), which can be further configured with handlers, resolvers, subcommands, arguments, and flags.
+ *
+ * @template Name - The type of the command name, usually a string or RootType.
+ * @template Context - The type of the command context, defaults to CommandContext.
+ * @template SubCommandContext - The type of the sub-command context, defaults to object.
+ * @template CommandFlags - The type of the command flags, defaults to Flags.
+ *
+ * @param {CommandBuilderOptions} options - The command options, including description, usage, and other metadata.
+ *
+ * @returns Returns a command instance for further configuration.
+ */
 export const createCommand = <
-  Name extends string | RootType = string,
+  Name extends CommandName = string,
   Context extends CommandContext = CommandContext,
   SubCommandContext extends object = object,
   CommandFlags extends Flags = Flags,
 >(
   name: Name,
-  options: CommandBuilderOptions
+  options: CommandOptions
 ) =>
   new CommandImpl<Name, Context, SubCommandContext, CommandFlags>(
     name,

@@ -1,9 +1,12 @@
 import { Root } from '../constants.js';
+import { CommandFlagNotProviderError } from '../errors/CommandFlagNotProviderError.js';
 import { CommandNotConfigurationError } from '../errors/CommandNotConfiguration.js';
 import { CommandNotFoundError } from '../errors/CommandNotFoundError.js';
-import type { Command } from '../types/type-command.js';
+import type { Command, CommandName } from '../types/type-command.js';
+import type { Flags } from '../types/type-flag.js';
 import type { LocaleMessagesKeys } from '../types/type-locale-messages.js';
-import type { RootType } from '../types/type-wizard.js';
+import { formatCommandName } from './helper-format-command-name.js';
+import type { ParseFlagsResult } from './helper-parse-flags.js';
 
 /**
  * @description
@@ -14,10 +17,12 @@ import type { RootType } from '../types/type-wizard.js';
  * @param commandPipeline The command pipeline to validate.
  * @returns True if the command pipeline is valid, false otherwise.
  */
-export const validateCommandPipeline = <Name extends string | RootType>(
+export const validateCommandPipeline = <Name extends CommandName>(
   locale: LocaleMessagesKeys,
+  inputCommandFlags: Flags,
   inputNameList?: Name | string[],
-  commandPipeline?: Command<Name>[]
+  parsedFlags?: ParseFlagsResult,
+  commandPipeline: Command<Name>[] = []
 ) => {
   if (!inputNameList) {
     return true;
@@ -32,8 +37,8 @@ export const validateCommandPipeline = <Name extends string | RootType>(
   }
 
   const pipelineNames = commandPipeline
-    .map((command) => command.getName())
-    .filter((name: string | RootType) => {
+    .map((command) => command.name)
+    .filter((name: CommandName) => {
       return name !== Root;
     });
 
@@ -49,17 +54,17 @@ export const validateCommandPipeline = <Name extends string | RootType>(
     });
   }
 
+  const flags = parsedFlags?.flags;
+  if (inputCommandFlags) {
+    for (const [flatName, flatOption] of Object.entries(inputCommandFlags)) {
+      if (flatOption.required && typeof flags?.[flatName] === 'undefined') {
+        throw new CommandFlagNotProviderError(locale, {
+          cmdName: inputNameListString,
+          flagName: flatName,
+        });
+      }
+    }
+  }
+
   return true;
 };
-
-const INVALID_RE = /\s{2,}/;
-
-export const isValidName = (name: string | RootType) =>
-  name === Root
-    ? true
-    : !(name.startsWith(' ') || name.endsWith(' ')) && !INVALID_RE.test(name);
-
-const ROOT = '<Root>';
-
-export const formatCommandName = (name: string | string[] | RootType) =>
-  Array.isArray(name) ? name.join(' ') : typeof name === 'string' ? name : ROOT;

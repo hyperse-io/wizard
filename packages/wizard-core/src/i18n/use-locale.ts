@@ -1,4 +1,5 @@
 import { createTranslator } from '@hyperse/translator';
+import { CommandLocaleNotFoundError } from '../errors/CommandLocaleNotFoundError.js';
 import type {
   I18n,
   LocaleMessagesKeys,
@@ -25,5 +26,16 @@ export const useLocale = (
     locale: locale,
     messages: messages,
     namespace: locale,
+    onError: () => {
+      // Prevent internal translator errors from leaking out without I18n handling
+    },
+    getMessageFallback: ({ error, key, namespace }) => {
+      if (error) {
+        throw new CommandLocaleNotFoundError(locale, {
+          cmdName: `${namespace}.${key}`,
+        });
+      }
+      return '';
+    },
   });
 };

@@ -1,11 +1,10 @@
 import { CommandNotFoundError } from '../errors/CommandNotFoundError.js';
-import type { Command } from '../types/type-command.js';
+import type { Command, CommandName } from '../types/type-command.js';
 import type { LocaleMessagesKeys } from '../types/type-locale-messages.js';
-import type { RootType } from '../types/type-wizard.js';
-import { formatCommandName } from './helper-validate-command-pipeline.js';
+import { formatCommandName } from './helper-format-command-name.js';
 
 /**
- * Resolves the command pipeline.
+ * Search the command chain.
  * Query from the child node to the root node
  *
  * @param locale The locale to use.
@@ -13,7 +12,7 @@ import { formatCommandName } from './helper-validate-command-pipeline.js';
  * @param commandMap The command map to resolve the command pipeline from.
  * @returns The command pipeline.
  */
-export const resolveCommandPipeline = <Name extends string | RootType>(
+export const searchCommandChain = <Name extends CommandName>(
   locale: LocaleMessagesKeys,
   name: Name,
   commandMap: Record<Name, Command<Name>>

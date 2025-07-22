@@ -1,10 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import { createCommand } from '../src/core/Command.js';
 import { CommandNotFoundError } from '../src/errors/CommandNotFoundError.js';
-import { resolveCommandPipeline } from '../src/helpers/helper-resolve-command-pipeline.js';
+import { searchCommandChain } from '../src/helpers/helper-search-command-chain.js';
 import type { Command } from '../src/types/type-command.js';
 
-describe('resolveCommandPipeline', () => {
+describe('searchCommandChain', () => {
   it('should return the command and its parent chain in correct order', () => {
     // Create parent and child commands
     const parent = createCommand('parent', {
@@ -62,7 +62,7 @@ describe('resolveCommandPipeline', () => {
     };
 
     // Should return [parent, child]
-    const result_childA_1_2 = resolveCommandPipeline(
+    const result_childA_1_2 = searchCommandChain(
       'en',
       'childA_1_2' as any,
       commandMap
@@ -74,11 +74,7 @@ describe('resolveCommandPipeline', () => {
     expect(result_childA_1_2[3]).toBe(childA_1);
     expect(result_childA_1_2[4]).toBe(childA_1_2);
 
-    const result_childB = resolveCommandPipeline(
-      'en',
-      'childB' as any,
-      commandMap
-    );
+    const result_childB = searchCommandChain('en', 'childB' as any, commandMap);
 
     expect(result_childB).toHaveLength(3);
     expect(result_childB[0]).toBe(parent);
@@ -86,7 +82,7 @@ describe('resolveCommandPipeline', () => {
     expect(result_childB[2]).toBe(childB);
 
     try {
-      resolveCommandPipeline('en', 'childNull' as any, commandMap);
+      searchCommandChain('en', 'childNull' as any, commandMap);
     } catch (error: any) {
       expect(error).toBeInstanceOf(CommandNotFoundError);
       expect(error.message).toBe('Command childNull not found.');
@@ -98,11 +94,7 @@ describe('resolveCommandPipeline', () => {
       description: () => 'single command',
     });
     const commandMap: Record<string, Command<string>> = { single };
-    const result = resolveCommandPipeline(
-      'en',
-      'single' as any,
-      commandMap as any
-    );
+    const result = searchCommandChain('en', 'single' as any, commandMap as any);
     expect(result).toHaveLength(1);
     expect(result[0]).toBe(single);
   });
@@ -110,7 +102,7 @@ describe('resolveCommandPipeline', () => {
   it('should throw CommandNotFoundError if command does not exist', () => {
     const commandMap: Record<any, Command<any>> = {};
     expect(() => {
-      resolveCommandPipeline('en', 'notfound' as any, commandMap as any);
+      searchCommandChain('en', 'notfound' as any, commandMap as any);
     }).toThrow(CommandNotFoundError);
   });
 
@@ -123,7 +115,7 @@ describe('resolveCommandPipeline', () => {
     const commandMap: Record<any, Command<any>> = {
       [rootSymbol as any]: root,
     };
-    const result = resolveCommandPipeline(
+    const result = searchCommandChain(
       'en',
       rootSymbol as any,
       commandMap as any

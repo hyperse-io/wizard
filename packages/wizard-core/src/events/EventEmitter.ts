@@ -7,9 +7,6 @@ import type {
 /**
  * @description
  * Event emitter implementation with type safety and auto-completion support.
- *
- * @docsCategory events
- * @docsPage EventEmitter
  */
 export class EventEmitter<T extends EventMap = EventMap> {
   private _listeners: Map<keyof T, Set<EventListener<any>>> = new Map();

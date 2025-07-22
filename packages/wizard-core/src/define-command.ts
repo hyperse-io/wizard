@@ -1,16 +1,14 @@
-import type { CommandContext } from '../types/type-command.js';
+import { createCommandBuilder } from './core/CommandBuilder.js';
+import type { CommandContext } from './types/type-command.js';
 import type {
   CommandBuilder as CommandBuilderType,
   CommandBuilderOptions,
-} from '../types/type-command-builder.js';
-import { createCommandBuilder } from './CommandBuilder.js';
+} from './types/type-command-builder.js';
 
 /**
  * @description
  * Define a command.
  *
- * @docsCategory core
- * @docsPage Define Command
  * @param command The command to define.
  * @param handler The handler for the command.
  * @returns The command.

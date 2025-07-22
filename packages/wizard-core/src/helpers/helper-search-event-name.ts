@@ -1,16 +1,29 @@
 import { Root } from '../constants.js';
-import type { Command } from '../types/type-command.js';
-import type { RootType } from '../types/type-wizard.js';
-import { formatCommandName } from './helper-validate-command-pipeline.js';
+import type { Command, CommandName } from '../types/type-command.js';
+import { formatCommandName } from './helper-format-command-name.js';
 
-export const searchEventName = <Name extends string | RootType>(
+/**
+ * @description
+ * Searches for the event name.
+ *
+ * @example
+ * ```ts
+ * const eventName = searchEventName(currentCommand, commands);
+ * console.log(eventName); // 'build.evolve.mini'
+ * ```
+ *
+ * @param currentCommand The current command.
+ * @param commands The commands.
+ * @returns The event name.
+ */
+export const searchEventName = <Name extends CommandName>(
   currentCommand: Command<Name>,
   commands: Command<Name>[] = []
 ): string => {
   const names: string[] = [];
-  const eventName = currentCommand.getName();
+  const eventName = currentCommand.name;
   for (const cmd of commands) {
-    const cmdName = cmd.getName();
+    const cmdName = cmd.name;
     if (cmdName === Root) {
       continue;
     }

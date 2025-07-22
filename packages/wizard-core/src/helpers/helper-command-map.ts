@@ -1,6 +1,5 @@
-import type { Command } from '../types/type-command.js';
+import type { Command, CommandName } from '../types/type-command.js';
 import type { CommandBuilder } from '../types/type-command-builder.js';
-import type { RootType } from '../types/type-wizard.js';
 
 /**
  * Collects and merges all command maps from the given root command builder.
@@ -8,7 +7,7 @@ import type { RootType } from '../types/type-wizard.js';
  * @param rootCommandBuilder The root command builder to collect command maps from.
  * @returns A mapping from command names to Command instances.
  */
-export const getAllCommandMap = <Name extends string | RootType>(
+export const getAllCommandMap = <Name extends CommandName>(
   rootCommandBuilder: CommandBuilder<Name>
 ): Record<Name, Command<Name>> => {
   let commandMap: Record<Name, Command<Name>> = {} as Record<
@@ -16,7 +15,7 @@ export const getAllCommandMap = <Name extends string | RootType>(
     Command<Name>
   >;
   function collectCommandMapFromCommand(command: Command<Name>): any {
-    commandMap[command.getName()] = command;
+    commandMap[command.name] = command;
     const subCommands = command.getSubCommands?.() || [];
     for (const subCmd of subCommands) {
       commandMap = { ...commandMap, ...collectCommandMapFromCommand(subCmd) };

@@ -1,69 +1,75 @@
+import { mergeOptions, simpleDeepClone } from '@hyperse/deep-merge';
 import { createLogger, type Logger, LogLevel } from '@hyperse/logger';
 import { createStdoutPlugin } from '@hyperse/logger-plugin-stdout';
 import { Pipeline } from '@hyperse/pipeline';
 import { Root, WizardName } from '../constants.js';
 import { CommandHandlerNotFoundError } from '../errors/CommandHandlerNotFoundError.js';
+import { CommandNotProviderError } from '../errors/CommandNotProviderError.js';
 import { EventEmitter } from '../events/EventEmitter.js';
-import { collectCommandFlags } from '../helpers/helper-collect-command-flags.js';
-import { getAllCommandMap } from '../helpers/helper-command-map.js';
-import { localeMessageValue } from '../helpers/helper-locale-message-value.js';
+import { mergeMessages } from '../helpers/helper-merge-messages.js';
 import {
-  parseFlags,
-  type ParseFlagsResult,
-} from '../helpers/helper-parse-flags.js';
-import { pickFlags } from '../helpers/helper-pick-flags.js';
-import { resolveArgv } from '../helpers/helper-resolve-argv.js';
-import { resolveCommandPipeline } from '../helpers/helper-resolve-command-pipeline.js';
-import { resolveLocale } from '../helpers/helper-resolve-locale.js';
-import { resolveOptionsOrArgv } from '../helpers/helper-resolve-options-or-argv.js';
-import { searchEventName } from '../helpers/helper-search-event-name.js';
-import {
+  collectCommandFlags,
   formatCommandName,
+  getAllCommandMap,
+  localeMessageValue,
+  parseFlags,
+  pickFlags,
+  resolveArgv,
+  resolveLocale,
+  resolveOptionsOrArgv,
+  searchCommandChain,
+  searchEventName,
   validateCommandPipeline,
-} from '../helpers/helper-validate-command-pipeline.js';
+} from '../helpers/index.js';
 import { useLocale } from '../i18n/index.js';
 import { messages } from '../i18n/messages.js';
-import type { Command, CommandContext } from '../types/type-command.js';
+import type {
+  Command,
+  CommandContext,
+  CommandName,
+} from '../types/type-command.js';
 import type {
   CommandBuilder as CommandBuilderType,
   CommandNameToContext,
   GetCommandNameToContext,
+  MergeCommandNameToContext,
 } from '../types/type-command-builder.js';
 import type {
   LocaleMessagesKeys,
-  LocaleMessagesObjectWithoutDefault,
+  LocaleMessagesObject,
 } from '../types/type-locale-messages.js';
 import type { Plugin } from '../types/type-plugin.js';
-import type { MergeCommandMapping } from '../types/type-utils.js';
 import type {
   ParseOptions,
   PipelineContext,
-  RootType,
   WizardEventContext,
   WizardOptions,
 } from '../types/type-wizard.js';
 import { createCommandBuilder } from './CommandBuilder.js';
 
 /**
+ * @description
+ * The Wizard class is the core class of the CLI.
+ * It is responsible for parsing the command line arguments,
+ * executing the command, and emitting events.
+ *
  * @example
- * .name("Foo CLI") // Optional, defaults to scriptName
- * .description("A simple cli")
- * .version("1.0.0")
- * .command("foo", "A foo command")
- * .on("foo", (context) => {
- * 	 console.log("It works!");
- * })
- * .parse();
+ * ```ts
+ * const wizard = new Wizard({
+ *   name: 'my-cli',
+ *   description: 'A simple cli',
+ *   version: '1.0.0',
+ * });
  */
 export class Wizard<
   NameToContext extends CommandNameToContext = {},
 > extends EventEmitter<WizardEventContext<NameToContext>> {
   private logger: Logger;
   private locale: LocaleMessagesKeys = 'en';
-  private localeMessages: LocaleMessagesObjectWithoutDefault = {};
+  private localeMessages: LocaleMessagesObject;
   private errorHandler: ((err: unknown) => void) | undefined;
   private cliPipeline: Pipeline<PipelineContext>;
-  private commandBuilder: CommandBuilderType<string | RootType>;
+  private commandBuilder: CommandBuilderType<CommandName>;
 
   constructor(private options: WizardOptions) {
     super();
@@ -79,66 +85,44 @@ export class Wizard<
       )
       .build();
     this.errorHandler = options.errorHandler ?? (() => {});
+    this.localeMessages = mergeOptions(
+      messages as LocaleMessagesObject,
+      options.overrideMessages ?? {}
+    );
     this.setupRootCommand();
   }
 
+  /**
+   * @description
+   * Sets up the root command.
+   */
   private setupRootCommand() {
     if (this.commandBuilder) {
       return;
     }
-    this.commandBuilder = createCommandBuilder<string | RootType>(Root, {
+    this.commandBuilder = createCommandBuilder<CommandName>(Root, {
       description: (t) => t('core.cli.rootDescription'),
     });
   }
 
-  register<CommandBuilder extends CommandBuilderType<any, any, any, any, any>>(
-    builder: CommandBuilder
-  ): Wizard<
-    MergeCommandMapping<NameToContext, GetCommandNameToContext<CommandBuilder>>
-  > {
-    this.commandBuilder = this.commandBuilder.use(builder);
-    return this as unknown as Wizard<
-      MergeCommandMapping<
-        NameToContext,
-        GetCommandNameToContext<CommandBuilder>
-      >
-    >;
+  /**
+   * @description
+   * Resets the pipeline.
+   */
+  private resetPipeline() {
+    this.cliPipeline = new Pipeline();
   }
 
-  use<PluginCommandMapping extends CommandNameToContext>(
-    plugin: Plugin<
-      NameToContext,
-      MergeCommandMapping<NameToContext, PluginCommandMapping>
-    >
-  ): Wizard<MergeCommandMapping<NameToContext, PluginCommandMapping>> {
-    this.localeMessages = Object.assign(
-      {},
-      this.localeMessages,
-      plugin.localeMessages ?? {}
-    );
-    return plugin.setup(this) as unknown as Wizard<
-      MergeCommandMapping<NameToContext, PluginCommandMapping>
-    >;
-  }
-
-  private setupCommandPipeline(parsedFlags: ParseFlagsResult) {
-    const newArgs: string[] = parsedFlags.args;
-
-    if (!newArgs || newArgs.length === 0) {
-      throw new Error('No command given');
-    }
-    const commandMap = getAllCommandMap(this.commandBuilder);
-    //get command pipeline, eg: build.evolve.mini
-    const lastCommandName = newArgs[newArgs.length - 1];
-    const commandPipeline = resolveCommandPipeline(
-      this.locale,
-      lastCommandName,
-      commandMap
-    );
-
-    // Ensure the found pipeline matches the actual execution pipeline
-    validateCommandPipeline(this.locale, newArgs, commandPipeline);
-
+  /**
+   * @description
+   * Sets up the command pipeline.
+   *
+   * @param parsedFlags The parsed flags.
+   */
+  private setupCommandPipeline(
+    lastCommandName: string,
+    commandPipeline: Command<CommandName>[]
+  ) {
     for (const command of commandPipeline) {
       this.cliPipeline.use(async (ctx, next) => {
         await this.executeResolveOrHandler(
@@ -152,16 +136,27 @@ export class Wizard<
     }
   }
 
-  private async executeResolveOrHandler(
+  /**
+   * @description
+   * Executes the resolver or handler for the command.
+   *
+   * @param lastCommandName The name of the last command.
+   * @param commandPipeline The command pipeline.
+   * @param command The command.
+   * @param ctx The context.
+   * @param next The next function.
+   * @returns The result.
+   */
+  private async executeResolveOrHandler<Name extends CommandName>(
     lastCommandName: string,
-    commandPipeline: Command<string | RootType>[],
-    command: Command<string | RootType>,
+    commandPipeline: Command<Name>[],
+    command: Command<Name>,
     ctx: PipelineContext,
     next: Parameters<Parameters<Pipeline<PipelineContext>['use']>[number]>[1]
   ) {
-    const name = command.getName();
-    const extraOptions = command.getExtraOptions();
+    const name = command.name;
     const definedFlags = command.getFlags() || {};
+    const commandBasicInfo = this.getCommandBasicInfoWithI18n(command);
 
     // check has subCommand
     const subCommands = command.getSubCommands() || [];
@@ -170,14 +165,7 @@ export class Wizard<
       const resolver = command.getResolver() || (() => {});
       let resolverResult: CommandContext;
       if (typeof resolver === 'function') {
-        resolverResult = await resolver({
-          ...extraOptions,
-          ctx: ctx.ctx,
-          name,
-          logger: this.logger,
-          locale: this.locale,
-          i18n: this.i18n,
-        });
+        resolverResult = await resolver(commandBasicInfo);
       } else {
         resolverResult = resolver;
       }
@@ -195,43 +183,106 @@ export class Wizard<
       });
     }
 
-    await handler({
-      ...extraOptions,
+    handler({
+      ...commandBasicInfo,
       ctx: ctx.ctx,
       flags: pickFlags(ctx.flags, definedFlags),
-      name,
-      logger: this.logger,
-      locale: this.locale,
-      i18n: this.i18n,
     });
 
     const eventName = searchEventName(command, commandPipeline);
-    this.emit(eventName, {
-      ctx: ctx.ctx as NameToContext[keyof NameToContext],
-      logger: this.logger,
-      locale: this.locale,
-      i18n: this.i18n,
-    });
+    this.emit(
+      eventName,
+      commandBasicInfo as unknown as WizardEventContext<NameToContext>[keyof WizardEventContext<NameToContext>]
+    );
     await next();
   }
 
-  private mountedCommandPipeline() {
+  /**
+   * @description
+   * Get the basic information of the command with i18n.
+   *
+   * @param command The command.
+   * @returns The basic information of the command.
+   */
+  private getCommandBasicInfoWithI18n<Name extends CommandName>(
+    command: Command<Name>
+  ) {
+    const name = command.name;
+    const description = localeMessageValue(this.i18n.t, command.description);
+    const example = command.example
+      ? localeMessageValue(this.i18n.t, command.example)
+      : undefined;
+    const help = command.help
+      ? localeMessageValue(this.i18n.t, command.help)
+      : undefined;
+
+    return {
+      name,
+      description,
+      example,
+      help,
+      logger: this.logger,
+      locale: this.locale,
+      i18n: this.i18n,
+    };
+  }
+
+  /**
+   * @description
+   * Mounts the CLI pipeline, including argument parsing and error handling.
+   * 1. Parses command line arguments and flags, sets them on ctx, and calls setupCommandPipeline.
+   * 2. Mounts error handling middleware to catch and handle errors during execution.
+   */
+  private mountedPipeline() {
     this.cliPipeline.use(async (ctx, next) => {
       const { optionsOrArgv } = ctx;
       const argvOptions = resolveOptionsOrArgv(optionsOrArgv);
-      if (argvOptions.run) {
-        //@TODO: run the command
-      }
       const commandMap = getAllCommandMap(this.commandBuilder);
-      const allCommandFlags = collectCommandFlags(commandMap);
-      const parsedFlags = parseFlags(allCommandFlags, argvOptions);
+      const allCommandFlags = collectCommandFlags(Object.values(commandMap));
+      const parsedFlags = parseFlags(
+        allCommandFlags,
+        simpleDeepClone(argvOptions)
+      );
+      const inputCommands = parsedFlags?.args || [];
+
+      if (!inputCommands || inputCommands.length === 0) {
+        throw new CommandNotProviderError(this.locale);
+      }
+
+      //get command pipeline, eg: build.evolve.mini
+      const lastCommandName = inputCommands[inputCommands.length - 1];
+
+      const commandPipeline = searchCommandChain(
+        this.locale,
+        lastCommandName,
+        commandMap
+      );
+      const inputCommandFlags = collectCommandFlags(commandPipeline);
+
+      // Ensure the found pipeline matches the actual execution pipeline
+      validateCommandPipeline(
+        this.locale,
+        inputCommandFlags,
+        inputCommands,
+        parsedFlags,
+        commandPipeline
+      );
 
       ctx.flags = parsedFlags.flags;
       ctx.args = parsedFlags.args;
       ctx.eofArgs = parsedFlags.eofArgs;
       ctx.unknownFlags = parsedFlags.unknownFlags;
 
-      this.setupCommandPipeline(parsedFlags);
+      this.setupCommandPipeline(lastCommandName, commandPipeline);
+
+      await next();
+    });
+
+    // Error handling middleware
+    this.cliPipeline.use(async (_, next, error) => {
+      if (error) {
+        this.errorHandler?.(error);
+      }
       await next();
     });
   }
@@ -245,16 +296,7 @@ export class Wizard<
    */
   public parse(optionsOrArgv: string[] | ParseOptions = resolveArgv()) {
     this.resetPipeline();
-    this.mountedCommandPipeline();
-
-    //error handling
-    this.cliPipeline.use(async (_, next, error) => {
-      if (error) {
-        this.errorHandler?.(error);
-      }
-      await next();
-    });
-
+    this.mountedPipeline();
     this.cliPipeline.execute({
       args: [],
       eofArgs: [],
@@ -264,12 +306,52 @@ export class Wizard<
     });
   }
 
-  private resetPipeline() {
-    this.cliPipeline = new Pipeline();
+  /**
+   * @description
+   * Registers a command.
+   *
+   * @param builder The command builder.
+   * @returns The wizard instance.
+   */
+  public register<
+    CommandBuilder extends CommandBuilderType<any, any, any, any, any>,
+  >(
+    builder: CommandBuilder
+  ): Wizard<
+    MergeCommandNameToContext<
+      NameToContext,
+      GetCommandNameToContext<CommandBuilder>
+    >
+  > {
+    this.commandBuilder = this.commandBuilder.use(builder);
+    return this as unknown as Wizard<
+      MergeCommandNameToContext<
+        NameToContext,
+        GetCommandNameToContext<CommandBuilder>
+      >
+    >;
   }
 
-  public getCommandBuilder(): CommandBuilderType<string | RootType> {
-    return this.commandBuilder;
+  /**
+   * @description
+   * Registers a plugin.
+   *
+   * @param plugin The plugin.
+   * @returns The wizard instance.
+   */
+  public use<PluginCommandMapping extends CommandNameToContext>(
+    plugin: Plugin<
+      NameToContext,
+      MergeCommandNameToContext<NameToContext, PluginCommandMapping>
+    >
+  ): Wizard<MergeCommandNameToContext<NameToContext, PluginCommandMapping>> {
+    this.localeMessages = mergeMessages(
+      this.localeMessages,
+      plugin.localeMessages
+    );
+    return plugin.setup(this) as unknown as Wizard<
+      MergeCommandNameToContext<NameToContext, PluginCommandMapping>
+    >;
   }
 
   /**
@@ -280,7 +362,7 @@ export class Wizard<
    * @returns The wizard instance.
    */
   public get name() {
-    return this.options.name;
+    return localeMessageValue(this.i18n.t, this.options.name);
   }
 
   /**
@@ -291,7 +373,7 @@ export class Wizard<
    * @returns The wizard instance.
    */
   public get description() {
-    return this.options.description;
+    return localeMessageValue(this.i18n.t, this.options.description);
   }
 
   /**
@@ -302,12 +384,7 @@ export class Wizard<
    * @returns The wizard instance.
    */
   public get version(): string {
-    return localeMessageValue(
-      'version',
-      this.locale,
-      this.i18n.t,
-      this.options.version
-    );
+    return localeMessageValue(this.i18n.t, this.options.version);
   }
   /**
    * @description
@@ -316,12 +393,7 @@ export class Wizard<
    * @returns The i18n instance.
    */
   public get i18n() {
-    const mergedLocaleMessages = Object.assign(
-      {},
-      messages,
-      this.localeMessages
-    );
-    const t = useLocale(this.locale, mergedLocaleMessages);
+    const t = useLocale(this.locale, this.localeMessages);
     return {
       t,
     };

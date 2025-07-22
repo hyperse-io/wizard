@@ -2,8 +2,10 @@
  * @description
  * The event map type.
  *
- * @docsCategory types
- * @docsPage Event Map
+ * @template T - The type of the event data.
+ * @returns {Record<string | symbol, any>} The event map.
+ * @example
+ * EventMap<{foo: string}> // { foo: string }
  */
 export type EventMap = Record<string | symbol, any>;
 
@@ -11,8 +13,10 @@ export type EventMap = Record<string | symbol, any>;
  * @description
  * The event listener type.
  *
- * @docsCategory types
- * @docsPage Event Listener
+ * @template T - The type of the event data.
+ * @returns {Promise<void> | void} The event listener.
+ * @example
+ * EventListener<{foo: string}> // (data: {foo: string}) => Promise<void> | void
  */
 export type EventListener<T> = (data: T) => Promise<void> | void;
 
@@ -20,8 +24,10 @@ export type EventListener<T> = (data: T) => Promise<void> | void;
  * @description
  * The event names type.
  *
- * @docsCategory types
- * @docsPage Event Names
+ * @template T - The type of the event map.
+ * @returns {keyof T} The event names.
+ * @example
+ * EventNames<{foo: string}> // 'foo'
  */
 export type EventNames<T extends EventMap> = keyof T;
 
@@ -29,8 +35,11 @@ export type EventNames<T extends EventMap> = keyof T;
  * @description
  * The event data type.
  *
- * @docsCategory types
- * @docsPage Event Data
+ * @template T - The type of the event map.
+ * @template K - The type of the event name.
+ * @returns {T[K]} The event data.
+ * @example
+ * EventData<{foo: string}, 'foo'> // string
  */
 export type EventData<T extends EventMap, K extends EventNames<T>> = T[K];
 
@@ -38,8 +47,8 @@ export type EventData<T extends EventMap, K extends EventNames<T>> = T[K];
  * @description
  * The event emitter options type.
  *
- * @docsCategory types
- * @docsPage Event Emitter Options
+ * @property {number} [maxListeners] - The maximum number of listeners for an event.
+ * @property {boolean} [captureRejections] - Whether to capture rejections.
  */
 export interface EventEmitterOptions {
   maxListeners?: number;
@@ -50,8 +59,10 @@ export interface EventEmitterOptions {
  * @description
  * The create event map type.
  *
- * @docsCategory types
- * @docsPage Create Event Map
+ * @template T - The type of the event map.
+ * @returns {object} The event map.
+ * @example
+ * CreateEventMap<{foo: string}> // { foo: string }
  */
 export type CreateEventMap<T extends Record<string, any>> = {
   [K in keyof T]: T[K];

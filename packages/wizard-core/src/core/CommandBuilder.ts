@@ -2,6 +2,7 @@ import type {
   Command as CommandType,
   CommandContext,
   CommandHandlerFunction,
+  CommandName,
   CommandResolverFunction,
   HandlerContext,
   ResolverContext,
@@ -13,11 +14,20 @@ import type {
   ReturnTypeForUseFunction,
 } from '../types/type-command-builder.js';
 import type { Flags } from '../types/type-flag.js';
-import type { RootType } from '../types/type-wizard.js';
 import { createCommand } from './Command.js';
 
+/**
+ * @description
+ * The implementation of the command builder.
+ *
+ * @template Name - The type of the command name.
+ * @template Context - The type of the command context.
+ * @template SubCommandContext - The type of the sub-command context.
+ * @template NameToContext - The type of the command name to context.
+ * @template CommandFlags - The type of the command flags.
+ */
 class CommandBuilderImpl<
-  Name extends string | RootType = string,
+  Name extends CommandName = string,
   Context extends CommandContext = CommandContext,
   SubCommandContext extends object = object,
   NameToContext extends CommandNameToContext = {
@@ -135,8 +145,25 @@ class CommandBuilderImpl<
   }
 }
 
+/**
+ * @description
+ * Create a command builder (CommandBuilder).
+ *
+ * This function initializes and returns a command builder instance, which supports chainable configuration of command handlers, resolvers, subcommands, arguments, and flags.
+ *
+ * @template Name - The type of the command name, usually a string or RootType.
+ * @template Context - The type of the command context, defaults to CommandContext.
+ * @template SubCommandContext - The type of the sub-command context, defaults to object.
+ * @template NameToContext - The mapping type from command name to context, defaults to {[K in Name]: Context}.
+ * @template CommandFlags - The type of the command flags, defaults to Flags.
+ *
+ * @param {Name} name - The name of the command.
+ * @param {CommandBuilderOptions} options - The command builder options, including description, usage, and other metadata.
+ *
+ * @returns Returns a command builder instance for further configuration.
+ */
 export const createCommandBuilder = <
-  Name extends string | RootType = string,
+  Name extends CommandName = string,
   Context extends CommandContext = CommandContext,
   SubCommandContext extends object = object,
   NameToContext extends CommandNameToContext = {

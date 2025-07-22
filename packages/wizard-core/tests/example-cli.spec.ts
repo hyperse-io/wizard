@@ -1,5 +1,5 @@
-import { createWizard } from '../src/core/createWizard.js';
-import { defineCommand } from '../src/core/defineCommand.js';
+import { createWizard } from '../src/create-wizard.js';
+import { defineCommand } from '../src/define-command.js';
 import { definePlugin } from '../src/index.js';
 import { sleep } from './utils/test-utils.js';
 
@@ -57,9 +57,8 @@ describe('cli', () => {
       },
     })
     .use(miniCmd)
-    .resolver(() => {
-      ///
-      return { miniConfig: { miniKey: 'mini' } };
+    .resolver(async () => {
+      return Promise.resolve({ miniConfig: { miniKey: 'mini' } });
     })
     .handler((ctx) => evolveHandler(ctx));
 
@@ -138,8 +137,10 @@ describe('cli', () => {
       ctx: undefined,
       flags: { projectCwd: 'user/project/foo' },
       name: 'build',
-      description: 'build description',
     });
+    const description = buildHandler.mock.lastCall?.[0]?.description;
+    expect(description).toBeDefined();
+    expect(description).toBe('build description');
   });
 
   it('test command build evolve', async () => {
@@ -175,8 +176,10 @@ describe('cli', () => {
       ctx: { root1: { root11: 'root11' } },
       flags: { compiler: 'rspack', env: 'dev' },
       name: 'evolve',
-      description: 'evolve description',
     });
+    const description = evolveHandler.mock.lastCall?.[0]?.description;
+    expect(description).toBeDefined();
+    expect(description).toBe('evolve description');
   });
 
   it('test command build evolve mini', async () => {
@@ -214,8 +217,10 @@ describe('cli', () => {
       ctx: { miniConfig: { miniKey: 'mini' } },
       flags: { version: '1.0.0' },
       name: 'mini',
-      description: 'mini description',
     });
+    const description = miniHandler.mock.lastCall?.[0]?.description;
+    expect(description).toBeDefined();
+    expect(description).toBe('mini description');
   });
 
   it('test command deploy', async () => {
@@ -252,7 +257,9 @@ describe('cli', () => {
       ctx: undefined,
       flags: { fileType: 'js', ossType: 'aliyun' },
       name: 'deploy',
-      description: 'deploy description',
     });
+    const description = deployHandler.mock.lastCall?.[0]?.description;
+    expect(description).toBeDefined();
+    expect(description).toBe('deploy description');
   });
 });
