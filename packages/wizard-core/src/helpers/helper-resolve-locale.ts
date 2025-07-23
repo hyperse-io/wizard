@@ -1,11 +1,11 @@
-import type { LocaleMessagesKeys } from '../types/type-locale-messages.js';
+import type { SupportedLocales } from '../types/type-locale-messages.js';
 
 /**
  * Resolves the locale of the system.
  *
  * @returns The locale of the system.
  */
-export const resolveLocale = (): LocaleMessagesKeys => {
+export const resolveLocale = (): SupportedLocales => {
   const defaultLocale = process.env.HPS_WIZARD_LOCALE
     ? process.env.HPS_WIZARD_LOCALE
     : Intl.DateTimeFormat().resolvedOptions().locale;
@@ -14,5 +14,5 @@ export const resolveLocale = (): LocaleMessagesKeys => {
     return 'en';
   }
 
-  return defaultLocale as LocaleMessagesKeys;
+  return defaultLocale as SupportedLocales;
 };

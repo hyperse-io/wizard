@@ -1,6 +1,6 @@
 import { LogLevel } from '@hyperse/logger';
 import { useLocale } from '../i18n/index.js';
-import type { LocaleMessagesKeys } from '../types/type-locale-messages.js';
+import type { SupportedLocales } from '../types/type-locale-messages.js';
 import { CommandI18nError } from './CommandI18nError.js';
 
 /**
@@ -12,7 +12,7 @@ import { CommandI18nError } from './CommandI18nError.js';
  */
 export class CommandHandlerNotFoundError extends CommandI18nError {
   constructor(
-    locale: LocaleMessagesKeys,
+    locale: SupportedLocales,
     variables: { [key: string]: string | number } = {}
   ) {
     const t = useLocale(locale);

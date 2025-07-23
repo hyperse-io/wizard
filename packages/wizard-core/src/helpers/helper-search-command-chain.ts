@@ -1,6 +1,6 @@
 import { CommandNotFoundError } from '../errors/CommandNotFoundError.js';
 import type { Command, CommandName } from '../types/type-command.js';
-import type { LocaleMessagesKeys } from '../types/type-locale-messages.js';
+import type { SupportedLocales } from '../types/type-locale-messages.js';
 import { formatCommandName } from './helper-format-command-name.js';
 
 /**
@@ -13,7 +13,7 @@ import { formatCommandName } from './helper-format-command-name.js';
  * @returns The command pipeline.
  */
 export const searchCommandChain = <Name extends CommandName>(
-  locale: LocaleMessagesKeys,
+  locale: SupportedLocales,
   name: Name,
   commandMap: Record<Name, Command<Name>>
 ): Command<Name>[] => {

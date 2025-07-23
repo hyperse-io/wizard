@@ -4,7 +4,7 @@ import { CommandNotConfigurationError } from '../errors/CommandNotConfiguration.
 import { CommandNotFoundError } from '../errors/CommandNotFoundError.js';
 import type { Command, CommandName } from '../types/type-command.js';
 import type { Flags } from '../types/type-flag.js';
-import type { LocaleMessagesKeys } from '../types/type-locale-messages.js';
+import type { SupportedLocales } from '../types/type-locale-messages.js';
 import { formatCommandName } from './helper-format-command-name.js';
 import type { ParseFlagsResult } from './helper-parse-flags.js';
 
@@ -18,7 +18,7 @@ import type { ParseFlagsResult } from './helper-parse-flags.js';
  * @returns True if the command pipeline is valid, false otherwise.
  */
 export const validateCommandPipeline = <Name extends CommandName>(
-  locale: LocaleMessagesKeys,
+  locale: SupportedLocales,
   inputCommandFlags: Flags,
   inputNameList?: Name | string[],
   parsedFlags?: ParseFlagsResult,

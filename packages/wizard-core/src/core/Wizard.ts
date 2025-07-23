@@ -26,7 +26,9 @@ import { messages } from '../i18n/messages.js';
 import type {
   Command,
   CommandContext,
+  CommandHandlerFunction,
   CommandName,
+  HandlerContext,
 } from '../types/type-command.js';
 import type {
   CommandBuilder as CommandBuilderType,
@@ -34,10 +36,11 @@ import type {
   GetCommandNameToContext,
   MergeCommandNameToContext,
 } from '../types/type-command-builder.js';
+import type { CommandBuilderOptions } from '../types/type-command-builder.js';
 import type {
   LocaleMessageResolverExtraOptions,
-  LocaleMessagesKeys,
   LocaleMessagesObject,
+  SupportedLocales,
 } from '../types/type-locale-messages.js';
 import type { Plugin } from '../types/type-plugin.js';
 import type {
@@ -66,7 +69,7 @@ export class Wizard<
   NameToContext extends CommandNameToContext = {},
 > extends EventEmitter<WizardEventContext<NameToContext>> {
   private logger: Logger;
-  private locale: LocaleMessagesKeys = 'en';
+  private locale: SupportedLocales = 'en';
   private localeMessages: LocaleMessagesObject;
   private errorHandler: ((err: unknown) => void) | undefined;
   private cliPipeline: Pipeline<PipelineContext>;
@@ -75,7 +78,7 @@ export class Wizard<
 
   constructor(private options: WizardOptions) {
     super();
-    this.locale = resolveLocale();
+    this.locale = options.locale ?? resolveLocale();
     this.logger = createLogger({
       name: WizardName,
       thresholdLevel: options.thresholdLogLevel ?? LogLevel.Info,
@@ -88,6 +91,7 @@ export class Wizard<
       .build();
     this.errorHandler = options.errorHandler ?? (() => {});
     this.localeMessages = mergeMessages(
+      'cli',
       messages as LocaleMessagesObject,
       options.localeMessages ?? {}
     );
@@ -340,7 +344,7 @@ export class Wizard<
 
   /**
    * @description
-   * Registers a command.
+   * Registers a command by builder.
    *
    * @param builder The command builder.
    * @returns The wizard instance.
@@ -357,14 +361,50 @@ export class Wizard<
       >
     >,
     'register'
-  > {
-    this.commandBuilder = this.commandBuilder.use(builder);
-    return this as unknown as Wizard<
-      MergeCommandNameToContext<
-        NameToContext,
-        GetCommandNameToContext<CommandBuilder>
-      >
-    >;
+  >;
+
+  /**
+   * @description
+   * Registers a command by name and options.
+   *
+   * @param name The command name.
+   * @param options The command builder options.
+   * @returns The wizard instance.
+   */
+  public register<
+    Name extends CommandName,
+    NewNameToContext extends CommandNameToContext = { [K in Name]: {} },
+  >(
+    name: Name,
+    options: CommandBuilderOptions & {
+      handler?: CommandHandlerFunction<HandlerContext<Name, {}, {}>>;
+    }
+  ): Omit<
+    Wizard<MergeCommandNameToContext<NameToContext, NewNameToContext>>,
+    'register'
+  >;
+
+  public register(
+    builderOrName: any,
+    options?: CommandBuilderOptions & {
+      handler?: CommandHandlerFunction<any>;
+    }
+  ): any {
+    if (typeof builderOrName === 'string' && options) {
+      // (name, options) overload
+      const { handler, ...rest } = options;
+      const builder = createCommandBuilder(
+        builderOrName,
+        rest as CommandBuilderOptions
+      ).handler(handler || (() => {}));
+      return this.register(builder);
+    } else {
+      // (builder) overload
+      const builder = builderOrName;
+      this.commandBuilder = this.commandBuilder.use(builder);
+      // Type cast for correct context
+      return this as any;
+    }
   }
 
   /**
@@ -381,6 +421,7 @@ export class Wizard<
     >
   ): Wizard<MergeCommandNameToContext<NameToContext, PluginCommandMapping>> {
     this.localeMessages = mergeMessages(
+      'plugins',
       this.localeMessages,
       plugin.localeMessages
     );
@@ -444,7 +485,7 @@ export class Wizard<
    * @returns The i18n instance.
    */
   public get i18n() {
-    const t = useLocale(this.locale, this.localeMessages);
+    const t = useLocale(this.locale, this.localeMessages, this.logger);
     return {
       t,
     };
@@ -456,7 +497,7 @@ export class Wizard<
    *
    * @returns The locale of the wizard.
    */
-  public getLocale(): LocaleMessagesKeys {
+  public getLocale(): SupportedLocales {
     return this.locale;
   }
 }

@@ -1,9 +1,9 @@
+import type { Logger } from '@hyperse/logger';
 import { createTranslator } from '@hyperse/translator';
-import { CommandLocaleNotFoundError } from '../errors/CommandLocaleNotFoundError.js';
 import type {
   I18n,
-  LocaleMessagesKeys,
   LocaleMessagesObject,
+  SupportedLocales,
 } from '../types/type-locale-messages.js';
 import { messages as defaultMessages } from './messages.js';
 
@@ -12,6 +12,8 @@ import { messages as defaultMessages } from './messages.js';
  * Use the locale.
  *
  * @param locale The locale to use.
+ * @param messages The messages to use.
+ * @param logger The logger to use.
  * @returns The translator.
  *
  * @example
@@ -19,10 +21,11 @@ import { messages as defaultMessages } from './messages.js';
  * t('command.notFound', { cmdName: 'build' });
  */
 export const useLocale = (
-  locale: LocaleMessagesKeys,
-  messages: LocaleMessagesObject = defaultMessages as unknown as LocaleMessagesObject
+  locale: SupportedLocales,
+  messages: LocaleMessagesObject = defaultMessages as unknown as LocaleMessagesObject,
+  logger?: Logger
 ): I18n['t'] => {
-  return createTranslator<LocaleMessagesObject, LocaleMessagesKeys>({
+  return createTranslator<LocaleMessagesObject, SupportedLocales>({
     locale: locale,
     messages: messages,
     namespace: locale,
@@ -30,12 +33,10 @@ export const useLocale = (
       // Prevent internal translator errors from leaking out without I18n handling
     },
     getMessageFallback: ({ error, key, namespace }) => {
-      if (error) {
-        throw new CommandLocaleNotFoundError(locale, {
-          cmdName: `${namespace}.${key}`,
-        });
+      if (error && logger) {
+        logger.warn(error.message);
       }
-      return '';
+      return `${namespace}.${key}`;
     },
   });
 };

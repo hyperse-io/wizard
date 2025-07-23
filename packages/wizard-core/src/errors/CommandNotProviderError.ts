@@ -1,6 +1,6 @@
 import { LogLevel } from '@hyperse/logger';
 import { useLocale } from '../i18n/index.js';
-import type { LocaleMessagesKeys } from '../types/type-locale-messages.js';
+import type { SupportedLocales } from '../types/type-locale-messages.js';
 import { CommandI18nError } from './CommandI18nError.js';
 
 /**
@@ -11,7 +11,7 @@ import { CommandI18nError } from './CommandI18nError.js';
  * throw new CommandNotProviderError('en');
  */
 export class CommandNotProviderError extends CommandI18nError {
-  constructor(locale: LocaleMessagesKeys) {
+  constructor(locale: SupportedLocales) {
     const t = useLocale(locale);
     super(t('core.command.notProvider'), LogLevel.Error);
   }

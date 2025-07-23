@@ -2,7 +2,7 @@ import type { Wizard } from '../core/Wizard.js';
 import type { CommandNameToContext } from './type-command-builder.js';
 import type {
   LocaleMessageResolver,
-  LocaleMessagesObjectWithoutDefault,
+  LocaleMessagesPluginsObject,
 } from './type-locale-messages.js';
 
 export type PluginContext = {
@@ -24,7 +24,7 @@ export interface Plugin<
   Result extends CommandNameToContext,
 > {
   name?: LocaleMessageResolver;
-  localeMessages?: LocaleMessagesObjectWithoutDefault;
+  localeMessages?: LocaleMessagesPluginsObject;
   setup: (
     cli: Wizard<NameToContext>,
     ctx?: PluginContext

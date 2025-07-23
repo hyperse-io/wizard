@@ -262,4 +262,35 @@ describe('cli', () => {
     expect(description).toBeDefined();
     expect(description).toBe('deploy description');
   });
+
+  it('test command customPlugin', async () => {
+    const customPluginEvent = vi.fn();
+    const customPluginHandler = vi.fn();
+    const cli = createWizard({
+      name: () => 'wWizard',
+      description: () => 'wWizard description',
+      version: () => '1.0.0',
+      errorHandler: errorEvent,
+    })
+      .use(
+        definePlugin({
+          setup: (wizard) =>
+            wizard.register('customPlugin', {
+              description: () => 'customPlugin description',
+              handler: (ctx) => {
+                customPluginHandler(ctx);
+              },
+            }),
+        })
+      )
+      .on('customPlugin', customPluginEvent);
+
+    // cmd: customPlugin
+    cli.parse(['customPlugin']);
+    await sleep();
+    expect(customPluginHandler).toHaveBeenCalled();
+    const description = customPluginHandler.mock.lastCall?.[0]?.description;
+    expect(description).toBeDefined();
+    expect(description).toBe('customPlugin description');
+  });
 });

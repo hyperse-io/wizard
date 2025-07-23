@@ -1,4 +1,3 @@
-import { CommandLocaleNotFoundError } from '../errors/CommandLocaleNotFoundError.js';
 import type {
   I18n,
   LocaleMessageResolver,

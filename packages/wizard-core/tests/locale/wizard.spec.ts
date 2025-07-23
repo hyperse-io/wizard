@@ -1,18 +1,22 @@
 import { describe, expect, it } from 'vitest';
 import { createWizard } from '../../src/create-wizard.js';
-import { defineCommand } from '../../src/define-command.js';
-import { definePlugin } from '../../src/define-plugin.js';
+import type { DefineMessageType } from '../../src/types/type-locale-messages.js';
+
+declare module '../../src/types/type-locale-messages.js' {
+  export interface CliLocaleMessages
+    extends DefineMessageType<typeof messages> {}
+}
 
 const messages = {
   en: {
-    cli: {
+    wizardTest: {
       name: 'Wizard Test',
       description: 'Wizard Test description',
       version: 'Wizard Test version {version}',
     },
   },
   zh: {
-    cli: {
+    wizardTest: {
       name: '测试 cli 名称',
       description: '测试 cli 描述',
       version: '测试 cli 版本 {version}',
@@ -25,11 +29,11 @@ describe('Wizard CLI internationalization support', () => {
     process.env.HPS_WIZARD_LOCALE = 'zh';
 
     const cli = createWizard({
-      name: 'cli.name',
-      description: 'cli.description',
+      name: 'cli.wizardTest.name',
+      description: 'cli.wizardTest.description',
       localeMessages: messages,
       version: (t) => {
-        return t('cli.version', { version: '1.0.0' });
+        return t('cli.wizardTest.version', { version: '1.0.0' });
       },
       errorHandler: () => {},
     });
@@ -43,50 +47,34 @@ describe('Wizard CLI internationalization support', () => {
     process.env.HPS_WIZARD_LOCALE = 'en';
 
     const cli = createWizard({
-      name: 'cli.name',
-      description: 'cli.description',
+      name: 'cli.wizardTest.name',
+      description: 'cli.wizardTest.description',
       localeMessages: messages,
       version: (t) => {
-        return t('cli.version', { version: '1.0.0' });
+        return t('cli.wizardTest.version', { version: '1.0.0' });
       },
       errorHandler: () => {},
-    })
-      .use(
-        definePlugin({
-          name: () => 'pluginA',
-          setup: (wizard, pluginCtx) => {
-            console.log(pluginCtx);
-            wizard.register(
-              defineCommand('commandA', {
-                description: () => 'commandA.description',
-              })
-            );
-            wizard.register(
-              defineCommand('commandB', {
-                description: () => 'commandA.description',
-              })
-            );
-
-            console.log(wizard.getLocale());
-            return wizard.register(
-              defineCommand<
-                'commandC',
-                {
-                  projectCwd: string;
-                }
-              >('commandC', {
-                description: () => 'commandA.description',
-              })
-            );
-          },
-        })
-      )
-      .on('commandC', (ctx) => {
-        ctx.ctx.projectCwd = 'a/b/c';
-      });
+    });
 
     expect(cli.name).toBe('Wizard Test');
     expect(cli.description).toBe('Wizard Test description');
     expect(cli.version).toBe('Wizard Test version 1.0.0');
+  });
+
+  it('should return the correct locale (English locale)', () => {
+    process.env.HPS_WIZARD_LOCALE = 'en';
+
+    const cli = createWizard({
+      name: 'cli.wizardTest.name',
+      description: 'cli.wizardTest.description',
+      version: (t) => {
+        return t('cli.wizardTest.version', { version: '1.0.0' });
+      },
+      errorHandler: () => {},
+    });
+
+    expect(cli.name).toBe('en.cli.wizardTest.name');
+    expect(cli.description).toBe('en.cli.wizardTest.description');
+    expect(cli.version).toBe('en.cli.wizardTest.version');
   });
 });

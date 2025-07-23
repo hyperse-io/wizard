@@ -3,7 +3,7 @@ import type { Flags } from './type-flag.js';
 import type {
   I18n,
   LocaleMessageResolver,
-  LocaleMessagesKeys,
+  SupportedLocales,
 } from './type-locale-messages.js';
 import type { RootType } from './type-wizard.js';
 
@@ -81,7 +81,7 @@ export interface HandlerContext<
   /**
    * The current locale key for i18n messages.
    */
-  locale: LocaleMessagesKeys;
+  locale: SupportedLocales;
   /**
    * I18n instance for retrieving localized messages.
    */
@@ -122,7 +122,7 @@ export interface ResolverContext<
   /**
    * The current locale key for i18n messages.
    */
-  locale: LocaleMessagesKeys;
+  locale: SupportedLocales;
   /**
    * I18n instance for retrieving localized messages.
    */

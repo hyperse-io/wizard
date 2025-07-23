@@ -7,10 +7,10 @@ import type {
 import type { CommandNameToContext } from './type-command-builder.js';
 import type { Flags } from './type-flag.js';
 import type {
+  CliLocaleMessageResolver,
   I18n,
-  LocaleMessageResolver,
-  LocaleMessagesKeys,
-  LocaleMessagesObjectWithoutDefault,
+  LocaleMessagesCliObject,
+  SupportedLocales,
 } from './type-locale-messages.js';
 
 /**
@@ -36,7 +36,7 @@ export type WizardEventContext<NameToContext extends CommandNameToContext> = {
     /**
      * The current locale key for i18n messages.
      */
-    locale: LocaleMessagesKeys;
+    locale: SupportedLocales;
     /**
      * I18n instance for retrieving localized messages.
      */
@@ -50,17 +50,22 @@ export type WizardEventContext<NameToContext extends CommandNameToContext> = {
  */
 export type WizardOptions = {
   /**
+   * The locale of the wizard.
+   * @default system locale
+   */
+  locale?: SupportedLocales;
+  /**
    * The name of the wizard.
    */
-  name: LocaleMessageResolver;
+  name: CliLocaleMessageResolver;
   /**
    * The description of the wizard.
    */
-  description: LocaleMessageResolver;
+  description: CliLocaleMessageResolver;
   /**
    * The version of the wizard.
    */
-  version: LocaleMessageResolver;
+  version: CliLocaleMessageResolver;
   /**
    * The threshold log level.
    */
@@ -73,7 +78,7 @@ export type WizardOptions = {
    * The override messages.
    *
    */
-  localeMessages?: LocaleMessagesObjectWithoutDefault;
+  localeMessages?: LocaleMessagesCliObject;
   /**
    * The error handler.
    */

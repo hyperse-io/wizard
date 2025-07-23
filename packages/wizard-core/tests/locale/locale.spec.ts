@@ -25,9 +25,9 @@ describe('useLocale', () => {
     const commandA = defineCommand<'commandA', { projectCwd: string }>(
       'commandA',
       {
-        description: 'pluginA.description',
-        help: 'pluginA.help',
-        example: 'pluginA.example',
+        description: 'plugins.pluginA.description',
+        help: 'plugins.pluginA.help',
+        example: 'plugins.pluginA.example',
       }
     )
       .flags({
@@ -44,10 +44,10 @@ describe('useLocale', () => {
     const commandB = defineCommand<'commandB', { projectCwd: string }>(
       'commandB',
       {
-        description: 'pluginB.description',
-        help: 'pluginB.help',
+        description: 'plugins.pluginB.description',
+        help: 'plugins.pluginB.help',
         example: (t) => {
-          return t('pluginB.example');
+          return t('plugins.pluginB.example');
         },
       }
     )
@@ -144,18 +144,20 @@ describe('useLocale', () => {
       {
         description: (t, extraOptions) => {
           return (
-            t('pluginA.description') + ' - ' + extraOptions?.commands.join(' ')
+            t('plugins.pluginA.description') +
+            ' - ' +
+            extraOptions?.commands.join(' ')
           );
         },
-        help: 'pluginA.help',
-        example: 'pluginA.example',
+        help: 'plugins.pluginA.help',
+        example: 'plugins.pluginA.example',
       }
     )
       .flags({
         cwd: {
           type: String,
           description: (t) => {
-            return t('pluginA.description');
+            return t('plugins.pluginA.description');
           },
           default: 'user/project/foo',
         },
@@ -169,11 +171,13 @@ describe('useLocale', () => {
       {
         description: (t, extraOptions) => {
           return (
-            t('pluginB.description') + ' - ' + extraOptions?.commands.join(' ')
+            t('plugins.pluginB.description') +
+            ' - ' +
+            extraOptions?.commands.join(' ')
           );
         },
-        help: 'pluginB.help',
-        example: 'pluginB.example',
+        help: 'plugins.pluginB.help',
+        example: 'plugins.pluginB.example',
       }
     )
       .flags({
@@ -266,5 +270,111 @@ describe('useLocale', () => {
 
     commandAHandler.mockClear();
     eventAHandler.mockClear();
+  });
+
+  it('should return the correct locale (English locale)1', async () => {
+    process.env.HPS_WIZARD_LOCALE = 'en';
+    const commandA = defineCommand<'commandA', { projectCwd: string }>(
+      'commandA',
+      {
+        description: (t, extraOptions) => {
+          return (
+            t('plugins.pluginA.description') +
+            ' - ' +
+            extraOptions?.commands.join(' ')
+          );
+        },
+        help: 'plugins.pluginA.help',
+        example: 'plugins.pluginA.example',
+      }
+    )
+      .flags({
+        cwd: {
+          type: String,
+          description: (t) => {
+            return t('plugins.pluginA.description');
+          },
+          default: 'user/project/foo',
+        },
+      })
+      .handler((ctx) => {
+        commandAHandler(ctx);
+      });
+
+    const commandB = defineCommand<'commandB', { projectCwd: string }>(
+      'commandB',
+      {
+        description: (t, extraOptions) => {
+          return (
+            t('plugins.pluginB.description') +
+            ' - ' +
+            extraOptions?.commands.join(' ')
+          );
+        },
+        help: 'plugins.pluginB.help',
+        example: 'plugins.pluginB.example',
+      }
+    )
+      .flags({
+        cwd: {
+          type: String,
+          description: () => 'cwd',
+          default: 'user/project/foo',
+        },
+      })
+      .handler((ctx) => {
+        commandBHandler(ctx);
+      });
+
+    const cli = createWizard({
+      name: 'cli.name',
+      description: 'cli.description',
+      version: () => '1.0.0',
+      errorHandler: (e) => {
+        console.log(e);
+      },
+    })
+      .use(
+        definePlugin({
+          setup: (wizard) => {
+            return wizard.register(commandA.use(commandB));
+          },
+        })
+      )
+      .on('commandA', (ctx) => {
+        eventAHandler(ctx);
+      })
+      .on('commandA.commandB', (ctx) => {
+        eventBHandler(ctx);
+      });
+
+    // cmd: commandA
+    cli.parse(['commandA', 'commandB']);
+    await sleep();
+
+    expect(cli.name).toBe('en.cli.name');
+    expect(cli.description).toBe('en.cli.description');
+    expect(cli.version).toBe('1.0.0');
+
+    const commandBResult = commandBHandler.mock.results[0].value;
+    expect(commandBResult).toBeDefined();
+    expect(commandBResult['name']).toBe('commandB');
+    expect(commandBResult['description']).toBe(
+      'en.plugins.pluginB.description - commandA commandB'
+    );
+    expect(commandBResult['help']).toBe('en.plugins.pluginB.help');
+    expect(commandBResult['example']).toBe('en.plugins.pluginB.example');
+
+    const eventBResult = eventBHandler.mock.results[0].value;
+    expect(eventBResult).toBeDefined();
+    expect(eventBResult['name']).toBe('commandB');
+    expect(eventBResult['description']).toBe(
+      'en.plugins.pluginB.description - commandA commandB'
+    );
+    expect(eventBResult['help']).toBe('en.plugins.pluginB.help');
+    expect(eventBResult['example']).toBe('en.plugins.pluginB.example');
+
+    commandBHandler.mockClear();
+    eventBHandler.mockClear();
   });
 });
