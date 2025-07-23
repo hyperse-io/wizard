@@ -57,10 +57,9 @@ class CommandBuilderImpl<
     this.options = options;
     this.command =
       command ||
-      createCommand<Name, Context, SubCommandContext, CommandFlags>(
-        name,
-        options
-      );
+      createCommand<Name, Context, SubCommandContext, CommandFlags>(name, {
+        ...options,
+      });
     for (const subCommand of subCommands || []) {
       subCommand.setParentCommand(this.command);
     }

@@ -1,6 +1,7 @@
 import { simpleDeepClone } from '@hyperse/deep-merge';
 import { Root } from '../../src/constants.js';
 import { createCommandBuilder } from '../../src/core/CommandBuilder.js';
+import { CommandNotProviderError } from '../../src/errors/CommandNotProviderError.js';
 import { collectCommandFlags } from '../../src/helpers/helper-collect-command-flags.js';
 import { getAllCommandMap } from '../../src/helpers/helper-command-map.js';
 import { formatCommandName } from '../../src/helpers/helper-format-command-name.js';
@@ -50,18 +51,18 @@ export function validateFn(argv: string[], locale: LocaleMessagesKeys = 'zh') {
               projectCwd: {
                 type: String,
                 required: true,
-                description: 'project cwd',
+                description: () => 'project cwd',
               },
               compiler: {
                 type: [String],
                 default: undefined,
                 required: true,
-                description: 'compiler',
+                description: () => 'compiler',
               },
               throwError: {
                 type: Boolean,
                 required: false,
-                description: 'throw error',
+                description: () => 'throw error',
               },
             })
           )
@@ -76,6 +77,12 @@ export function validateFn(argv: string[], locale: LocaleMessagesKeys = 'zh') {
   const allCommandFlags = collectCommandFlags(Object.values(commandMap));
   const parsed = parseFlags(allCommandFlags, simpleDeepClone({ argv }));
   const { args } = parsed;
+
+  const inputCommands = args || [];
+
+  if (!inputCommands || inputCommands.length === 0) {
+    throw new CommandNotProviderError(locale);
+  }
 
   const commandPipeline = searchCommandChain(
     locale,

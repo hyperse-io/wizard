@@ -1,25 +1,21 @@
 import { describe, expect, it } from 'vitest';
-import type { DeepPartial } from '@hyperse/deep-merge';
 import { createWizard } from '../../src/create-wizard.js';
-import type { DefaultLocaleMessages } from '../../src/types/type-locale-messages.js';
+import { defineCommand } from '../../src/define-command.js';
+import { definePlugin } from '../../src/define-plugin.js';
 
-const messages: DeepPartial<DefaultLocaleMessages> = {
+const messages = {
   en: {
-    core: {
-      cli: {
-        name: 'Wizard Test',
-        description: 'Wizard Test description',
-        version: 'Wizard Test version {version}',
-      },
+    cli: {
+      name: 'Wizard Test',
+      description: 'Wizard Test description',
+      version: 'Wizard Test version {version}',
     },
   },
   zh: {
-    core: {
-      cli: {
-        name: '测试 cli 名称',
-        description: '测试 cli 描述',
-        version: '测试 cli 版本 {version}',
-      },
+    cli: {
+      name: '测试 cli 名称',
+      description: '测试 cli 描述',
+      version: '测试 cli 版本 {version}',
     },
   },
 };
@@ -29,11 +25,11 @@ describe('Wizard CLI internationalization support', () => {
     process.env.HPS_WIZARD_LOCALE = 'zh';
 
     const cli = createWizard({
-      name: 'core.cli.name',
-      description: 'core.cli.description',
-      overrideMessages: messages,
+      name: 'cli.name',
+      description: 'cli.description',
+      localeMessages: messages,
       version: (t) => {
-        return t('core.cli.version', { version: '1.0.0' });
+        return t('cli.version', { version: '1.0.0' });
       },
       errorHandler: () => {},
     });
@@ -47,14 +43,47 @@ describe('Wizard CLI internationalization support', () => {
     process.env.HPS_WIZARD_LOCALE = 'en';
 
     const cli = createWizard({
-      name: 'core.cli.name',
-      description: 'core.cli.description',
-      overrideMessages: messages,
+      name: 'cli.name',
+      description: 'cli.description',
+      localeMessages: messages,
       version: (t) => {
-        return t('core.cli.version', { version: '1.0.0' });
+        return t('cli.version', { version: '1.0.0' });
       },
       errorHandler: () => {},
-    });
+    })
+      .use(
+        definePlugin({
+          name: () => 'pluginA',
+          setup: (wizard, pluginCtx) => {
+            console.log(pluginCtx);
+            wizard.register(
+              defineCommand('commandA', {
+                description: () => 'commandA.description',
+              })
+            );
+            wizard.register(
+              defineCommand('commandB', {
+                description: () => 'commandA.description',
+              })
+            );
+
+            console.log(wizard.getLocale());
+            return wizard.register(
+              defineCommand<
+                'commandC',
+                {
+                  projectCwd: string;
+                }
+              >('commandC', {
+                description: () => 'commandA.description',
+              })
+            );
+          },
+        })
+      )
+      .on('commandC', (ctx) => {
+        ctx.ctx.projectCwd = 'a/b/c';
+      });
 
     expect(cli.name).toBe('Wizard Test');
     expect(cli.description).toBe('Wizard Test description');

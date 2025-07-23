@@ -1,3 +1,20 @@
+export const cliMessages = {
+  en: {
+    cli: {
+      name: 'Wizard CLI',
+      description: 'A CLI for Wizard.',
+      version: '{version}',
+    },
+  },
+  zh: {
+    cli: {
+      name: 'Wizard CLI',
+      description: 'Wizard 的命令行工具。',
+      version: '{version}',
+    },
+  },
+};
+
 export const messages = {
   en: {
     pluginA: {

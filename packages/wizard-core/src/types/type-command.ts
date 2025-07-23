@@ -178,20 +178,40 @@ export interface Command<
   get help(): LocaleMessageResolver | undefined;
 
   /**
-   * Sets the parsed flags for the command.
-   * @param flags - The flags object to set for this command.
-   */
-  setFlags(flags: CommandFlags): void;
-
-  /**
    * Returns the parsed flags for the command.
    */
-  getFlags(): CommandFlags;
+  get flags(): CommandFlags;
 
   /**
    * Returns the parent command, if any.
    */
-  getParentCommand(): Command<any, any, any, any>;
+  get parentCommand(): Command<any, any, any, any>;
+
+  /**
+   * Returns the list of sub-commands for this command.
+   */
+  get subCommands(): Command<any, any, any, any>[];
+
+  /**
+   * Returns the handler function for this command.
+   */
+  get handler(): CommandHandlerFunction<
+    HandlerContext<Name, Context, CommandFlags>
+  >;
+
+  /**
+   * Returns the resolver function for this command.
+   */
+  get resolver(): CommandResolverFunction<
+    ResolverContext<Name, Context>,
+    SubCommandContext
+  >;
+
+  /**
+   * Sets the parsed flags for the command.
+   * @param flags - The flags object to set for this command.
+   */
+  setFlags(flags: CommandFlags): void;
 
   /**
    * Sets the parent command for this command.
@@ -200,11 +220,6 @@ export interface Command<
   setParentCommand<ParentCommandType extends Command<any, any, any, any>>(
     parentCommand: ParentCommandType
   ): void;
-
-  /**
-   * Returns the list of sub-commands for this command.
-   */
-  getSubCommands(): Command<any, any, any, any>[];
 
   /**
    * Sets the list of sub-commands for this command.
@@ -226,25 +241,10 @@ export interface Command<
   ): void;
 
   /**
-   * Returns the resolver function for this command.
-   */
-  getResolver(): CommandResolverFunction<
-    ResolverContext<Name, Context>,
-    SubCommandContext
-  >;
-
-  /**
    * Sets the handler function for this command, which is executed when the command is invoked.
    * @param fn - The handler function.
    */
   setHandler(
     fn: CommandHandlerFunction<HandlerContext<Name, Context, CommandFlags>>
   ): void;
-
-  /**
-   * Returns the handler function for this command.
-   */
-  getHandler(): CommandHandlerFunction<
-    HandlerContext<Name, Context, CommandFlags>
-  >;
 }

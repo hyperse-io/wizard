@@ -30,7 +30,7 @@ describe('cli', () => {
       version: {
         type: String,
         alias: 'v',
-        description: 'version with 1.0.0 or 2.0.0',
+        description: () => 'version with 1.0.0 or 2.0.0',
         default: '1.0.0',
       },
     })
@@ -46,13 +46,13 @@ describe('cli', () => {
       compiler: {
         type: String,
         alias: 'c',
-        description: 'compiler with rspack or vite',
+        description: () => 'compiler with rspack or vite',
         default: 'rspack',
       },
       env: {
         type: String,
         alias: 'e',
-        description: 'env with dev or prod',
+        description: () => 'env with dev or prod',
         default: 'dev',
       },
     })
@@ -60,7 +60,9 @@ describe('cli', () => {
     .resolver(async () => {
       return Promise.resolve({ miniConfig: { miniKey: 'mini' } });
     })
-    .handler((ctx) => evolveHandler(ctx));
+    .handler((ctx) => {
+      evolveHandler(ctx);
+    });
 
   const buildCmd = defineCommand<'build', { root: { root1: string } }>(
     'build',
@@ -72,14 +74,12 @@ describe('cli', () => {
       projectCwd: {
         alias: 'p',
         type: String,
-        description: 'project cwd',
+        description: () => 'project cwd',
         default: 'user/project/foo',
       },
     })
     .use(evolveCmd)
-    .resolver(() => {
-      return { root1: { root11: 'root11' } };
-    })
+    .resolver({ root1: { root11: 'root11' } })
     .handler((ctx) => buildHandler(ctx));
 
   const deployCmd = defineCommand<'deploy', { root1: { root11: string } }>(
@@ -92,13 +92,13 @@ describe('cli', () => {
       fileType: {
         type: String,
         alias: 'f',
-        description: 'file type with js or ts',
+        description: () => 'file type with js or ts',
         default: 'js',
       },
       ossType: {
         type: String,
         alias: 'o',
-        description: 'oss type with aliyun or tencent',
+        description: () => 'oss type with aliyun or tencent',
         default: 'aliyun',
       },
     })
@@ -145,8 +145,8 @@ describe('cli', () => {
 
   it('test command build evolve', async () => {
     const cli = createWizard({
-      name: 'core.cli.parseMustBeCalled',
-      description: 'core.cli.parseMustBeCalled',
+      name: () => 'wWizard',
+      description: () => 'wWizard description',
       version: () => '1.0.0',
       errorHandler: errorEvent,
     })

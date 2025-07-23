@@ -1,3 +1,5 @@
+import type { LocaleMessageResolver } from './type-locale-messages.js';
+
 export type TypeFunction<ReturnType = any> = (value: any) => ReturnType;
 
 export type TypeFunctionArray<ReturnType> = readonly [TypeFunction<ReturnType>];
@@ -7,7 +9,7 @@ export type Flag = FlagOptions & {
 };
 
 export type FlagOptions = FlagSchema & {
-  description: string;
+  description: LocaleMessageResolver;
 };
 
 export type Flags = Record<string, FlagOptions>;

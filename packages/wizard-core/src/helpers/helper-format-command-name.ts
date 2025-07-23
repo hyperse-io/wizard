@@ -1,6 +1,5 @@
+import { rootName } from '../constants.js';
 import type { RootType } from '../types/type-wizard.js';
-
-const ROOT = '<Root>';
 
 /**
  * @description
@@ -10,4 +9,8 @@ const ROOT = '<Root>';
  * @returns The formatted command name.
  */
 export const formatCommandName = (name: string | string[] | RootType) =>
-  Array.isArray(name) ? name.join(' ') : typeof name === 'string' ? name : ROOT;
+  Array.isArray(name)
+    ? name.join(' ')
+    : typeof name === 'string'
+      ? name
+      : rootName;

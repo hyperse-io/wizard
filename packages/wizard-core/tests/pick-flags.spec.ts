@@ -3,16 +3,16 @@ import { pickFlags } from '../src/helpers/helper-pick-flags.js';
 import type { Flags } from '../src/types/type-flag.js';
 
 const baseFlags: Flags = {
-  foo: { description: 'foo flag', type: String },
-  bar: { description: 'bar flag', type: Boolean, default: false },
-  baz: { description: 'baz flag', type: Number, default: 1 },
+  foo: { description: () => 'foo flag', type: String },
+  bar: { description: () => 'bar flag', type: Boolean, default: false },
+  baz: { description: () => 'baz flag', type: Number, default: 1 },
 };
 
 describe('pickFlags', () => {
   it('should pick only the specified flags', () => {
     const targetFlags: Flags = {
-      foo: { description: 'foo flag', type: String },
-      baz: { description: 'baz flag', type: Number, default: 1 },
+      foo: { description: () => 'foo flag', type: String },
+      baz: { description: () => 'baz flag', type: Number, default: 1 },
     };
     const result = pickFlags(baseFlags, targetFlags);
     expect(Object.keys(result)).toEqual(['foo', 'baz']);
@@ -28,7 +28,7 @@ describe('pickFlags', () => {
 
   it('should return an empty object if baseFlags is empty', () => {
     const targetFlags: Flags = {
-      foo: { description: 'foo flag', type: String },
+      foo: { description: () => 'foo flag', type: String },
     };
     const result = pickFlags({}, targetFlags);
     expect(result).toEqual({ foo: undefined });
@@ -36,7 +36,7 @@ describe('pickFlags', () => {
 
   it('should return undefined for missing keys in baseFlags', () => {
     const targetFlags: Flags = {
-      notExist: { description: 'not exist', type: String },
+      notExist: { description: () => 'not exist', type: String },
     };
     const result = pickFlags(baseFlags, targetFlags);
     expect(result).toEqual({ notExist: undefined });

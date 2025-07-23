@@ -1,4 +1,5 @@
 import type { Paths, UnionToTuple, ValueOf } from 'type-fest';
+import type { DeepPartial } from '@hyperse/deep-merge';
 import type { createTranslator } from '@hyperse/translator';
 import type { messages } from '../i18n/messages.js';
 
@@ -67,12 +68,12 @@ export type LocaleMessagesObject = {
  * @template key - The key of the locale messages.
  * @returns {LocaleMessages | string} The locale messages.
  */
-export type LocaleMessagesObjectWithoutDefault = {
+export type LocaleMessagesObjectWithoutDefault = DeepPartial<{
   [key in keyof LocaleMessagesObject]?: Omit<
     LocaleMessages,
     keyof DefaultLocaleMessage
   >;
-};
+}>;
 
 /**
  * @description
@@ -91,6 +92,10 @@ export type LocaleMessagesObjectWithoutDefault = {
  */
 export type LocaleMessagesPaths = Paths<LocaleMessages>;
 
+export type LocaleMessageResolverExtraOptions = {
+  commands: string[];
+};
+
 /**
  * @description
  * Locale message resolver.
@@ -100,4 +105,7 @@ export type LocaleMessagesPaths = Paths<LocaleMessages>;
  */
 export type LocaleMessageResolver =
   | LocaleMessagesPaths
-  | ((t: I18n['t']) => string);
+  | ((
+      t: I18n['t'],
+      extraOptions?: LocaleMessageResolverExtraOptions
+    ) => string);

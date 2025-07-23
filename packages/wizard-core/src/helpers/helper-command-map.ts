@@ -16,7 +16,7 @@ export const getAllCommandMap = <Name extends CommandName>(
   >;
   function collectCommandMapFromCommand(command: Command<Name>): any {
     commandMap[command.name] = command;
-    const subCommands = command.getSubCommands?.() || [];
+    const subCommands = command.subCommands || [];
     for (const subCmd of subCommands) {
       commandMap = { ...commandMap, ...collectCommandMapFromCommand(subCmd) };
     }

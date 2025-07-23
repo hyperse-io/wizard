@@ -1,4 +1,3 @@
-import type { DeepPartial } from '@hyperse/deep-merge';
 import type { Logger, LogLevel } from '@hyperse/logger';
 import type { Root } from '../constants.js';
 import type {
@@ -8,10 +7,10 @@ import type {
 import type { CommandNameToContext } from './type-command-builder.js';
 import type { Flags } from './type-flag.js';
 import type {
-  DefaultLocaleMessages,
   I18n,
   LocaleMessageResolver,
   LocaleMessagesKeys,
+  LocaleMessagesObjectWithoutDefault,
 } from './type-locale-messages.js';
 
 /**
@@ -74,7 +73,7 @@ export type WizardOptions = {
    * The override messages.
    *
    */
-  overrideMessages?: DeepPartial<DefaultLocaleMessages>;
+  localeMessages?: LocaleMessagesObjectWithoutDefault;
   /**
    * The error handler.
    */

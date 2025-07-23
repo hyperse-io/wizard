@@ -1,4 +1,5 @@
 import type {
+  LocaleMessagesKeys,
   LocaleMessagesObject,
   LocaleMessagesObjectWithoutDefault,
 } from '../types/type-locale-messages.js';
@@ -19,5 +20,19 @@ export const mergeMessages = <
   originalMessage?: OriginalMessage,
   targetMessage?: LocaleMessagesObjectWithoutDefault
 ): OriginalMessage => {
-  return Object.assign({}, originalMessage, targetMessage);
+  const result: OriginalMessage = {} as OriginalMessage;
+
+  const keys = Object.keys(
+    originalMessage ?? {}
+  ) as (keyof LocaleMessagesObject)[];
+
+  for (const key of keys) {
+    const findTargetValue = targetMessage?.[key] ?? {};
+    result[key] = Object.assign(
+      {},
+      originalMessage?.[key] ?? {},
+      findTargetValue
+    ) as LocaleMessagesObject[keyof LocaleMessagesObject];
+  }
+  return result;
 };

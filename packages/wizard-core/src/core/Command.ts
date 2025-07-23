@@ -9,7 +9,6 @@ import type {
   ResolverContext,
 } from '../types/type-command.js';
 import type { Flags } from '../types/type-flag.js';
-import type { I18n } from '../types/type-locale-messages.js';
 
 /**
  * @description
@@ -27,67 +26,74 @@ class CommandImpl<
   CommandFlags extends Flags = Flags,
 > implements Command<Name, Context, SubCommandContext, CommandFlags>
 {
-  private commandName: Name;
-  private options: CommandOptions;
-  private resolverFn: CommandResolverFunction<
+  private cmdName: Name;
+  private cmdFlags: CommandFlags;
+  private cmdSubCommands: Command<any, any, any, any>[] = [];
+  private cmdParentCommand: Command<any, any, any, any>;
+  private cmdOptions: CommandOptions;
+  private cmdResolverFn: CommandResolverFunction<
     ResolverContext<Name, Context>,
     SubCommandContext
   >;
-  private handlerFn: CommandHandlerFunction<
+  private cmdHandlerFn: CommandHandlerFunction<
     HandlerContext<Name, Context, CommandFlags>
   >;
-  private flags: CommandFlags;
-  private subCommands: Command<any, any, any, any>[] = [];
-  private parentCommand: Command<any, any, any, any>;
-  private I18n: I18n;
 
   constructor(name: Name, options: CommandOptions) {
-    this.commandName = name;
-    this.options = options;
+    this.cmdName = name;
+    this.cmdOptions = options;
   }
 
   get name(): Name {
-    return this.commandName;
+    return this.cmdName;
   }
 
   get description() {
-    return this.options.description;
+    return this.cmdOptions.description;
   }
 
   get example() {
-    return this.options.example;
+    return this.cmdOptions.example;
   }
 
   get help() {
-    return this.options.help;
+    return this.cmdOptions.help;
+  }
+
+  get flags() {
+    return this.cmdFlags;
+  }
+
+  get parentCommand() {
+    return this.cmdParentCommand;
+  }
+
+  get subCommands() {
+    return this.cmdSubCommands;
+  }
+
+  get resolver() {
+    return this.cmdResolverFn;
+  }
+
+  get handler() {
+    return this.cmdHandlerFn;
   }
 
   setFlags(flags: CommandFlags): void {
-    this.flags = flags;
-  }
-
-  getFlags() {
-    return this.flags;
-  }
-
-  getParentCommand() {
-    return this.parentCommand;
+    this.cmdFlags = flags;
   }
 
   setParentCommand<ParentCommandType extends Command<any, any, any, any>>(
     parentCommand: ParentCommandType
   ) {
-    this.parentCommand = parentCommand;
-  }
-
-  getSubCommands() {
-    return this.subCommands;
+    this.cmdParentCommand = parentCommand;
   }
 
   setSubCommands<SubCommandType extends Command<any, any, any, any>>(
     subCommands: SubCommandType[]
   ) {
-    this.subCommands = [...this.subCommands, ...subCommands];
+    this.cmdSubCommands = [...this.cmdSubCommands, ...subCommands];
   }
 
   setResolver(
@@ -96,21 +102,13 @@ class CommandImpl<
       SubCommandContext
     >
   ) {
-    this.resolverFn = fn;
-  }
-
-  getResolver() {
-    return this.resolverFn;
+    this.cmdResolverFn = fn;
   }
 
   setHandler(
     fn: CommandHandlerFunction<HandlerContext<Name, Context, CommandFlags>>
   ): void {
-    this.handlerFn = fn;
-  }
-
-  getHandler() {
-    return this.handlerFn;
+    this.cmdHandlerFn = fn;
   }
 }
 

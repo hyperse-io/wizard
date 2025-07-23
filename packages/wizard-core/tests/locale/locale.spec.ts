@@ -1,7 +1,7 @@
 import { createWizard } from '../../src/create-wizard.js';
 import { defineCommand, definePlugin } from '../../src/index.js';
 import { sleep } from '../utils/test-utils.js';
-import { messages } from './messages.js';
+import { cliMessages, messages } from './messages.js';
 
 describe('useLocale', () => {
   const commandAHandler = vi.fn((ctx) => {
@@ -33,7 +33,7 @@ describe('useLocale', () => {
       .flags({
         cwd: {
           type: String,
-          description: 'cwd',
+          description: () => 'cwd',
           default: 'user/project/foo',
         },
       })
@@ -46,13 +46,15 @@ describe('useLocale', () => {
       {
         description: 'pluginB.description',
         help: 'pluginB.help',
-        example: 'pluginB.example',
+        example: (t) => {
+          return t('pluginB.example');
+        },
       }
     )
       .flags({
         cwd: {
           type: String,
-          description: 'cwd',
+          description: () => 'cwd',
           default: 'user/project/foo',
         },
       })
@@ -61,9 +63,10 @@ describe('useLocale', () => {
       });
 
     const cli = createWizard({
-      name: 'core.cli.name',
-      description: 'core.cli.description',
-      version: () => '1.0.0',
+      name: 'cli.name',
+      description: 'cli.description',
+      version: (t) => t('cli.version', { version: '1.0.0' }),
+      localeMessages: cliMessages,
       errorHandler: (e) => {
         console.log(e);
       },
@@ -86,6 +89,10 @@ describe('useLocale', () => {
     // cmd: commandA
     cli.parse(['commandA', 'commandB']);
     await sleep();
+
+    expect(cli.name).toBe('Wizard CLI');
+    expect(cli.description).toBe('Wizard 的命令行工具。');
+    expect(cli.version).toBe('1.0.0');
 
     const commandBResult = commandBHandler.mock.results[0].value;
     expect(commandBResult).toBeDefined();
@@ -135,7 +142,11 @@ describe('useLocale', () => {
     const commandA = defineCommand<'commandA', { projectCwd: string }>(
       'commandA',
       {
-        description: 'pluginA.description',
+        description: (t, extraOptions) => {
+          return (
+            t('pluginA.description') + ' - ' + extraOptions?.commands.join(' ')
+          );
+        },
         help: 'pluginA.help',
         example: 'pluginA.example',
       }
@@ -143,7 +154,9 @@ describe('useLocale', () => {
       .flags({
         cwd: {
           type: String,
-          description: 'cwd',
+          description: (t) => {
+            return t('pluginA.description');
+          },
           default: 'user/project/foo',
         },
       })
@@ -154,7 +167,11 @@ describe('useLocale', () => {
     const commandB = defineCommand<'commandB', { projectCwd: string }>(
       'commandB',
       {
-        description: 'pluginB.description',
+        description: (t, extraOptions) => {
+          return (
+            t('pluginB.description') + ' - ' + extraOptions?.commands.join(' ')
+          );
+        },
         help: 'pluginB.help',
         example: 'pluginB.example',
       }
@@ -162,7 +179,7 @@ describe('useLocale', () => {
       .flags({
         cwd: {
           type: String,
-          description: 'cwd',
+          description: () => 'cwd',
           default: 'user/project/foo',
         },
       })
@@ -171,9 +188,10 @@ describe('useLocale', () => {
       });
 
     const cli = createWizard({
-      name: 'core.cli.name',
-      description: 'core.cli.description',
+      name: 'cli.name',
+      description: 'cli.description',
       version: () => '1.0.0',
+      localeMessages: cliMessages,
       errorHandler: (e) => {
         console.log(e);
       },
@@ -197,17 +215,25 @@ describe('useLocale', () => {
     cli.parse(['commandA', 'commandB']);
     await sleep();
 
+    expect(cli.name).toBe('Wizard CLI');
+    expect(cli.description).toBe('A CLI for Wizard.');
+    expect(cli.version).toBe('1.0.0');
+
     const commandBResult = commandBHandler.mock.results[0].value;
     expect(commandBResult).toBeDefined();
     expect(commandBResult['name']).toBe('commandB');
-    expect(commandBResult['description']).toBe('Plugin B description');
+    expect(commandBResult['description']).toBe(
+      'Plugin B description - commandA commandB'
+    );
     expect(commandBResult['help']).toBe('Plugin B help');
     expect(commandBResult['example']).toBe('Plugin B example');
 
     const eventBResult = eventBHandler.mock.results[0].value;
     expect(eventBResult).toBeDefined();
     expect(eventBResult['name']).toBe('commandB');
-    expect(eventBResult['description']).toBe('Plugin B description');
+    expect(eventBResult['description']).toBe(
+      'Plugin B description - commandA commandB'
+    );
     expect(eventBResult['help']).toBe('Plugin B help');
     expect(eventBResult['example']).toBe('Plugin B example');
 
@@ -225,14 +251,16 @@ describe('useLocale', () => {
     expect(commandAResult).toBeDefined();
 
     expect(commandAResult['name']).toBe('commandA');
-    expect(commandAResult['description']).toBe('Plugin A description');
+    expect(commandAResult['description']).toBe(
+      'Plugin A description - commandA'
+    );
     expect(commandAResult['help']).toBe('Plugin A help');
     expect(commandAResult['example']).toBe('Plugin A example');
 
     const eventAResult = eventAHandler.mock.results[0].value;
     expect(eventAResult).toBeDefined();
     expect(eventAResult['name']).toBe('commandA');
-    expect(eventAResult['description']).toBe('Plugin A description');
+    expect(eventAResult['description']).toBe('Plugin A description - commandA');
     expect(eventAResult['help']).toBe('Plugin A help');
     expect(eventAResult['example']).toBe('Plugin A example');
 

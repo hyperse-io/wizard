@@ -12,7 +12,7 @@ export const collectCommandFlags = <Name extends CommandName>(
 ): Flags => {
   let flags: Flags = {};
   for (const command of commandList) {
-    const definedFlags = (command as Command<Name>).getFlags?.() || {};
+    const definedFlags = (command as Command<Name>).flags || {};
     flags = { ...flags, ...definedFlags };
   }
   return flags;

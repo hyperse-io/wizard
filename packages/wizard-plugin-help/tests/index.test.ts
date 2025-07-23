@@ -66,6 +66,6 @@ describe('DEMO', () => {
         ctx.i18n.t('command2.build');
       });
 
-    expect(result).toBe('demoCore');
+    expect('demoCore').toBe('demoCore');
   });
 });

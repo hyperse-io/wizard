@@ -93,4 +93,20 @@ describe('Command Pipeline Validation and Parsing', () => {
       ])
     ).toBeTruthy();
   });
+
+  it('should throw a descriptive error when the command is not provided (both en and zh)', () => {
+    try {
+      validateFn([], 'zh');
+    } catch (error: any) {
+      expect(error).toBeDefined();
+      expect(error.message).toBe('命令未提供。');
+    }
+
+    try {
+      validateFn([], 'en');
+    } catch (error: any) {
+      expect(error).toBeDefined();
+      expect(error.message).toBe('Command not provided.');
+    }
+  });
 });

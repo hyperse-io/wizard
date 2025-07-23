@@ -26,8 +26,8 @@ export const searchCommandChain = <Name extends CommandName>(
   }
   commandList.push(command);
 
-  while (command.getParentCommand()) {
-    const parentCommand = command.getParentCommand();
+  while (command.parentCommand) {
+    const parentCommand = command.parentCommand;
     if (parentCommand) {
       commandList.push(parentCommand);
       command = parentCommand;

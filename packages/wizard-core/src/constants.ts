@@ -4,6 +4,11 @@
 export const Root = Symbol.for('Wizard.Root');
 
 /**
+ * The name of the root command.
+ */
+export const rootName = '<Root>';
+
+/**
  * The name of the wizard.
  */
 export const WizardName = 'HpsWizard';

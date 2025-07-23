@@ -4,35 +4,28 @@ import { formatCommandName } from './helper-format-command-name.js';
 
 /**
  * @description
- * Searches for the event name.
+ * Searches for the command name chain.
  *
  * @example
  * ```ts
- * const eventName = searchEventName(currentCommand, commands);
- * console.log(eventName); // 'build.evolve.mini'
+ * const commandNameChain = searchCommandNameChain(currentCommand, commands);
+ * console.log(commandNameChain); // ['build', 'evolve', 'mini']
  * ```
  *
  * @param currentCommand The current command.
  * @param commands The commands.
- * @returns The event name.
+ * @returns The command name chain.
  */
-export const searchEventName = <Name extends CommandName>(
-  currentCommand: Command<Name>,
+export const searchCommandNameChain = <Name extends CommandName>(
   commands: Command<Name>[] = []
-): string => {
+): string[] => {
   const names: string[] = [];
-  const eventName = currentCommand.name;
   for (const cmd of commands) {
     const cmdName = cmd.name;
     if (cmdName === Root) {
       continue;
     }
-
     names.push(formatCommandName(cmdName));
-
-    if (cmdName === eventName) {
-      return names.join('.');
-    }
   }
-  return '';
+  return names;
 };
