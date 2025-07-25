@@ -11,7 +11,9 @@ describe('cli', () => {
   const buildEvolveMiniEvent = vi.fn();
   const buildEvent = vi.fn();
   const buildEvolveEvent = vi.fn();
-  const errorEvent = vi.fn();
+  const errorEvent = vi.fn((e) => {
+    console.log(e);
+  });
 
   beforeEach(() => {});
 
@@ -102,7 +104,9 @@ describe('cli', () => {
         default: 'aliyun',
       },
     })
-    .handler((ctx) => deployHandler(ctx));
+    .handler((ctx) => {
+      deployHandler(ctx);
+    });
 
   it('test command build', async () => {
     const cli = createWizard({
@@ -246,7 +250,13 @@ describe('cli', () => {
       .on('error', errorEvent);
 
     // cmd: build evolve mini
-    cli.parse(['deploy']);
+    cli.parse([
+      'deploy',
+      '-h',
+      '--compiler=vite',
+      '--fileType=js',
+      '--ossType=azure',
+    ]);
     await sleep();
     expect(buildHandler).not.toHaveBeenCalled();
     expect(evolveHandler).not.toHaveBeenCalled();
@@ -255,7 +265,7 @@ describe('cli', () => {
     expect(deployHandler.mock.lastCall?.[0]).toMatchObject({
       locale: 'en',
       ctx: undefined,
-      flags: { fileType: 'js', ossType: 'aliyun' },
+      flags: { fileType: 'js', ossType: 'azure' },
       name: 'deploy',
     });
     const description = deployHandler.mock.lastCall?.[0]?.description;

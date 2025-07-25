@@ -7,18 +7,15 @@ import type { CommandBuilder } from '../types/type-command-builder.js';
  * @param rootCommandBuilder The root command builder to collect command maps from.
  * @returns A mapping from command names to Command instances.
  */
-export const getAllCommandMap = <Name extends CommandName>(
+export const commandTreeToMap = <Name extends CommandName>(
   rootCommandBuilder: CommandBuilder<Name>
-): Record<Name, Command<Name>> => {
-  let commandMap: Record<Name, Command<Name>> = {} as Record<
-    Name,
-    Command<Name>
-  >;
+): Map<Name, Command<Name>> => {
+  const commandMap: Map<Name, Command<Name>> = new Map();
   function collectCommandMapFromCommand(command: Command<Name>): any {
-    commandMap[command.name] = command;
+    commandMap.set(command.name, command);
     const subCommands = command.subCommands || [];
     for (const subCmd of subCommands) {
-      commandMap = { ...commandMap, ...collectCommandMapFromCommand(subCmd) };
+      collectCommandMapFromCommand(subCmd);
     }
     return commandMap;
   }

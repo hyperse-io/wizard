@@ -1,8 +1,10 @@
+import { type DeepPartial, mergeOptions } from '@hyperse/deep-merge';
 import type {
   LocaleMessages,
   LocaleMessagesCliObject,
   LocaleMessagesObject,
   LocaleMessagesPluginsObject,
+  SupportedLocales,
 } from '../types/type-locale-messages.js';
 
 /**
@@ -13,27 +15,21 @@ import type {
  * @param targetMessage The target message.
  * @returns The merged message.
  */
-export const mergeMessages = <
-  OriginalMessage extends
-    | LocaleMessagesObject
-    | LocaleMessagesPluginsObject
-    | LocaleMessagesCliObject,
->(
+export const mergeMessages = (
   path: keyof LocaleMessages,
-  originalMessage?: OriginalMessage,
+  originalMessage: LocaleMessagesObject,
   targetMessage?: LocaleMessagesPluginsObject | LocaleMessagesCliObject
-): OriginalMessage => {
-  const result: OriginalMessage = {} as OriginalMessage;
-
-  const keys = Object.keys(
-    originalMessage ?? {}
-  ) as (keyof LocaleMessagesObject)[];
-
-  for (const key of keys) {
-    const findTargetValue = targetMessage?.[key] ?? {};
-    result[key] = Object.assign({}, originalMessage?.[key] ?? {}, {
-      [path]: findTargetValue,
-    }) as LocaleMessagesObject[keyof LocaleMessagesObject];
+): LocaleMessagesObject => {
+  if (!targetMessage) {
+    return originalMessage;
   }
-  return result;
+  const newTargetMessage: DeepPartial<LocaleMessagesObject> = {};
+  for (const locale of Object.keys(targetMessage) as SupportedLocales[]) {
+    newTargetMessage[locale] = {
+      [path]: targetMessage[locale],
+    };
+  }
+
+  const finalMessage = mergeOptions(originalMessage, newTargetMessage);
+  return finalMessage;
 };

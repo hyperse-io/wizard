@@ -8,11 +8,15 @@ export type Flag = FlagOptions & {
   name: string;
 };
 
-export type FlagOptions = FlagSchema & {
-  description: LocaleMessageResolver;
+export type FlagOptions<
+  Description extends LocaleMessageResolver | string = LocaleMessageResolver,
+> = FlagSchema & {
+  description: Description;
 };
 
 export type Flags = Record<string, FlagOptions>;
+
+export type FlagsWithI18n = Record<string, FlagOptions<string>>;
 
 /**
  * @description

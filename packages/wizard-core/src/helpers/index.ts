@@ -1,6 +1,9 @@
 export * from './helper-collect-command-flags.js';
-export * from './helper-command-map.js';
+export * from './helper-command-i18n.js';
+export * from './helper-command-tree-to-map.js';
 export * from './helper-format-command-name.js';
+export * from './helper-format-command-name.js';
+export * from './helper-global-flags-i18n.js';
 export * from './helper-locale-message-value.js';
 export * from './helper-merge-messages.js';
 export * from './helper-parse-flags.js';
@@ -10,4 +13,4 @@ export * from './helper-resolve-locale.js';
 export * from './helper-resolve-options-or-argv.js';
 export * from './helper-search-command-chain.js';
 export * from './helper-search-command-name-chain.js';
-export * from './helper-validate-command-pipeline.js';
+export * from './helper-validate-command-chain.js';

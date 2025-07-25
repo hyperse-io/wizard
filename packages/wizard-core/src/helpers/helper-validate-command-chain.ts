@@ -10,61 +10,60 @@ import type { ParseFlagsResult } from './helper-parse-flags.js';
 
 /**
  * @description
- * Validate the command pipeline.
+ * Validate the command chain.
  *
  * @param locale The locale to use.
  * @param inputNameList The input name list to validate.
  * @param commandPipeline The command pipeline to validate.
  * @returns True if the command pipeline is valid, false otherwise.
  */
-export const validateCommandPipeline = <Name extends CommandName>(
+export const validateCommandChain = <Name extends CommandName>(
   locale: SupportedLocales,
   inputCommandFlags: Flags,
-  inputNameList?: Name | string[],
-  parsedFlags?: ParseFlagsResult,
-  commandPipeline: Command<Name>[] = []
+  inputNameList: Name[],
+  parsedFlags: ParseFlagsResult,
+  commandChain: Command<Name>[] = []
 ) => {
-  if (!inputNameList) {
-    return true;
-  }
+  const inputNames = inputNameList.map(formatCommandName);
 
-  const inputNameListString = formatCommandName(inputNameList);
+  const commandChainNames = commandChain.map((command) =>
+    formatCommandName(command.name)
+  );
 
-  if (!commandPipeline || commandPipeline.length === 0) {
+  const inputNamesStr = inputNames
+    .filter((name) => name !== formatCommandName(Root))
+    .join(' ');
+
+  const commandChainNamesStr = commandChainNames
+    .filter((name) => name !== formatCommandName(Root))
+    .join(' ');
+
+  //If commandChain not config other command without Root, throw error
+  if (
+    commandChainNames.filter((name) => name !== formatCommandName(Root))
+      .length === 0
+  ) {
     throw new CommandNotConfigurationError(locale, {
-      cmdName: inputNameListString,
+      cmdName: inputNamesStr,
     });
   }
 
-  const pipelineNames = commandPipeline
-    .map((command) => command.name)
-    .filter((name: CommandName) => {
-      return name !== Root;
-    });
-
-  if (pipelineNames.length === 0) {
-    throw new CommandNotConfigurationError(locale, {
-      cmdName: inputNameListString,
-    });
-  }
-
-  if (inputNameListString !== pipelineNames.join(' ')) {
+  if (inputNamesStr !== commandChainNamesStr) {
     throw new CommandNotFoundError(locale, {
-      cmdName: inputNameListString,
+      cmdName: inputNamesStr,
     });
   }
 
-  const flags = parsedFlags?.flags;
+  const flags = parsedFlags?.flags ?? {};
   if (inputCommandFlags) {
     for (const [flatName, flatOption] of Object.entries(inputCommandFlags)) {
       if (flatOption.required && typeof flags?.[flatName] === 'undefined') {
         throw new CommandFlagNotProviderError(locale, {
-          cmdName: inputNameListString,
+          cmdName: inputNamesStr,
           flagName: flatName,
         });
       }
     }
   }
-
   return true;
 };

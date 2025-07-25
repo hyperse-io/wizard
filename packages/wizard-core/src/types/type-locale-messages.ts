@@ -54,8 +54,8 @@ export interface CliLocaleMessages {}
  * @returns {LocaleMessages} The locale messages.
  */
 export interface LocaleMessages extends DefaultLocaleMessage {
-  plugins?: PluginLocaleMessages;
   cli?: CliLocaleMessages;
+  plugins?: PluginLocaleMessages;
 }
 
 /**
@@ -66,7 +66,7 @@ export interface LocaleMessages extends DefaultLocaleMessage {
  * @returns {LocaleMessages | string} The locale messages.
  */
 export type LocaleMessagesObject = {
-  [key in SupportedLocales]: LocaleMessages | string;
+  [key in SupportedLocales]: LocaleMessages;
 };
 
 /**
@@ -115,7 +115,9 @@ export type LocaleMessagesPaths = Paths<LocaleMessages>;
  * @template key - The key of the locale messages.
  * @returns {LocaleMessagesCliPaths} The locale messages cli paths.
  */
-export type CliLocaleMessagesPaths = Paths<Pick<LocaleMessages, 'cli'>>;
+export type CliLocaleMessagesPaths = Paths<
+  Pick<LocaleMessages, 'cli' | 'core'>
+>;
 
 /**
  * @description

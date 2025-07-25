@@ -5,7 +5,7 @@ import type {
   CommandContext,
 } from './type-command.js';
 import type { CommandNameToContext } from './type-command-builder.js';
-import type { Flags } from './type-flag.js';
+import type { FlagOptions, Flags } from './type-flag.js';
 import type {
   CliLocaleMessageResolver,
   I18n,
@@ -19,6 +19,36 @@ import type {
  *
  */
 export type RootType = typeof Root;
+
+export type GlobalFlagHandlerParameters<Name extends string = string> = {
+  /**
+   * The parsed flags for the command.
+   */
+  flags: Record<Name, FlagOptions>;
+  /**
+   * Logger instance for outputting logs within the handler.
+   */
+  logger: Logger;
+  /**
+   * The current locale key for i18n messages.
+   */
+  locale: SupportedLocales;
+  /**
+   * I18n instance for retrieving localized messages.
+   */
+  i18n: I18n;
+} & Omit<PipelineContext, 'ctx'>;
+
+/**
+ * @description
+ * The global flags for the wizard.
+ */
+export type GlobalFlags = Map<
+  string,
+  FlagOptions & {
+    handler?: (params: GlobalFlagHandlerParameters) => void;
+  }
+>;
 
 /**
  * @description

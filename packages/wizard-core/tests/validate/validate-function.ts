@@ -1,20 +1,17 @@
 import { simpleDeepClone } from '@hyperse/deep-merge';
 import { Root } from '../../src/constants.js';
 import { createCommandBuilder } from '../../src/core/CommandBuilder.js';
-import { CommandNotProviderError } from '../../src/errors/CommandNotProviderError.js';
 import { collectCommandFlags } from '../../src/helpers/helper-collect-command-flags.js';
-import { getAllCommandMap } from '../../src/helpers/helper-command-map.js';
+import { commandTreeToMap } from '../../src/helpers/helper-command-tree-to-map.js';
 import { formatCommandName } from '../../src/helpers/helper-format-command-name.js';
 import { parseFlags } from '../../src/helpers/helper-parse-flags.js';
+import { resolveCommand } from '../../src/helpers/helper-resolve-command.js';
 import { searchCommandChain } from '../../src/helpers/helper-search-command-chain.js';
-import { validateCommandPipeline } from '../../src/helpers/helper-validate-command-pipeline.js';
-import {
-  type CommandName,
-  defineCommand,
-  type LocaleMessagesKeys,
-} from '../../src/index.js';
+import { validateCommandChain } from '../../src/helpers/helper-validate-command-chain.js';
+import { type CommandName, defineCommand } from '../../src/index.js';
+import type { SupportedLocales } from '../../src/types/type-locale-messages.js';
 
-export function validateFn(argv: string[], locale: LocaleMessagesKeys = 'zh') {
+export function validateFn(argv: string[], locale: SupportedLocales = 'zh') {
   const buildCmd = defineCommand('build', {
     description: () => 'Build the project',
   })
@@ -73,29 +70,31 @@ export function validateFn(argv: string[], locale: LocaleMessagesKeys = 'zh') {
     description: () => formatCommandName(Root),
   });
   rootCommandBuilder.use(buildCmd);
-  const commandMap = getAllCommandMap(rootCommandBuilder);
-  const allCommandFlags = collectCommandFlags(Object.values(commandMap));
-  const parsed = parseFlags(allCommandFlags, simpleDeepClone({ argv }));
-  const { args } = parsed;
+  const commandMap = commandTreeToMap(rootCommandBuilder);
+  const [calledCommand, calledCommandName] = resolveCommand(
+    locale,
+    commandMap,
+    simpleDeepClone({ argv })
+  );
 
-  const inputCommands = args || [];
+  const parsed = parseFlags(
+    calledCommand?.flags ?? {},
+    simpleDeepClone({ argv })
+  );
 
-  if (!inputCommands || inputCommands.length === 0) {
-    throw new CommandNotProviderError(locale);
+  if (!calledCommandName) {
+    return;
   }
 
-  const commandPipeline = searchCommandChain(
-    locale,
-    args[args.length - 1],
-    commandMap
-  );
-  const inputCommandFlags = collectCommandFlags(commandPipeline);
+  const commandChain = searchCommandChain(calledCommandName, commandMap);
+  const inputCommandFlags = collectCommandFlags(commandChain);
+  const inputCommandNameChain = commandChain.map((cmd) => cmd.name);
 
-  return validateCommandPipeline(
+  return validateCommandChain(
     locale,
     inputCommandFlags,
-    args,
+    inputCommandNameChain,
     parsed,
-    commandPipeline
+    commandChain
   );
 }

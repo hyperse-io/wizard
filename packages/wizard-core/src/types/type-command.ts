@@ -1,5 +1,5 @@
 import type { Logger } from '@hyperse/logger';
-import type { Flags } from './type-flag.js';
+import type { Flags, FlagsWithI18n } from './type-flag.js';
 import type {
   I18n,
   LocaleMessageResolver,
@@ -8,6 +8,15 @@ import type {
 import type { RootType } from './type-wizard.js';
 
 export type CommandName = string | RootType;
+
+export type CommandWithI18n<Name extends CommandName> = {
+  name: Name;
+  description: string;
+  example?: string;
+  help?: string;
+  flags: FlagsWithI18n;
+  rawCommand: Command<Name>;
+};
 
 /**
  * @description
@@ -185,12 +194,12 @@ export interface Command<
   /**
    * Returns the parent command, if any.
    */
-  get parentCommand(): Command<any, any, any, any>;
+  get parentCommand(): Command<Name, any, any, any>;
 
   /**
    * Returns the list of sub-commands for this command.
    */
-  get subCommands(): Command<any, any, any, any>[];
+  get subCommands(): Command<Name, any, any, any>[];
 
   /**
    * Returns the handler function for this command.

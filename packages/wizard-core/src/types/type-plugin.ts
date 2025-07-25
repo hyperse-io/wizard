@@ -25,8 +25,5 @@ export interface Plugin<
 > {
   name?: LocaleMessageResolver;
   localeMessages?: LocaleMessagesPluginsObject;
-  setup: (
-    cli: Wizard<NameToContext>,
-    ctx?: PluginContext
-  ) => Omit<Wizard<Result>, 'register'>;
+  setup: (cli: Wizard<NameToContext>, ctx?: PluginContext) => Wizard<Result>;
 }

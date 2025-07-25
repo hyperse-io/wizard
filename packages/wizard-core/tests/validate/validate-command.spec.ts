@@ -1,6 +1,6 @@
 import { Root } from '../../src/constants.js';
 import { createCommandBuilder } from '../../src/core/CommandBuilder.js';
-import { validateCommandPipeline } from '../../src/helpers/helper-validate-command-pipeline.js';
+import { validateCommandChain } from '../../src/helpers/helper-validate-command-chain.js';
 import type { CommandName } from '../../src/index.js';
 import { validateFn } from './validate-function.js';
 
@@ -12,28 +12,57 @@ describe('Command Pipeline Validation and Parsing', () => {
     const rootCmd = [rootCommandBuilder.getCommand()];
 
     try {
-      validateCommandPipeline('en', {}, ['build'], undefined, rootCmd);
+      validateCommandChain(
+        'en',
+        {},
+        ['build'],
+        {
+          flags: {},
+          args: [],
+          eofArgs: [],
+          unknownFlags: {},
+        },
+        rootCmd
+      );
     } catch (error: any) {
       expect(error).toBeDefined();
       expect(error.message).toBe('Command build not configured.');
     }
 
     try {
-      validateCommandPipeline('zh', {}, ['build'], undefined, rootCmd);
+      validateCommandChain(
+        'zh',
+        {},
+        ['build'],
+        { flags: {}, args: [], eofArgs: [], unknownFlags: {} },
+        rootCmd
+      );
     } catch (error: any) {
       expect(error).toBeDefined();
       expect(error.message).toBe('命令 build 未配置。');
     }
 
     try {
-      validateCommandPipeline('en', {}, ['build'], undefined, rootCmd);
+      validateCommandChain(
+        'en',
+        {},
+        ['build'],
+        { flags: {}, args: [], eofArgs: [], unknownFlags: {} },
+        rootCmd
+      );
     } catch (error: any) {
       expect(error).toBeDefined();
       expect(error.message).toBe('Command build not configured.');
     }
 
     try {
-      validateCommandPipeline('zh', {}, ['build'], undefined, rootCmd);
+      validateCommandChain(
+        'zh',
+        {},
+        ['build'],
+        { flags: {}, args: [], eofArgs: [], unknownFlags: {} },
+        rootCmd
+      );
     } catch (error: any) {
       expect(error).toBeDefined();
       expect(error.message).toBe('命令 build 未配置。');
@@ -47,7 +76,7 @@ describe('Command Pipeline Validation and Parsing', () => {
     } catch (error: any) {
       expect(error).toBeDefined();
       expect(error.message).toBe(
-        'Command build A1 A2 A2-1 A3 A3-1 A3-2 A3-2-1 not found.'
+        'Command build A3 A3-2 A3-2-1 required flag projectCwd but not provided.'
       );
     }
 
@@ -56,7 +85,7 @@ describe('Command Pipeline Validation and Parsing', () => {
     } catch (error: any) {
       expect(error).toBeDefined();
       expect(error.message).toBe(
-        '命令 build A1 A2 A2-1 A3 A3-1 A3-2 A3-2-1 未找到。'
+        '命令 build A3 A3-2 A3-2-1 需要 projectCwd 参数但未提供。'
       );
     }
   });
@@ -67,7 +96,7 @@ describe('Command Pipeline Validation and Parsing', () => {
     } catch (error: any) {
       expect(error).toBeDefined();
       expect(error.message).toBe(
-        '命令 build A3 A3-2 A3-2-1 的 projectCwd 参数未提供。'
+        '命令 build A3 A3-2 A3-2-1 需要 projectCwd 参数但未提供。'
       );
     }
 
@@ -76,7 +105,7 @@ describe('Command Pipeline Validation and Parsing', () => {
     } catch (error: any) {
       expect(error).toBeDefined();
       expect(error.message).toBe(
-        '命令 build A3 A3-2 A3-2-1 的 compiler 参数未提供。'
+        '命令 build A3 A3-2 A3-2-1 需要 compiler 参数但未提供。'
       );
     }
 
@@ -92,21 +121,5 @@ describe('Command Pipeline Validation and Parsing', () => {
         'webpack',
       ])
     ).toBeTruthy();
-  });
-
-  it('should throw a descriptive error when the command is not provided (both en and zh)', () => {
-    try {
-      validateFn([], 'zh');
-    } catch (error: any) {
-      expect(error).toBeDefined();
-      expect(error.message).toBe('命令未提供。');
-    }
-
-    try {
-      validateFn([], 'en');
-    } catch (error: any) {
-      expect(error).toBeDefined();
-      expect(error.message).toBe('Command not provided.');
-    }
   });
 });

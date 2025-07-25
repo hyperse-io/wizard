@@ -50,20 +50,19 @@ describe('searchCommandChain', () => {
     childA_1_2.setParentCommand(childA_1);
 
     // Command map
-    const commandMap = {
-      parent,
-      child,
-      childA,
-      childA_1,
-      childA_1_1,
-      childA_1_2,
-      childA_2,
-      childB,
-    };
+    const commandMap = new Map<any, Command<any>>([
+      ['parent', parent],
+      ['child', child],
+      ['childA', childA],
+      ['childA_1', childA_1],
+      ['childA_1_1', childA_1_1],
+      ['childA_1_2', childA_1_2],
+      ['childA_2', childA_2],
+      ['childB', childB],
+    ]);
 
     // Should return [parent, child]
     const result_childA_1_2 = searchCommandChain(
-      'en',
       'childA_1_2' as any,
       commandMap
     );
@@ -74,7 +73,7 @@ describe('searchCommandChain', () => {
     expect(result_childA_1_2[3]).toBe(childA_1);
     expect(result_childA_1_2[4]).toBe(childA_1_2);
 
-    const result_childB = searchCommandChain('en', 'childB' as any, commandMap);
+    const result_childB = searchCommandChain('childB' as any, commandMap);
 
     expect(result_childB).toHaveLength(3);
     expect(result_childB[0]).toBe(parent);
@@ -82,7 +81,7 @@ describe('searchCommandChain', () => {
     expect(result_childB[2]).toBe(childB);
 
     try {
-      searchCommandChain('en', 'childNull' as any, commandMap);
+      searchCommandChain('childNull' as any, commandMap);
     } catch (error: any) {
       expect(error).toBeInstanceOf(CommandNotFoundError);
       expect(error.message).toBe('Command childNull not found.');
@@ -93,17 +92,10 @@ describe('searchCommandChain', () => {
     const single = createCommand<string>('single', {
       description: () => 'single command',
     });
-    const commandMap: Record<string, Command<string>> = { single };
-    const result = searchCommandChain('en', 'single' as any, commandMap as any);
+    const commandMap = new Map<string, Command<string>>([['single', single]]);
+    const result = searchCommandChain('single' as any, commandMap);
     expect(result).toHaveLength(1);
     expect(result[0]).toBe(single);
-  });
-
-  it('should throw CommandNotFoundError if command does not exist', () => {
-    const commandMap: Record<any, Command<any>> = {};
-    expect(() => {
-      searchCommandChain('en', 'notfound' as any, commandMap as any);
-    }).toThrow(CommandNotFoundError);
   });
 
   it('should support RootType as name', () => {
@@ -112,14 +104,8 @@ describe('searchCommandChain', () => {
     const root = createCommand<any>(rootSymbol, {
       description: () => 'root command',
     });
-    const commandMap: Record<any, Command<any>> = {
-      [rootSymbol as any]: root,
-    };
-    const result = searchCommandChain(
-      'en',
-      rootSymbol as any,
-      commandMap as any
-    );
+    const commandMap = new Map<any, Command<any>>([[rootSymbol as any, root]]);
+    const result = searchCommandChain(rootSymbol as any, commandMap);
     expect(result).toHaveLength(1);
     expect(result[0]).toBe(root);
   });

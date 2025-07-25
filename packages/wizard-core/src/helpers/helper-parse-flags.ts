@@ -30,7 +30,7 @@ export const parseFlags = <DefinedFlags extends Flags>(
   const eofArgs = args['--'];
 
   return {
-    args: args,
+    args: args.filter((arg) => arg !== '--'),
     eofArgs,
     flags,
     unknownFlags,
