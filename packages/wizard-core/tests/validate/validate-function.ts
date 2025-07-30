@@ -74,7 +74,8 @@ export function validateFn(argv: string[], locale: SupportedLocales = 'zh') {
   const [calledCommand, calledCommandName] = resolveCommand(
     locale,
     commandMap,
-    simpleDeepClone({ argv })
+    simpleDeepClone({ argv }),
+    {}
   );
 
   const parsed = parseFlags(

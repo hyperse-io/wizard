@@ -21,6 +21,7 @@ export const WizardName = 'HpsWizard';
 export const DefaultLogLevel = LogLevel.Info;
 
 /**
- * The default no color.
+ * Whether to use color when logging.
+ * @default true
  */
-export const DefaultNoColor = false;
+export const DefaultNoColor = true;

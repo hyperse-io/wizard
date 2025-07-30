@@ -239,6 +239,7 @@ describe('createHelpPlugin', () => {
 
       cli.use(
         definePlugin({
+          name: () => 'test plugin',
           setup: (wizard) => {
             return wizard.register(
               defineCommand('build', {
@@ -319,6 +320,7 @@ describe('createHelpPlugin', () => {
 
       cli.use(
         definePlugin({
+          name: () => 'test plugin',
           setup: (wizard) => {
             return wizard.register(testCommand);
           },

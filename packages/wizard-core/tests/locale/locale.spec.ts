@@ -63,7 +63,7 @@ describe('useLocale', () => {
       });
 
     const cli = createWizard({
-      name: 'cli.name',
+      name: 'cli',
       description: 'cli.description',
       version: (t) => t('cli.version', { version: '1.0.0' }),
       localeMessages: cliMessages,
@@ -73,6 +73,7 @@ describe('useLocale', () => {
     })
       .use(
         definePlugin({
+          name: () => 'pluginA',
           localeMessages: messages,
           setup: (wizard) => {
             return wizard.register(commandA.use(commandB));
@@ -90,7 +91,7 @@ describe('useLocale', () => {
     cli.parse(['commandA', 'commandB']);
     await sleep();
 
-    expect(cli.name).toBe('Wizard CLI');
+    expect(cli.name).toBe('cli');
     expect(cli.description).toBe('Wizard 的命令行工具。');
     expect(cli.version).toBe('1.0.0');
 
@@ -192,7 +193,7 @@ describe('useLocale', () => {
       });
 
     const cli = createWizard({
-      name: 'cli.name',
+      name: 'cli',
       description: 'cli.description',
       version: () => '1.0.0',
       localeMessages: cliMessages,
@@ -202,6 +203,7 @@ describe('useLocale', () => {
     })
       .use(
         definePlugin({
+          name: () => 'pluginA',
           localeMessages: messages,
           setup: (wizard) => {
             return wizard.register(commandA.use(commandB));
@@ -219,7 +221,7 @@ describe('useLocale', () => {
     cli.parse(['commandA', 'commandB']);
     await sleep();
 
-    expect(cli.name).toBe('Wizard CLI');
+    expect(cli.name).toBe('cli');
     expect(cli.description).toBe('A CLI for Wizard.');
     expect(cli.version).toBe('1.0.0');
 
@@ -327,7 +329,7 @@ describe('useLocale', () => {
       });
 
     const cli = createWizard({
-      name: 'cli.name',
+      name: 'cli',
       description: 'cli.description',
       version: () => '1.0.0',
       errorHandler: (e) => {
@@ -336,6 +338,7 @@ describe('useLocale', () => {
     })
       .use(
         definePlugin({
+          name: () => 'pluginA',
           setup: (wizard) => {
             return wizard.register(commandA.use(commandB));
           },
@@ -352,7 +355,7 @@ describe('useLocale', () => {
     cli.parse(['commandA', 'commandB']);
     await sleep();
 
-    expect(cli.name).toBe('en.cli.name');
+    expect(cli.name).toBe('cli');
     expect(cli.description).toBe('en.cli.description');
     expect(cli.version).toBe('1.0.0');
 

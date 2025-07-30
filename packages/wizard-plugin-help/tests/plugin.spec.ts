@@ -1,11 +1,21 @@
 import {
   createWizard,
   defineCommand,
+  type DefineMessageType,
   definePlugin,
 } from '@hyperse/wizard-core';
 import { createHelpPlugin } from '../src/create-help-plugin.js';
+import type { buildPluginMessages } from './i18n/message.js';
 import { helpCliMessages } from './i18n/message.js';
 import { sleep } from './utils/test-utils.js';
+
+declare module '@hyperse/wizard-core' {
+  export interface CliLocaleMessages
+    extends DefineMessageType<typeof helpCliMessages> {}
+
+  export interface PluginLocaleMessages
+    extends DefineMessageType<typeof buildPluginMessages> {}
+}
 
 const printer = vi.fn();
 const originalPrinter = process.stdout.write;
@@ -65,6 +75,7 @@ describe('createHelpPlugin - CLI help functionality', () => {
     )
     .use(
       definePlugin({
+        name: () => 'test plugin',
         setup: (cli) => {
           return cli.register(
             defineCommand('build', {

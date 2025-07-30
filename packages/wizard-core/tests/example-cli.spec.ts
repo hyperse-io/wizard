@@ -117,11 +117,13 @@ describe('cli', () => {
     })
       .use(
         definePlugin({
+          name: () => 'build plugin',
           setup: (wizard) => wizard.register(buildCmd),
         })
       )
       .use(
         definePlugin({
+          name: () => 'deploy plugin',
           setup: (wizard) => wizard.register(deployCmd),
         })
       )
@@ -156,11 +158,13 @@ describe('cli', () => {
     })
       .use(
         definePlugin({
+          name: () => 'build plugin',
           setup: (wizard) => wizard.register(buildCmd),
         })
       )
       .use(
         definePlugin({
+          name: () => 'deploy plugin',
           setup: (wizard) => wizard.register(deployCmd),
         })
       )
@@ -195,11 +199,13 @@ describe('cli', () => {
     })
       .use(
         definePlugin({
+          name: () => 'build plugin',
           setup: (wizard) => wizard.register(buildCmd),
         })
       )
       .use(
         definePlugin({
+          name: () => 'deploy plugin',
           setup: (wizard) => wizard.register(deployCmd),
         })
       )
@@ -236,11 +242,13 @@ describe('cli', () => {
     })
       .use(
         definePlugin({
+          name: () => 'build plugin',
           setup: (wizard) => wizard.register(buildCmd),
         })
       )
       .use(
         definePlugin({
+          name: () => 'deploy plugin',
           setup: (wizard) => wizard.register(deployCmd),
         })
       )
@@ -284,6 +292,7 @@ describe('cli', () => {
     })
       .use(
         definePlugin({
+          name: () => 'custom plugin',
           setup: (wizard) =>
             wizard.register('customPlugin', {
               description: () => 'customPlugin description',

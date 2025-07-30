@@ -68,6 +68,7 @@ const cli = createWizard({
   )
   .use(
     definePlugin({
+      name: () => 'test plugin',
       localeMessages: buildPluginMessages,
       setup: (cli) => {
         return cli.register(

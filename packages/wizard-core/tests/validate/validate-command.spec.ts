@@ -140,6 +140,7 @@ describe('Command Pipeline Validation and Parsing', () => {
 
       wizard.use(
         definePlugin({
+          name: () => 'build plugin',
           setup: (cli) => {
             cli.register('build ', {
               description: () => 'build command',
@@ -165,6 +166,7 @@ describe('Command Pipeline Validation and Parsing', () => {
 
       wizard.use(
         definePlugin({
+          name: () => 'build plugin',
           setup: (cli) => {
             cli.register('build ', {
               description: () => 'build command',

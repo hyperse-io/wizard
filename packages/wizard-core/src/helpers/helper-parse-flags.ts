@@ -1,4 +1,5 @@
 import { typeFlag } from 'type-flag';
+import type { ParseOptions } from '../types/type-argv.js';
 import type { Flags } from '../types/type-flag.js';
 
 /**
@@ -19,10 +20,7 @@ export type ParseFlagsResult<DefinedFlags extends Flags = Flags> = ReturnType<
  */
 export const parseFlags = <DefinedFlags extends Flags>(
   definedFlags: DefinedFlags,
-  argvOptions: {
-    argv: string[];
-    run?: boolean;
-  }
+  argvOptions: ParseOptions
 ) => {
   const { argv } = argvOptions;
   const parsed = typeFlag(definedFlags, argv);

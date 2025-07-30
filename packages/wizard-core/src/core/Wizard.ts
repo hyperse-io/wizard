@@ -99,7 +99,10 @@ export class Wizard<
   #interceptors: GlobalInterceptorHandler<GlobalFlags>[] = [];
   #globalFlags: Flags;
 
-  constructor(private options: WizardOptions) {
+  constructor(
+    private options: Exclude<WizardOptions, 'logLevel' | 'noColor'> &
+      Required<Pick<WizardOptions, 'logLevel' | 'noColor'>>
+  ) {
     super();
     this.#locale = options.locale ?? resolveLocale();
     this.#globalFlags = createBuiltinFlags(this.#locale) as Flags;
@@ -257,7 +260,7 @@ export class Wizard<
       ...this.#globalFlags,
       ...(command.flags ?? {}),
     };
-    const commandBasicInfo = this.getCommandBasicInfoWithI18n(command);
+    const commandBasicInfo = this.getCommandHandlerResultWithI18n(command);
 
     // check has subCommand
     const subCommands = command.subCommands || [];
@@ -303,12 +306,12 @@ export class Wizard<
 
   /**
    * @description
-   * Get the basic information of the command with i18n.
+   * Get the handler result with i18n.
    *
    * @param command The command.
-   * @returns The basic information of the command.
+   * @returns The handler result.
    */
-  private getCommandBasicInfoWithI18n<Name extends CommandName>(
+  private getCommandHandlerResultWithI18n<Name extends CommandName>(
     command: Command<Name>
   ) {
     const name = command.name;
@@ -343,11 +346,8 @@ export class Wizard<
    * 1. Parses command line arguments and flags, sets them on ctx, and calls setupCommandPipeline.
    * 2. Mounts error handling middleware to catch and handle errors during execution.
    */
-  private preparePipelineContext(
-    optionsOrArgv: string[] | ParseOptions = resolveArgv()
-  ) {
+  private preparePipelineContext(argvOptions: ParseOptions) {
     try {
-      const argvOptions = resolveOptionsOrArgv(optionsOrArgv);
       const commandMap = commandTreeToMap(this.#commandBuilder);
       const allCommandNames = Array.from(commandMap.keys());
 
@@ -416,9 +416,10 @@ export class Wizard<
    * @returns The wizard instance.
    */
   public parse(optionsOrArgv: string[] | ParseOptions = resolveArgv()) {
+    const argvOptions = resolveOptionsOrArgv(optionsOrArgv);
     this.resetPipeline();
     this.setupInterceptorPipeline();
-    const pipelineContext = this.preparePipelineContext(optionsOrArgv);
+    const pipelineContext = this.preparePipelineContext(argvOptions);
     if (!pipelineContext) {
       return;
     }
@@ -428,10 +429,14 @@ export class Wizard<
       }
       await next();
     });
-    this.#cliPipeline.execute({
-      ...pipelineContext,
-      optionsOrArgv,
-    });
+
+    if (argvOptions.run) {
+      process.title = this.name;
+      this.#cliPipeline.execute({
+        ...pipelineContext,
+        optionsOrArgv,
+      });
+    }
   }
 
   /**

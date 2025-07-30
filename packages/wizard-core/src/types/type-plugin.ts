@@ -15,11 +15,11 @@ export type PluginContext = {
   /**
    * The threshold log level.
    */
-  logLevel?: LogLevel;
+  logLevel: LogLevel;
   /**
    * Whether to use color.
    */
-  noColor?: boolean;
+  noColor: boolean;
 };
 
 /**
@@ -33,11 +33,11 @@ export type PluginContext = {
  * @returns {Plugin} The plugin type.
  */
 export interface Plugin<
-  NameToContext extends CommandNameToContext,
-  Result extends CommandNameToContext,
-  GlobalFlags extends Flags,
+  NameToContext extends CommandNameToContext = {},
+  Result extends CommandNameToContext = {},
+  GlobalFlags extends Flags = Flags,
 > {
-  name?: LocaleMessageResolver;
+  name: LocaleMessageResolver;
   localeMessages?: LocaleMessagesPluginsObject;
   setup: (
     cli: Wizard<NameToContext, GlobalFlags>,

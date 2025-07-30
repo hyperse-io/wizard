@@ -1,4 +1,4 @@
-import { mergeOptions } from '@hyperse/deep-merge';
+import { type DeepPartial, mergeOptions } from '@hyperse/deep-merge';
 import { DefaultLogLevel, DefaultNoColor } from './constants.js';
 import { Wizard } from './core/Wizard.js';
 import type { WizardOptions } from './types/type-wizard.js';
@@ -11,12 +11,15 @@ import type { WizardOptions } from './types/type-wizard.js';
  * @returns The wizard instance.
  */
 export const createWizard = (options: WizardOptions) => {
-  const finalOptions = mergeOptions<WizardOptions>(
-    {
-      noColor: DefaultNoColor,
-      logLevel: DefaultLogLevel,
-    } as WizardOptions,
-    options
-  );
+  const defaultOptions: DeepPartial<WizardOptions> = {
+    noColor: DefaultNoColor,
+    logLevel: DefaultLogLevel,
+  };
+  const finalOptions = mergeOptions(defaultOptions, options) as Exclude<
+    WizardOptions,
+    'logLevel' | 'noColor'
+  > &
+    Required<Pick<WizardOptions, 'logLevel' | 'noColor'>>;
+
   return new Wizard(finalOptions);
 };
