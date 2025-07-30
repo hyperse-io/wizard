@@ -7,7 +7,7 @@ import { formatCommandName } from '../../src/helpers/helper-format-command-name.
 import { parseFlags } from '../../src/helpers/helper-parse-flags.js';
 import { resolveCommand } from '../../src/helpers/helper-resolve-command.js';
 import { searchCommandChain } from '../../src/helpers/helper-search-command-chain.js';
-import { validateCommandChain } from '../../src/helpers/helper-validate-command-chain.js';
+import { validateCommandChain } from '../../src/helpers/helper-validate-command.js';
 import { type CommandName, defineCommand } from '../../src/index.js';
 import type { SupportedLocales } from '../../src/types/type-locale-messages.js';
 
@@ -88,13 +88,6 @@ export function validateFn(argv: string[], locale: SupportedLocales = 'zh') {
 
   const commandChain = searchCommandChain(calledCommandName, commandMap);
   const inputCommandFlags = collectCommandFlags(commandChain);
-  const inputCommandNameChain = commandChain.map((cmd) => cmd.name);
 
-  return validateCommandChain(
-    locale,
-    inputCommandFlags,
-    inputCommandNameChain,
-    parsed,
-    commandChain
-  );
+  return validateCommandChain(locale, inputCommandFlags, parsed, commandChain);
 }

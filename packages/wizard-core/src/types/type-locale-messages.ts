@@ -1,4 +1,4 @@
-import type { Paths, RequiredDeep, UnionToTuple, ValueOf } from 'type-fest';
+import type { RequiredDeep, UnionToTuple, ValueOf } from 'type-fest';
 import type { DeepPartial } from '@hyperse/deep-merge';
 import type { createTranslator } from '@hyperse/translator';
 import type { messages } from '../i18n/messages.js';
@@ -18,7 +18,7 @@ export type DefaultLocaleMessages = typeof messages;
  * @description
  * Locale messages keys.
  *
- * @returns {SupportedLocales} The locale messages keys.
+ * @returns The locale messages keys.
  */
 export type SupportedLocales = keyof DefaultLocaleMessages;
 
@@ -26,16 +26,16 @@ export type SupportedLocales = keyof DefaultLocaleMessages;
  * @description
  * Default locale messages.
  *
- * @returns {DefaultLocaleMessage} The default locale messages.
+ * @returns The default locale messages.
  */
-export interface DefaultLocaleMessage
-  extends DefineMessageType<DefaultLocaleMessages> {}
+export type DefaultLocaleMessage =
+  DefineMessageType<DefaultLocaleMessages>['core'];
 
 /**
  * @description
  * Plugin locale messages.
  *
- * @returns {PluginLocaleMessages} The plugin locale messages.
+ * @returns The plugin locale messages.
  */
 export interface PluginLocaleMessages {}
 
@@ -43,7 +43,7 @@ export interface PluginLocaleMessages {}
  * @description
  * Cli locale messages.
  *
- * @returns {CliLocaleMessages} The cli locale messages.
+ * @returns The cli locale messages.
  */
 export interface CliLocaleMessages {}
 
@@ -51,11 +51,12 @@ export interface CliLocaleMessages {}
  * @description
  * Locale messages.
  *
- * @returns {LocaleMessages} The locale messages.
+ * @returns The locale messages.
  */
-export interface LocaleMessages extends DefaultLocaleMessage {
-  cli?: CliLocaleMessages;
+export interface LocaleMessages {
+  core?: DefaultLocaleMessage;
   plugins?: PluginLocaleMessages;
+  cli?: CliLocaleMessages;
 }
 
 /**
@@ -63,7 +64,7 @@ export interface LocaleMessages extends DefaultLocaleMessage {
  * Locale messages object.
  *
  * @template key - The key of the locale messages.
- * @returns {LocaleMessages | string} The locale messages.
+ * @returns The locale messages.
  */
 export type LocaleMessagesObject = {
   [key in SupportedLocales]: LocaleMessages;
@@ -74,7 +75,7 @@ export type LocaleMessagesObject = {
  * Locale messages plugins object.
  *
  * @template key - The key of the locale messages.
- * @returns {LocaleMessagesPluginsObject} The locale messages plugins object.
+ * @returns The locale messages plugins object.
  */
 export type LocaleMessagesPluginsObject = DeepPartial<{
   [key in SupportedLocales]: PluginLocaleMessages;
@@ -85,7 +86,7 @@ export type LocaleMessagesPluginsObject = DeepPartial<{
  * Locale messages cli object.
  *
  * @template key - The key of the locale messages.
- * @returns {LocaleMessagesCliObject} The locale messages cli object.
+ * @returns The locale messages cli object.
  */
 export type LocaleMessagesCliObject = DeepPartial<{
   [key in SupportedLocales]: CliLocaleMessages;
@@ -104,26 +105,40 @@ export type LocaleMessagesCliObject = DeepPartial<{
  * ```
  *
  * @template key - The key of the locale messages.
- * @returns {LocaleMessages | string} The locale messages.
+ * @returns The locale messages.
  */
-export type LocaleMessagesPaths = Paths<LocaleMessages>;
+export type LocaleMessagesPaths = Parameters<
+  ReturnType<
+    typeof createTranslator<
+      RequiredDeep<LocaleMessagesObject>,
+      SupportedLocales
+    >
+  >
+>[0];
 
 /**
  * @description
  * Locale messages cli paths.
  *
  * @template key - The key of the locale messages.
- * @returns {LocaleMessagesCliPaths} The locale messages cli paths.
+ * @returns The locale messages cli paths.
  */
-export type CliLocaleMessagesPaths = Paths<
-  Pick<LocaleMessages, 'cli' | 'core'>
->;
+export type CliLocaleMessagesPaths = Parameters<
+  ReturnType<
+    typeof createTranslator<
+      RequiredDeep<{
+        [key in SupportedLocales]: Pick<LocaleMessages, 'cli'>;
+      }>,
+      SupportedLocales
+    >
+  >
+>[0];
 
 /**
  * @description
  * Locale message resolver extra options.
  *
- * @returns {LocaleMessageResolverExtraOptions} The locale message resolver extra options.
+ * @returns The locale message resolver extra options.
  */
 export type LocaleMessageResolverExtraOptions = {
   commands: string[];
@@ -133,7 +148,7 @@ export type LocaleMessageResolverExtraOptions = {
  * @description
  * I18n type.
  *
- * @returns {I18n} The I18n type.
+ * @returns The I18n type.
  */
 export type I18n = {
   t: ReturnType<
@@ -149,7 +164,7 @@ export type I18n = {
  * Locale message resolver.
  *
  * @template key - The key of the locale messages.
- * @returns {LocaleMessages | string} The locale messages.
+ * @returns The locale messages.
  */
 export type LocaleMessageResolver =
   | LocaleMessagesPaths
@@ -163,7 +178,7 @@ export type LocaleMessageResolver =
  * Cli locale message resolver.
  *
  * @template key - The key of the locale messages.
- * @returns {LocaleMessages | string} The locale messages.
+ * @returns The locale messages.
  */
 export type CliLocaleMessageResolver =
   | CliLocaleMessagesPaths

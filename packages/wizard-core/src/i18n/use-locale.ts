@@ -22,7 +22,7 @@ import { messages as defaultMessages } from './messages.js';
  */
 export const useLocale = (
   locale: SupportedLocales,
-  messages: LocaleMessagesObject = defaultMessages as unknown as LocaleMessagesObject,
+  messages: LocaleMessagesObject = defaultMessages,
   logger?: Logger
 ): I18n['t'] => {
   return createTranslator<LocaleMessagesObject, SupportedLocales>({

@@ -9,6 +9,13 @@ interface VersionPluginOptions {
    * @default true
    */
   flag?: boolean;
+
+  /**
+   * Whether to print the version with not hidden `v` prefix.
+   *
+   * @default false
+   */
+  hiddenPrefix?: boolean;
 }
 
 export const createVersionPlugin = (options: VersionPluginOptions = {}) => {
@@ -16,13 +23,11 @@ export const createVersionPlugin = (options: VersionPluginOptions = {}) => {
     name: 'plugins.versionPlugin.name',
     localeMessages: versionMessages,
     setup: (wizard) => {
-      const { flag = true } = options;
-      const gracefullyVersion = gracefulVersion(wizard.version);
+      const { flag = true, hiddenPrefix = false } = options;
+      const gracefullyVersion = gracefulVersion(wizard.version, hiddenPrefix);
       let cli = wizard.register(
         defineCommand('version', {
-          description: 'plugins.versionPlugin.description',
-          help: 'plugins.versionPlugin.help',
-          example: 'plugins.versionPlugin.example',
+          description: 'plugins.versionPlugin.command.description',
         }).handler(() => {
           process.stdout.write(gracefullyVersion);
           process.stdout.write('\n');
@@ -30,21 +35,21 @@ export const createVersionPlugin = (options: VersionPluginOptions = {}) => {
       );
 
       if (flag) {
-        cli = cli.flag(
-          'version',
-          {
+        cli = cli
+          .flag('version', {
             type: Boolean,
-            description: () => 'plugins.versionPlugin.versionDescription',
+            description: 'plugins.versionPlugin.flags.version',
             default: false,
             alias: 'V',
-          },
-          (ctx) => {
+          })
+          .interceptor(async (ctx, next) => {
             if (ctx.flags.version) {
               process.stdout.write(gracefullyVersion);
               process.stdout.write('\n');
+            } else {
+              await next();
             }
-          }
-        );
+          });
       }
       return cli;
     },

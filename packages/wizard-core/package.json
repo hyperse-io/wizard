@@ -50,7 +50,6 @@
     "@hyperse/logger-plugin-stdout": "^1.0.7",
     "@hyperse/pipeline": "^1.0.6",
     "@hyperse/translator": "^1.2.4",
-    "@hyperse/wizard-utils": "workspace:*",
     "is-platform": "^1.0.0",
     "type-fest": "^4.41.0",
     "type-flag": "^3.0.0"

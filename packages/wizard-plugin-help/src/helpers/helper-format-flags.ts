@@ -15,17 +15,26 @@ export function formatFlagType(type: any, hasDefault = false) {
   return res ? (hasDefault ? `[${res}]` : `<${res}>`) : '';
 }
 
+/**
+ * @description
+ * Format the flag type for display in help messages.
+ *
+ * @param t - The i18n instance.
+ * @param flags - The flags of a command.
+ * @returns The formatted flag type string, e.g., "<string>", "[boolean]", etc.
+ */
 export const formatFlags = (t: I18n['t'], flags: FlagsWithI18n) => {
   const tableMessage: string[][] = [];
   for (const [name, flag] of Object.entries(flags)) {
     const hasDefault = flag.default !== undefined;
-    const flagNameWithAlias: string[] = [gracefulFlagName(name)];
-    if (flag.alias) {
-      flagNameWithAlias.push(gracefulFlagName(flag.alias));
-    }
+    const hasRequired = flag.required;
+    const flagNameWithAlias: string[] = [
+      flag.alias ? gracefulFlagName(flag.alias) + ', ' : '    ',
+    ];
+    flagNameWithAlias.push(gracefulFlagName(name));
     const items = [
       INDENT,
-      chalk.blue(flagNameWithAlias.join(', ')),
+      chalk.blue(flagNameWithAlias.join('')),
       formatFlagType(flag.type, hasDefault),
     ];
     items.push(DELIMITER, flag.description);
@@ -33,7 +42,7 @@ export const formatFlags = (t: I18n['t'], flags: FlagsWithI18n) => {
       items.push(
         `(${t('plugins.helpPlugin.message.default', {
           value: String(flag.default),
-        })})`
+        })})${hasRequired ? ` [${t('plugins.helpPlugin.message.required')}]` : ''}`
       );
     }
     tableMessage.push(items);

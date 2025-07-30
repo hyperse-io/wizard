@@ -7,21 +7,26 @@ import {
   Root,
   type Wizard,
 } from '@hyperse/wizard-core';
-import { DELIMITER, INDENT } from './constant.js';
-import { table } from './helpers/helper-text-table.js';
+import { DELIMITER, INDENT } from '../constant.js';
+import { table } from '../helpers/helper-text-table.js';
 
-export const renderCommand = <Name extends CommandName>(
+export const renderSubcommands = <Name extends CommandName>(
   t: I18n['t'],
   command: CommandWithI18n<Name>,
   wizard: Wizard
 ) => {
-  if (command.name !== Root) {
+  if (command.name === Root) {
     return;
   }
   const subcommands = command.rawCommand.subCommands || [];
   if (!subcommands.length) {
     return;
   }
+
+  const commandChainNames = wizard.commandChain
+    .filter((command) => command.name !== Root)
+    .map((command) => formatCommandName(command.name));
+  const parentCommandNames = [wizard.name, ...commandChainNames];
 
   const subcommandNames = subcommands.map((subcommand) => subcommand.name);
   const commandMap = wizard.commandMap;
@@ -33,7 +38,9 @@ export const renderCommand = <Name extends CommandName>(
       }
       return [
         INDENT,
-        chalk.cyan([wizard.name, formatCommandName(subcommandName)].join(' ')),
+        chalk.cyan(
+          [...parentCommandNames, formatCommandName(subcommandName)].join(' ')
+        ),
         DELIMITER,
         subcommand.description,
       ];
@@ -41,7 +48,7 @@ export const renderCommand = <Name extends CommandName>(
     .filter((item) => item.length > 0);
 
   const subcommandsMessage: string[] = [];
-  const subcommandsTitle = t('plugins.helpPlugin.message.commands');
+  const subcommandsTitle = t('plugins.helpPlugin.message.subcommand');
   subcommandsMessage.push(chalk.bold(subcommandsTitle));
 
   subcommandsMessage.push(table(subcommandNameToDescription));

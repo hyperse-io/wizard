@@ -1,12 +1,25 @@
+import type { LogLevel } from '@hyperse/logger';
 import type { Wizard } from '../core/Wizard.js';
 import type { CommandNameToContext } from './type-command-builder.js';
+import type { Flags } from './type-flag.js';
 import type {
   LocaleMessageResolver,
   LocaleMessagesPluginsObject,
 } from './type-locale-messages.js';
 
 export type PluginContext = {
+  /**
+   * The name of the plugin.
+   */
   name?: string;
+  /**
+   * The threshold log level.
+   */
+  logLevel?: LogLevel;
+  /**
+   * Whether to use color.
+   */
+  noColor?: boolean;
 };
 
 /**
@@ -22,8 +35,12 @@ export type PluginContext = {
 export interface Plugin<
   NameToContext extends CommandNameToContext,
   Result extends CommandNameToContext,
+  GlobalFlags extends Flags,
 > {
   name?: LocaleMessageResolver;
   localeMessages?: LocaleMessagesPluginsObject;
-  setup: (cli: Wizard<NameToContext>, ctx?: PluginContext) => Wizard<Result>;
+  setup: (
+    cli: Wizard<NameToContext, GlobalFlags>,
+    ctx: PluginContext
+  ) => Wizard<Result, GlobalFlags>;
 }

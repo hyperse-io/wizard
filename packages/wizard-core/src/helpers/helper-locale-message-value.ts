@@ -2,6 +2,7 @@ import type {
   I18n,
   LocaleMessageResolver,
   LocaleMessageResolverExtraOptions,
+  LocaleMessagesPaths,
 } from '../types/type-locale-messages.js';
 
 /**
@@ -14,11 +15,12 @@ import type {
  */
 export const localeMessageValue = (
   t: I18n['t'],
-  localResolver: LocaleMessageResolver,
+  localResolver: LocaleMessagesPaths | LocaleMessageResolver,
   extraOptions?: LocaleMessageResolverExtraOptions
 ) => {
   if (typeof localResolver === 'function') {
     return localResolver(t, extraOptions);
   }
+
   return t(localResolver);
 };

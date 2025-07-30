@@ -172,11 +172,12 @@ export const createCommandBuilder = <
 >(
   name: Name,
   options: CommandBuilderOptions
-) =>
-  new CommandBuilderImpl<
+) => {
+  return new CommandBuilderImpl<
     Name,
     Context,
     SubCommandContext,
     NameToContext,
     CommandFlags
   >(name, options);
+};

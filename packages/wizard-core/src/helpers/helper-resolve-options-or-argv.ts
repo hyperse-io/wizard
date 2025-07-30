@@ -1,4 +1,4 @@
-import type { ParseOptions } from '../types/type-wizard.js';
+import type { ParseOptions } from '../types/type-argv.js';
 import { resolveArgv } from './helper-resolve-argv.js';
 
 /**

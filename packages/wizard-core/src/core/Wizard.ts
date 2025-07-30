@@ -1,12 +1,22 @@
-import { simpleDeepClone } from '@hyperse/deep-merge';
-import { createLogger, type Logger, LogLevel } from '@hyperse/logger';
+import { type DeepPartial, simpleDeepClone } from '@hyperse/deep-merge';
+import type { LogLevel } from '@hyperse/logger';
+import { createLogger, type Logger, type LoggerContext } from '@hyperse/logger';
 import { createStdoutPlugin } from '@hyperse/logger-plugin-stdout';
 import { Pipeline } from '@hyperse/pipeline';
-import { Root, rootName, WizardName } from '../constants.js';
+import {
+  DefaultLogLevel,
+  DefaultNoColor,
+  Root,
+  rootName,
+  WizardName,
+} from '../constants.js';
 import { CommandHandlerNotFoundError } from '../errors/CommandHandlerNotFoundError.js';
+import { InvalidCommandNameError } from '../errors/CommandInvalidNameError.js';
 import { EventEmitter } from '../events/EventEmitter.js';
+import { createBuiltinFlags } from '../helpers/helper-create-builtin-flags.js';
+import { createBuiltinInterceptor } from '../helpers/helper-create-builtin-interceptor.js';
 import { globalFlagsWithI18n } from '../helpers/helper-global-flags-i18n.js';
-import { mergeMessages } from '../helpers/helper-merge-messages.js';
+import { mergeLocaleMessages } from '../helpers/helper-locale-message-merge.js';
 import { resolveCommand } from '../helpers/helper-resolve-command.js';
 import {
   commandChainWithI18n,
@@ -22,9 +32,11 @@ import {
   searchCommandChain,
   searchCommandNameChain,
   validateCommandChain,
+  validateCommandName,
 } from '../helpers/index.js';
 import { useLocale } from '../i18n/index.js';
 import { messages } from '../i18n/messages.js';
+import type { ParseOptions } from '../types/type-argv.js';
 import type {
   Command,
   CommandContext,
@@ -39,7 +51,11 @@ import type {
   MergeCommandNameToContext,
 } from '../types/type-command-builder.js';
 import type { CommandBuilderOptions } from '../types/type-command-builder.js';
-import type { FlagOptions } from '../types/type-flag.js';
+import type {
+  FlagOptions,
+  Flags,
+  FlagsWithBuiltin,
+} from '../types/type-flag.js';
 import type {
   LocaleMessageResolverExtraOptions,
   LocaleMessagesObject,
@@ -47,13 +63,11 @@ import type {
 } from '../types/type-locale-messages.js';
 import type { Plugin } from '../types/type-plugin.js';
 import type {
-  GlobalFlagHandlerParameters,
-  GlobalFlags,
-  ParseOptions,
-  PipelineContext,
   WizardEventContext,
   WizardOptions,
 } from '../types/type-wizard.js';
+import type { GlobalInterceptorHandler } from '../types/type-wizard-global-flags.js';
+import type { CliPipelineContext } from '../types/type-wizard-pipeline.js';
 import { createCommandBuilder } from './CommandBuilder.js';
 
 /**
@@ -72,39 +86,61 @@ import { createCommandBuilder } from './CommandBuilder.js';
  */
 export class Wizard<
   NameToContext extends CommandNameToContext = {},
+  GlobalFlags extends Flags = FlagsWithBuiltin,
 > extends EventEmitter<WizardEventContext<NameToContext>> {
   #logger: Logger;
   #locale: SupportedLocales = 'en';
   #localeMessages: LocaleMessagesObject;
   #errorHandlers: ((err: unknown) => void)[] = [];
-  #cliPipeline: Pipeline<PipelineContext>;
+  #cliPipeline: Pipeline<CliPipelineContext>;
   #commandBuilder: CommandBuilderType<CommandName>;
   #commandChain: Command<CommandName>[] = [];
   #commandMap: Map<CommandName, Command<CommandName>> = new Map();
-  #globalFlags: GlobalFlags = new Map();
+  #interceptors: GlobalInterceptorHandler<GlobalFlags>[] = [];
+  #globalFlags: Flags;
 
   constructor(private options: WizardOptions) {
     super();
     this.#locale = options.locale ?? resolveLocale();
-    this.#logger = createLogger({
-      name: WizardName,
-      thresholdLevel: options.thresholdLogLevel ?? LogLevel.Info,
-    })
-      .use(
-        createStdoutPlugin({
-          noColor: options.noColor ?? false,
-        })
-      )
-      .build();
+    this.#globalFlags = createBuiltinFlags(this.#locale) as Flags;
+    this.setupLogger({
+      noColor: options.noColor,
+      logLevel: options.logLevel,
+    });
     if (options.errorHandler) {
       this.#errorHandlers.push(options.errorHandler);
     }
-    this.#localeMessages = mergeMessages(
+    this.#localeMessages = mergeLocaleMessages(
       'cli',
-      messages as LocaleMessagesObject,
-      options.localeMessages ?? {}
+      messages,
+      options.localeMessages
     );
     this.setupRootCommand();
+    this.interceptor(createBuiltinInterceptor(this));
+  }
+
+  /**
+   * @description
+   * Sets up the logger.
+   *
+   * @param overrideOptions The override options.
+   */
+  public setupLogger(loggerOptions: {
+    noColor?: boolean;
+    logLevel?: LogLevel;
+  }) {
+    const { logLevel = DefaultLogLevel, noColor = DefaultNoColor } =
+      loggerOptions;
+    this.#logger = createLogger({
+      name: WizardName,
+      thresholdLevel: logLevel,
+    })
+      .use(
+        createStdoutPlugin({
+          noColor,
+        })
+      )
+      .build();
   }
 
   /**
@@ -151,19 +187,28 @@ export class Wizard<
    * @param parsedFlags The parsed flags.
    */
   private setupInterceptorPipeline() {
-    this.#cliPipeline.use(async (ctx, next) => {
-      const { flags } = ctx;
-      Object.keys(flags).forEach((flagName) => {
-        const globalFlag = this.#globalFlags.get(flagName);
-        globalFlag?.handler?.({
-          ...ctx,
-          logger: this.#logger,
-          locale: this.#locale,
-          i18n: this.i18n,
-        });
+    if (this.#interceptors.length === 0) {
+      return;
+    }
+
+    for (const interceptor of this.#interceptors) {
+      this.#cliPipeline.use(async (ctx, next) => {
+        if (!interceptor) {
+          return;
+        }
+        const deepCtx = simpleDeepClone(ctx);
+        await interceptor(
+          {
+            unknownFlags: deepCtx.unknownFlags,
+            flags: pickFlags(deepCtx.flags, this.#globalFlags) as GlobalFlags,
+            logger: this.#logger,
+            locale: this.#locale,
+            i18n: this.i18n,
+          },
+          next
+        );
       });
-      await next();
-    });
+    }
   }
 
   /**
@@ -204,11 +249,14 @@ export class Wizard<
     calledCommandName: CommandName,
     commandPipeline: Command<Name>[],
     command: Command<Name>,
-    ctx: PipelineContext,
-    next: Parameters<Parameters<Pipeline<PipelineContext>['use']>[number]>[1]
+    ctx: CliPipelineContext,
+    next: Parameters<Parameters<Pipeline<CliPipelineContext>['use']>[number]>[1]
   ) {
     const name = command.name;
-    const definedFlags = command.flags || {};
+    const inputCommandFlags = {
+      ...this.#globalFlags,
+      ...(command.flags ?? {}),
+    };
     const commandBasicInfo = this.getCommandBasicInfoWithI18n(command);
 
     // check has subCommand
@@ -241,7 +289,8 @@ export class Wizard<
     handler({
       ...commandBasicInfo,
       ctx: ctx.ctx,
-      flags: pickFlags(ctx.flags, definedFlags),
+      unknownFlags: ctx.unknownFlags,
+      flags: pickFlags(ctx.flags, inputCommandFlags),
     });
 
     const commandNameChain = searchCommandNameChain(commandPipeline);
@@ -288,13 +337,6 @@ export class Wizard<
     };
   }
 
-  private getI18nExtraOptions(): LocaleMessageResolverExtraOptions {
-    const commandNameChain = searchCommandNameChain(this.#commandChain);
-    return {
-      commands: commandNameChain,
-    };
-  }
-
   /**
    * @description
    * Mounts the CLI pipeline, including argument parsing and error handling.
@@ -307,15 +349,25 @@ export class Wizard<
     try {
       const argvOptions = resolveOptionsOrArgv(optionsOrArgv);
       const commandMap = commandTreeToMap(this.#commandBuilder);
+      const allCommandNames = Array.from(commandMap.keys());
+
+      for (const commandName of allCommandNames) {
+        if (!validateCommandName(commandName)) {
+          throw new InvalidCommandNameError(this.#locale, {
+            cmdName: formatCommandName(commandName),
+          });
+        }
+      }
 
       const [calledCommand, calledCommandName] = resolveCommand(
         this.#locale,
         commandMap,
-        simpleDeepClone(argvOptions)
+        simpleDeepClone(argvOptions),
+        this.#globalFlags
       );
 
       const inputCommandFlags = {
-        ...Object.fromEntries(this.#globalFlags),
+        ...this.#globalFlags,
         ...(calledCommand?.flags ?? {}),
       };
 
@@ -331,7 +383,6 @@ export class Wizard<
 
       //get command pipeline, eg: build.evolve.mini
       const commandChain = searchCommandChain(calledCommandName, commandMap);
-      const inputCommandNameChain = commandChain.map((cmd) => cmd.name);
       for (const [cmdName, cmd] of commandMap) {
         this.#commandMap.set(cmdName, cmd);
       }
@@ -346,7 +397,6 @@ export class Wizard<
       validateCommandChain(
         this.#locale,
         inputCommandFlags,
-        inputCommandNameChain,
         parsedFlags,
         commandChain
       );
@@ -425,7 +475,7 @@ export class Wizard<
     options?: CommandBuilderOptions & {
       handler?: CommandHandlerFunction<any>;
     }
-  ): any {
+  ) {
     if (typeof builderOrName === 'string' && options) {
       // (name, options) overload
       const { handler, ...rest } = options;
@@ -436,10 +486,9 @@ export class Wizard<
       return this.register(builder);
     } else {
       // (builder) overload
-      const builder = builderOrName;
+      const builder = builderOrName as CommandBuilderType;
       this.#commandBuilder = this.#commandBuilder.use(builder);
-      // Type cast for correct context
-      return this as any;
+      return this;
     }
   }
 
@@ -453,10 +502,14 @@ export class Wizard<
   public use<PluginCommandMapping extends CommandNameToContext>(
     plugin: Plugin<
       NameToContext,
-      MergeCommandNameToContext<NameToContext, PluginCommandMapping>
+      MergeCommandNameToContext<NameToContext, PluginCommandMapping>,
+      GlobalFlags
     >
-  ): Wizard<MergeCommandNameToContext<NameToContext, PluginCommandMapping>> {
-    this.#localeMessages = mergeMessages(
+  ): Wizard<
+    MergeCommandNameToContext<NameToContext, PluginCommandMapping>,
+    GlobalFlags
+  > {
+    this.#localeMessages = mergeLocaleMessages(
       'plugins',
       this.#localeMessages,
       plugin.localeMessages
@@ -466,9 +519,24 @@ export class Wizard<
       name: plugin.name
         ? localeMessageValue(this.i18n.t, plugin.name)
         : undefined,
+      logLevel: this.options.logLevel,
+      noColor: this.options.noColor,
     }) as unknown as Wizard<
-      MergeCommandNameToContext<NameToContext, PluginCommandMapping>
+      MergeCommandNameToContext<NameToContext, PluginCommandMapping>,
+      GlobalFlags
     >;
+  }
+
+  /**
+   * @description
+   * Registers a global interceptor.
+   *
+   * @param interceptor The interceptor.
+   * @returns The wizard instance.
+   */
+  public interceptor(interceptor: GlobalInterceptorHandler<GlobalFlags>) {
+    this.#interceptors.push(interceptor);
+    return this;
   }
 
   /**
@@ -478,16 +546,21 @@ export class Wizard<
    * @param flags The flags to set.
    * @returns The wizard instance.
    */
-  public flag<Name extends string, Options extends FlagOptions>(
+  public flag<
+    Name extends string,
+    NewFlagOptions extends FlagOptions,
+    NewGlobalFlags extends Record<Name, NewFlagOptions>,
+  >(
     name: Name,
-    options: Options,
-    handler?: (ctx: GlobalFlagHandlerParameters<Name>) => void
-  ) {
-    this.#globalFlags.set(name, {
+    options: NewFlagOptions
+  ): Wizard<NameToContext, DeepPartial<NewGlobalFlags> & GlobalFlags> {
+    this.#globalFlags[name] = {
       ...options,
-      handler,
-    });
-    return this;
+    };
+    return this as unknown as Wizard<
+      NameToContext,
+      DeepPartial<NewGlobalFlags> & GlobalFlags
+    >;
   }
 
   /**
@@ -504,14 +577,26 @@ export class Wizard<
 
   /**
    * @description
+   * Get the i18n extra options.
+   *
+   * @returns The i18n extra options.
+   */
+  private getI18nExtraOptions(): LocaleMessageResolverExtraOptions {
+    const commandNameChain = searchCommandNameChain(this.#commandChain);
+    return {
+      commands: commandNameChain,
+    };
+  }
+
+  /**
+   * @description
    * Set the name of the wizard.
    *
    * @param name The name of the wizard.
    * @returns The wizard instance.
    */
   public get name() {
-    const i18nExtraOptions = this.getI18nExtraOptions();
-    return localeMessageValue(this.i18n.t, this.options.name, i18nExtraOptions);
+    return this.options.name;
   }
 
   /**

@@ -1,4 +1,5 @@
 import type { CommandNameToContext } from './types/type-command-builder.js';
+import type { Flags } from './types/type-flag.js';
 import type { Plugin } from './types/type-plugin.js';
 
 /**
@@ -20,6 +21,7 @@ import type { Plugin } from './types/type-plugin.js';
 export const definePlugin = <
   CommandMapping extends CommandNameToContext,
   Result extends CommandNameToContext,
+  GlobalFlags extends Flags,
 >(
-  plugin: Plugin<CommandMapping, Result>
+  plugin: Plugin<CommandMapping, Result, GlobalFlags>
 ) => plugin;

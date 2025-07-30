@@ -24,7 +24,7 @@ describe('version plugin', () => {
   it('should print version with -version flag', () => {
     const cli = createWizard({
       name: 'cli',
-      description: 'cli',
+      description: () => 'cli',
       version: () => '1.0.0',
       errorHandler: () => {},
     });
@@ -36,7 +36,7 @@ describe('version plugin', () => {
   it('should print version with --version flag', () => {
     const cli = createWizard({
       name: 'cli',
-      description: 'cli',
+      description: () => 'cli',
       version: () => '1.0.0',
       errorHandler: () => {},
     });
@@ -48,7 +48,7 @@ describe('version plugin', () => {
   it('should print version with -V alias', () => {
     const cli = createWizard({
       name: 'cli',
-      description: 'cli',
+      description: () => 'cli',
       version: () => '1.0.0',
       errorHandler: () => {},
     });
@@ -60,7 +60,7 @@ describe('version plugin', () => {
   it('should print version with version command', async () => {
     const cli = createWizard({
       name: 'cli',
-      description: 'cli',
+      description: () => 'cli',
       version: () => '1.0.0',
       errorHandler: () => {},
     });
@@ -73,7 +73,7 @@ describe('version plugin', () => {
   it('should support only command option', async () => {
     const cli = createWizard({
       name: 'cli',
-      description: 'cli',
+      description: () => 'cli',
       version: () => '1.0.0',
       errorHandler: () => {},
     });
@@ -89,7 +89,7 @@ describe('version plugin', () => {
   it('should print v prefix if not present', () => {
     const cli = createWizard({
       name: 'cli',
-      description: 'cli',
+      description: () => 'cli',
       version: () => '2.3.4',
       errorHandler: () => {},
     });
@@ -101,7 +101,7 @@ describe('version plugin', () => {
   it('should not double v prefix', () => {
     const cli = createWizard({
       name: 'cli',
-      description: 'cli',
+      description: () => 'cli',
       version: () => 'v3.0.0',
       errorHandler: () => {},
     });
@@ -113,7 +113,7 @@ describe('version plugin', () => {
   it('should print nothing if version is empty', () => {
     const cli = createWizard({
       name: 'cli',
-      description: 'cli',
+      description: () => 'cli',
       version: () => '',
       errorHandler: () => {},
     });
@@ -126,7 +126,7 @@ describe('version plugin', () => {
     process.env.HPS_WIZARD_LOCALE = 'zh';
     const cli = createWizard({
       name: 'cli',
-      description: 'cli',
+      description: () => 'cli',
       version: () => '1.0.0',
       errorHandler: (e) => {
         console.log(e);
@@ -141,12 +141,24 @@ describe('version plugin', () => {
   it('should not print version for unrelated flags', () => {
     const cli = createWizard({
       name: 'cli',
-      description: 'cli',
+      description: () => 'cli',
       version: () => '1.0.0',
       errorHandler: () => {},
     });
     cli.use(createVersionPlugin());
     cli.parse(['--help']);
     expect(output.join('')).toBe('');
+  });
+
+  it('should support hiddenPrefix', () => {
+    const cli = createWizard({
+      name: 'cli',
+      description: () => 'cli',
+      version: () => '1.0.0',
+      errorHandler: () => {},
+    });
+    cli.use(createVersionPlugin({ hiddenPrefix: true }));
+    cli.parse(['--version']);
+    expect(output.join('')).toBe('1.0.0\n');
   });
 });

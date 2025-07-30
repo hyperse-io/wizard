@@ -5,5 +5,5 @@
  * @param v - The version string.
  * @returns The gracefully handled version string.
  */
-export const gracefulVersion = (v: string) =>
-  v.length === 0 ? '' : v.startsWith('v') ? v : `v${v}`;
+export const gracefulVersion = (v: string, hiddenPrefix = false) =>
+  v.length === 0 ? '' : v.startsWith('v') ? v : hiddenPrefix ? v : `v${v}`;

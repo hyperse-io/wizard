@@ -9,6 +9,7 @@ import type {
   ResolverContext,
 } from '../types/type-command.js';
 import type { Flags } from '../types/type-flag.js';
+import type { LocaleMessageResolver } from '../types/type-locale-messages.js';
 
 /**
  * @description
@@ -27,10 +28,12 @@ class CommandImpl<
 > implements Command<Name, Context, SubCommandContext, CommandFlags>
 {
   private cmdName: Name;
+  private cmdDescription: LocaleMessageResolver;
+  private cmdExample: LocaleMessageResolver | undefined;
+  private cmdHelp: LocaleMessageResolver | undefined;
   private cmdFlags: CommandFlags;
   private cmdSubCommands: Command<any, any, any, any>[] = [];
   private cmdParentCommand: Command<any, any, any, any>;
-  private cmdOptions: CommandOptions;
   private cmdResolverFn: CommandResolverFunction<
     ResolverContext<Name, Context>,
     SubCommandContext
@@ -41,23 +44,25 @@ class CommandImpl<
 
   constructor(name: Name, options: CommandOptions) {
     this.cmdName = name;
-    this.cmdOptions = options;
+    this.cmdDescription = options.description;
+    this.cmdExample = options.example;
+    this.cmdHelp = options.help;
   }
 
-  get name(): Name {
+  get name() {
     return this.cmdName;
   }
 
   get description() {
-    return this.cmdOptions.description;
+    return this.cmdDescription;
   }
 
   get example() {
-    return this.cmdOptions.example;
+    return this.cmdExample;
   }
 
   get help() {
-    return this.cmdOptions.help;
+    return this.cmdHelp;
   }
 
   get flags() {

@@ -1,10 +1,14 @@
 export const helpMessages = {
   en: {
     helpPlugin: {
-      name: 'Help plugin',
-      description: 'Help description',
-      help: 'Help help',
-      example: 'Help example',
+      name: 'CLI Help Plugin',
+      command: {
+        description: 'Show help information',
+        example: 'cli --help or cli -h',
+      },
+      flags: {
+        help: 'Show help information',
+      },
       message: {
         name: 'Name:',
         version: 'Version:',
@@ -15,24 +19,22 @@ export const helpMessages = {
         description: 'Description:',
         usage: 'Usage:',
         examples: 'Examples:',
-        notes: 'Notes:',
-        noDescription: '(No description)',
-        'notes.1': 'If no command is specified, show help for the CLI.',
-        'notes.2': 'If a command is specified, show help for the command.',
-        'notes.3': '-h is an alias for --',
-        'examples.1': 'Show help',
-        'examples.2': 'Show help for a specific command',
-        commandDescription: 'Show help',
+        help: 'Help:',
         default: 'Default: {value}',
+        required: 'Required',
       },
     },
   },
   zh: {
     helpPlugin: {
       name: '帮助信息插件',
-      description: '帮助信息描述',
-      help: '帮助信息帮助',
-      example: '帮助信息示例',
+      command: {
+        description: '展示帮助信息',
+        example: 'cli --help 或 cli -h',
+      },
+      flags: {
+        help: '展示帮助信息',
+      },
       message: {
         name: '名称:',
         version: '版本:',
@@ -43,15 +45,9 @@ export const helpMessages = {
         description: '描述:',
         usage: '使用:',
         examples: '示例:',
-        notes: '备注:',
-        noDescription: '(无描述)',
-        'notes.1': '如果没有指定展示哪个命令的帮助信息，默认展示CLI的。',
-        'notes.2': '如果指定了则展示该命令帮助信息。',
-        'notes.3': '-h 是 --help 的一个别名。',
-        'examples.1': '展示 CLI 的帮助信息',
-        'examples.2': '展示指定命令的帮助信息',
-        commandDescription: '展示帮助信息',
+        help: '帮助:',
         default: '默认值: {value}',
+        required: '必填',
       },
     },
   },

@@ -7,8 +7,8 @@ import {
   Root,
   type Wizard,
 } from '@hyperse/wizard-core';
-import { INDENT } from './constant.js';
-import { table } from './helpers/helper-text-table.js';
+import { INDENT } from '../constant.js';
+import { table } from '../helpers/helper-text-table.js';
 
 export const renderUsage = <Name extends CommandName>(
   t: I18n['t'],
@@ -22,7 +22,8 @@ export const renderUsage = <Name extends CommandName>(
   const cliName = wizard.name;
   const commandName =
     command.name === Root ? '' : ` ${formatCommandName(command.name)}`;
-  const flagsString = command.flags ? ' [flags]' : '';
+  const showFlags = Object.keys(command.flags || {}).length > 0;
+  const flagsString = showFlags ? ' [flags]' : '';
   usageMessage.push(
     table([[INDENT, chalk.magenta(`$ ${cliName}${commandName}${flagsString}`)]])
   );

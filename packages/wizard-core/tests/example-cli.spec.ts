@@ -110,7 +110,7 @@ describe('cli', () => {
 
   it('test command build', async () => {
     const cli = createWizard({
-      name: () => 'wWizard',
+      name: 'wWizard',
       description: () => 'wWizard description',
       version: () => '1.0.0',
       errorHandler: errorEvent,
@@ -149,7 +149,7 @@ describe('cli', () => {
 
   it('test command build evolve', async () => {
     const cli = createWizard({
-      name: () => 'wWizard',
+      name: 'wWizard',
       description: () => 'wWizard description',
       version: () => '1.0.0',
       errorHandler: errorEvent,
@@ -188,7 +188,7 @@ describe('cli', () => {
 
   it('test command build evolve mini', async () => {
     const cli = createWizard({
-      name: () => 'cli',
+      name: 'cli',
       description: () => 'wWizard description',
       version: () => '1.0.0',
       errorHandler: errorEvent,
@@ -229,7 +229,7 @@ describe('cli', () => {
 
   it('test command deploy', async () => {
     const cli = createWizard({
-      name: () => 'wWizard',
+      name: 'wWizard',
       description: () => 'wWizard description',
       version: () => '1.0.0',
       errorHandler: errorEvent,
@@ -277,7 +277,7 @@ describe('cli', () => {
     const customPluginEvent = vi.fn();
     const customPluginHandler = vi.fn();
     const cli = createWizard({
-      name: () => 'wWizard',
+      name: 'wWizard',
       description: () => 'wWizard description',
       version: () => '1.0.0',
       errorHandler: errorEvent,

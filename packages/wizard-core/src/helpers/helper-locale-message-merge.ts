@@ -15,14 +15,11 @@ import type {
  * @param targetMessage The target message.
  * @returns The merged message.
  */
-export const mergeMessages = (
+export const mergeLocaleMessages = (
   path: keyof LocaleMessages,
   originalMessage: LocaleMessagesObject,
-  targetMessage?: LocaleMessagesPluginsObject | LocaleMessagesCliObject
+  targetMessage: LocaleMessagesPluginsObject | LocaleMessagesCliObject = {}
 ): LocaleMessagesObject => {
-  if (!targetMessage) {
-    return originalMessage;
-  }
   const newTargetMessage: DeepPartial<LocaleMessagesObject> = {};
   for (const locale of Object.keys(targetMessage) as SupportedLocales[]) {
     newTargetMessage[locale] = {

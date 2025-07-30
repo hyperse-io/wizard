@@ -1,18 +1,28 @@
 export const versionMessages = {
   en: {
     versionPlugin: {
-      name: 'Version',
-      description: 'Version description',
-      help: 'Version help',
-      example: 'Version example',
+      name: 'CLI Version plugin',
+      description: 'Show CLI version',
+      command: {
+        description: 'Show CLI version',
+        example: 'cli --version or cli -V',
+      },
+      flags: {
+        version: 'Show CLI version',
+      },
     },
   },
   zh: {
     versionPlugin: {
-      name: '版本',
-      description: '版本描述',
-      help: '版本帮助',
-      example: '版本示例',
+      name: 'CLI 版本插件',
+      description: '展示 CLI 版本',
+      command: {
+        description: '展示 CLI 版本信息',
+        example: 'cli --version 或 cli -V',
+      },
+      flags: {
+        version: '展示 CLI 版本',
+      },
     },
   },
 };

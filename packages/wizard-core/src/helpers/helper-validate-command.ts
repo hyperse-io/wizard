@@ -20,11 +20,10 @@ import type { ParseFlagsResult } from './helper-parse-flags.js';
 export const validateCommandChain = <Name extends CommandName>(
   locale: SupportedLocales,
   inputCommandFlags: Flags,
-  inputNameList: Name[],
   parsedFlags: ParseFlagsResult,
   commandChain: Command<Name>[] = []
 ) => {
-  const inputNames = inputNameList.map(formatCommandName);
+  const inputNames = parsedFlags.args;
 
   const commandChainNames = commandChain.map((command) =>
     formatCommandName(command.name)
@@ -67,3 +66,22 @@ export const validateCommandChain = <Name extends CommandName>(
   }
   return true;
 };
+
+/**
+ * @description
+ * Validate the command name.
+ *
+ * @example
+ * ```ts
+ * validateCommandName('help'); // true
+ * validateCommandName('help '); // false
+ * validateCommandName(' help'); // false
+ * validateCommandName('help  '); // false
+ * ```
+ * @param name The command name to validate.
+ * @returns True if the command name is valid, false otherwise.
+ */
+export const validateCommandName = <Name extends CommandName>(name: Name) =>
+  name === Root
+    ? true
+    : !(name.startsWith(' ') || name.endsWith(' ')) && !/\s{2,}/.test(name);
