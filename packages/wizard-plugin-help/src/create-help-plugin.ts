@@ -1,9 +1,11 @@
-import type { DeepPartial } from '@hyperse/deep-merge';
+import { type DeepPartial } from '@hyperse/deep-merge';
 import {
   defineCommand,
   definePlugin,
   localeMessageValue,
 } from '@hyperse/wizard-core';
+import { assertNoColor } from './helpers/helper-assert-nocolor.js';
+import { setupChalk } from './helpers/helper-chalk.js';
 import { mergeMessages } from './helpers/helper-merge-messages.js';
 import { printHelp } from './helpers/helper-print-help.js';
 import type { HelpPluginLocaleOverrideMessages } from './i18n/i18n.js';
@@ -95,13 +97,14 @@ export const createHelpPlugin = (options: HelpPluginOptions = {}) => {
   return definePlugin({
     localeMessages: localeMessages,
     name: 'plugins.helpPlugin.name',
-    setup: (wizard) => {
+    setup: (wizard, pluginCtx) => {
       const { t } = wizard.i18n;
       const cli = wizard.register(
         defineCommand('help', {
           description: 'plugins.helpPlugin.command.description',
           example: 'plugins.helpPlugin.command.example',
-        }).handler(() => {
+        }).handler((ctx) => {
+          setupChalk(assertNoColor(pluginCtx.noColor, ctx.flags?.noColor));
           const commandChain = wizard.commandChain;
           const lastCommand = commandChain[commandChain.length - 1];
 
@@ -135,6 +138,7 @@ export const createHelpPlugin = (options: HelpPluginOptions = {}) => {
           })
           .interceptor(async (ctx, next) => {
             const flags = ctx.flags;
+            setupChalk(assertNoColor(pluginCtx.noColor, flags?.noColor));
             if (flags.help) {
               const commandChain = wizard.commandChain;
               const lastCommand = commandChain[commandChain.length - 1];

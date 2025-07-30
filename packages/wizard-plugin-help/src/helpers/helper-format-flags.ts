@@ -1,6 +1,6 @@
-import chalk from 'chalk';
 import type { FlagsWithI18n, I18n } from '@hyperse/wizard-core';
 import { DELIMITER, INDENT } from '../constant.js';
+import { chalk } from './helper-chalk.js';
 import { gracefulFlagName } from './helper-string-utils.js';
 
 const primitiveMap = new Map<any, string | undefined>([
@@ -37,7 +37,7 @@ export const formatFlags = (t: I18n['t'], flags: FlagsWithI18n) => {
       chalk.blue(flagNameWithAlias.join('')),
       formatFlagType(flag.type, hasDefault),
     ];
-    items.push(DELIMITER, flag.description);
+    items.push(chalk.yellow(DELIMITER), flag.description);
     if (hasDefault) {
       items.push(
         `(${t('plugins.helpPlugin.message.default', {

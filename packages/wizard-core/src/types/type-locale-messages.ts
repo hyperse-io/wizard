@@ -152,10 +152,7 @@ export type LocaleMessageResolverExtraOptions = {
  */
 export type I18n = {
   t: ReturnType<
-    typeof createTranslator<
-      RequiredDeep<LocaleMessagesObject>,
-      SupportedLocales
-    >
+    typeof createTranslator<LocaleMessagesObject, SupportedLocales>
   >;
 };
 

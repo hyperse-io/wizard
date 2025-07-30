@@ -107,5 +107,5 @@ const cli = createWizard({
     alias: 'V',
     description: 'plugins.versionPlugin.description',
   });
-cli.parse(['build', '-h']);
+cli.parse(['build', '-h', '--noColor=true']);
 // cli.parse(['-h']);

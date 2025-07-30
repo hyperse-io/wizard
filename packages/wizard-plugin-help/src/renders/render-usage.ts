@@ -1,4 +1,3 @@
-import chalk from 'chalk';
 import {
   type CommandName,
   type CommandWithI18n,
@@ -8,6 +7,7 @@ import {
   type Wizard,
 } from '@hyperse/wizard-core';
 import { INDENT } from '../constant.js';
+import { chalk } from '../helpers/helper-chalk.js';
 import { table } from '../helpers/helper-text-table.js';
 
 export const renderUsage = <Name extends CommandName>(

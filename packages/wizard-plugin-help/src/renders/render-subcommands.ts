@@ -1,4 +1,3 @@
-import chalk from 'chalk';
 import {
   type CommandName,
   type CommandWithI18n,
@@ -8,6 +7,7 @@ import {
   type Wizard,
 } from '@hyperse/wizard-core';
 import { DELIMITER, INDENT } from '../constant.js';
+import { chalk } from '../helpers/helper-chalk.js';
 import { table } from '../helpers/helper-text-table.js';
 
 export const renderSubcommands = <Name extends CommandName>(
@@ -41,7 +41,7 @@ export const renderSubcommands = <Name extends CommandName>(
         chalk.cyan(
           [...parentCommandNames, formatCommandName(subcommandName)].join(' ')
         ),
-        DELIMITER,
+        chalk.yellow(DELIMITER),
         subcommand.description,
       ];
     })
