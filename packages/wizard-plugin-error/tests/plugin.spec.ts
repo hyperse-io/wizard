@@ -32,6 +32,7 @@ describe('createErrorPlugin', () => {
       description: 'cli.errorCli.description',
       version: 'cli.errorCli.version',
       localeMessages: errorCliMessages,
+      noColor: true,
     });
 
     const plugin = createErrorPlugin();
@@ -79,6 +80,7 @@ describe('createErrorPlugin', () => {
       use24HourClock: true,
       showArrow: true,
       showDate: true,
+      noColor: true,
     });
 
     cli.use(plugin).use(

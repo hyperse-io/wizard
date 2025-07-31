@@ -22,6 +22,6 @@ export const DefaultLogLevel = LogLevel.Info;
 
 /**
  * Whether to use color when logging.
- * @default true
+ * @default false
  */
-export const DefaultNoColor = true;
+export const DefaultNoColor = false;

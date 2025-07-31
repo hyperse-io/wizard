@@ -11,11 +11,14 @@ export type ErrorPluginOptions = Partial<StdoutOptions>;
  * @returns The plugin.
  */
 export const createErrorPlugin = (options: ErrorPluginOptions = {}) => {
-  const logger = createErrorLogger(options);
   return definePlugin({
     name: 'plugins.errorPlugin.name',
     localeMessages: errorMessages,
-    setup: (wizard) => {
+    setup: (wizard, pluginCtx) => {
+      const logger = createErrorLogger({
+        noColor: pluginCtx.noColor,
+        ...options,
+      });
       return wizard.errorHandler((err: any) => {
         logger.error(err);
       });
