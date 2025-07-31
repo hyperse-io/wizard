@@ -38,6 +38,7 @@ describe('createErrorPlugin', () => {
 
     cli.use(plugin).use(
       definePlugin({
+        name: () => 'test plugin',
         setup: (cli) => {
           return cli.register('test ', {
             description: () => 'test',
@@ -82,6 +83,7 @@ describe('createErrorPlugin', () => {
 
     cli.use(plugin).use(
       definePlugin({
+        name: () => 'test plugin',
         setup: (cli) => {
           return cli.register('test ', {
             description: () => 'test',

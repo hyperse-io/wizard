@@ -178,9 +178,9 @@ describe('builtin flags', () => {
     expect(logResult).toContain('help debug log');
     expect(logResult).not.toContain('help verbose log');
 
-    // default logLevel: info
+    // logLevel: info
     printer.mockReset();
-    cli.parse(['-h']);
+    cli.parse(['-h', '--logLevel', 'info']);
     await sleep();
     expect(printer).toHaveBeenCalled();
     logResult = printer.mock.calls.map((call) => call[0]).join('');

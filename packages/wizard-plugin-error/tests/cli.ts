@@ -24,8 +24,9 @@ const cli = createWizard({
 
 cli.use(plugin).use(
   definePlugin({
+    name: () => 'test plugin',
     setup: (cli) => {
-      return cli.register('test ', {
+      return cli.register('test', {
         description: () => 'test',
       });
     },

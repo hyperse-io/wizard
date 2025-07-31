@@ -38,12 +38,10 @@ export const createBuiltinFlags = (
   return {
     noColor: {
       type: Boolean,
-      default: false,
       description: 'core.flags.noColor',
     },
     logLevel: {
       type: (level: LogLevel) => formatLogLevel(level, locale),
-      default: LogLevel.Info,
       description: 'core.flags.logLevel',
     },
   };

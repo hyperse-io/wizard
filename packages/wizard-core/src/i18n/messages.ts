@@ -19,8 +19,7 @@ export const messages = {
       },
       flags: {
         noColor: 'Disable colored output in terminal',
-        logLevel:
-          'Set log level (default: Info), options: error, warn, info, debug, verbose',
+        logLevel: 'Set log level. options: error, warn, info, debug, verbose',
       },
     },
   },
@@ -41,8 +40,7 @@ export const messages = {
       },
       flags: {
         noColor: '禁用终端日志输出颜色',
-        logLevel:
-          '设置日志级别，默认显示 Info 级别，可选值：error, warn, info, debug, verbose',
+        logLevel: '设置日志级别，可选值：error, warn, info, debug, verbose',
       },
     },
   },

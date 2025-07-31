@@ -1,11 +1,7 @@
 import type { Logger } from '@hyperse/logger';
-import type { Wizard } from '../core/Wizard.js';
-import type { FlagOptions, Flags, FlagsWithBuiltin } from './type-flag.js';
+import type { Flags, FlagsWithBuiltin } from './type-flag.js';
 import type { I18n, SupportedLocales } from './type-locale-messages.js';
-import type {
-  CliPipelineContext,
-  PipelineNextFunction,
-} from './type-wizard-pipeline.js';
+import type { PipelineNextFunction } from './type-wizard-pipeline.js';
 
 /**
  * @description

@@ -28,7 +28,7 @@ async function load(
 ): Promise<
   Array<{
     name: LocaleMessageResolver;
-    plugin: Plugin['setup'];
+    setup: Plugin['setup'];
   }>
 > {
   // unless pluginSearchDirs are provided, auto-load plugins from node_modules that are parent to `commander`
@@ -111,7 +111,7 @@ async function load(
 
   const allPlugins: Array<{
     name: LocaleMessageResolver;
-    plugin: Plugin['setup'];
+    setup: Plugin['setup'];
   }> = [];
   for (const pluginInfo of externalPlugins) {
     const requirePath = pathToFileURL(pluginInfo.requirePath).href;
@@ -120,9 +120,9 @@ async function load(
     for (const [pluginAlias, plugin] of Object.entries(pluginModule)) {
       const pluginDefine = plugin as Plugin;
       const pluginName = pluginDefine.name;
-      const pluginCommandModule = pluginDefine.setup;
+      const setup = pluginDefine.setup;
       // Make sure that we have a plugin name and command module
-      if (pluginName && pluginCommandModule) {
+      if (pluginName && setup) {
         if (allPlugins.find((s) => s.name === pluginName)) {
           console.warn(
             `${pluginAlias}:${pluginName} has been loaded, duplicate plug-ins are defined? `
@@ -130,7 +130,7 @@ async function load(
         } else {
           allPlugins.push({
             name: pluginName,
-            plugin: pluginCommandModule,
+            setup: setup,
           });
         }
       }
