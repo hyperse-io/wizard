@@ -60,6 +60,7 @@ async function load(
           return undefined;
         }
       }
+
       return {
         name: pluginName,
         requirePath,
@@ -108,7 +109,6 @@ async function load(
       'requirePath'
     ),
   ];
-
   const allPlugins: Array<{
     name: LocaleMessageResolver;
     setup: Plugin['setup'];
@@ -116,16 +116,20 @@ async function load(
   for (const pluginInfo of externalPlugins) {
     const requirePath = pathToFileURL(pluginInfo.requirePath).href;
     const importModule = await import(requirePath);
+
     const pluginModule = importModule.default || importModule;
-    for (const [pluginAlias, plugin] of Object.entries(pluginModule)) {
-      const pluginDefine = plugin as Plugin;
+    for (const [, plugin] of Object.entries(pluginModule)) {
+      let pluginDefine = plugin as Plugin | (() => Plugin);
+      if (typeof pluginDefine == 'function') {
+        pluginDefine = pluginDefine();
+      }
       const pluginName = pluginDefine.name;
       const setup = pluginDefine.setup;
       // Make sure that we have a plugin name and command module
       if (pluginName && setup) {
         if (allPlugins.find((s) => s.name === pluginName)) {
           console.warn(
-            `${pluginAlias}:${pluginName} has been loaded, duplicate plug-ins are defined? `
+            `${pluginInfo.requirePath} has been loaded, duplicate plug-ins are defined? `
           );
         } else {
           allPlugins.push({
