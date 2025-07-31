@@ -132,7 +132,7 @@ export class Wizard<
     noColor?: boolean;
     logLevel?: LogLevel;
   }) {
-    const { logLevel = DefaultLogLevel, noColor = DefaultNoColor } =
+    const { logLevel = this.options.logLevel, noColor = this.options.noColor } =
       loggerOptions;
     this.#logger = createLogger({
       name: WizardName,
