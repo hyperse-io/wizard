@@ -1,11 +1,20 @@
 import type { MetaRecord } from 'nextra';
 
 const mate: MetaRecord = {
-  guide: {
-    title: 'Guide',
+  'getting-started': {
+    title: 'Getting Started',
   },
-  advanced: {
-    title: 'Advanced',
+  i18n: {
+    title: 'i18n',
+  },
+  'core-api': {
+    title: 'Core API',
+  },
+  'custom-plugin': {
+    title: 'Custom Plugin',
+  },
+  'builtin-plugins': {
+    title: 'Builtin Plugins',
   },
 };
 

@@ -1,0 +1,90 @@
+---
+title: Getting Started
+sidebar:
+  order: 1
+---
+
+# Getting Started
+
+## 📦 Installation
+
+Install via npm:
+
+<Tabs items={['npm', 'yarn']}>
+  <Tabs.Tab>npm install @hyperse/wizard</Tabs.Tab>
+  <Tabs.Tab>yarn add @hyperse/wizard</Tabs.Tab>
+</Tabs>
+
+## 🚀 Quick Start
+
+```tsx
+import { createWizard } from '@hyperse/wizard';
+
+const hpsCli = createWizard({
+  name: 'hps',
+  // i18n message key
+  description: 'hpsCli.description',
+  // i18n message key
+  version: 'hpsCli.version',
+});
+```
+
+## 🔧 Setup Command and Subcommand
+
+```tsx
+import { definePlugin } from '@hyperse/wizard';
+
+hpsCli
+  .use(
+    definePlugin({
+      name: 'buildPlugin.plugin.name',
+      setup: (cli) => {
+        return cli.register(
+          defineCommand('build', {
+            description: 'buildPlugin.command.build.description',
+          })
+            .use(
+              defineCommand<
+                'mini',
+                {
+                  projectCwd: string;
+                }
+              >('mini', {
+                description: 'buildPlugin.command.build.mini.description',
+              })
+                .flags({
+                  compiler: {
+                    type: String,
+                    description:
+                      'buildPlugin.command.build.mini.flags.compiler',
+                    default: 'webpack',
+                  },
+                })
+                .handler(async (ctx) => {
+                  ctx.log.info('build mini', ctx.flags);
+                })
+            )
+            .flags({
+              projectCwd: {
+                type: Boolean,
+                description: 'buildPlugin.command.build.flags.projectCwd',
+                default: process.cwd(),
+                required: true,
+              },
+            })
+            .resolve((ctx) => {
+              ctx.log.info('build resolve', ctx.flags);
+              return {
+                projectCwd: ctx.flags.projectCwd,
+              };
+            })
+        );
+      },
+    })
+  )
+  .on('help', (ctx) => {
+    ctx.log.info('help');
+  });
+
+hpsCli.parse();
+```

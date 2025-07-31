@@ -1,20 +1,21 @@
 import { LogLevel } from '@hyperse/logger';
 import { useLocale } from '../i18n/index.js';
+import type { SupportedLocales } from '../types/type-locale-messages.js';
 import { CommandI18nError } from './CommandI18nError.js';
 
 /**
  * @description
  * This error should be thrown when a command is not found.
  *
- * @docsCategory errors
- * @docsPage Error Types
+ * @example
+ * throw new CommandNotFoundError('en', { cmdName: 'build' });
  */
 export class CommandNotFoundError extends CommandI18nError {
   constructor(
-    locale: string,
+    locale: SupportedLocales,
     variables: { [key: string]: string | number } = {}
   ) {
     const t = useLocale(locale);
-    super(t('command.nameConflict', variables), LogLevel.Error);
+    super(t('core.command.notFound', variables), LogLevel.Error);
   }
 }

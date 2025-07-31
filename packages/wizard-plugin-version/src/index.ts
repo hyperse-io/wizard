@@ -1,3 +1,2 @@
-export const demoCore = () => {
-  console.log('demoCore');
-};
+export * from './create-version-plugin.js';
+export * from './i18n/index.js';

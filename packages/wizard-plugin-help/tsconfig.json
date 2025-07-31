@@ -7,8 +7,7 @@
     "noEmit": false,
     "incremental": true,
     "paths": {
-      "@hyperse/wizard-core": ["../wizard-core/src/index.ts"],
-      "@hyperse/wizard-utils": ["../wizard-utils/src/index.ts"]
+      "@hyperse/wizard-core": ["../wizard-core/src/index.ts"]
     },
     "types": ["vitest/globals"]
   },

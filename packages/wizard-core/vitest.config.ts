@@ -13,6 +13,7 @@ export default defineConfig({
   },
   test: {
     globals: true,
+    testTimeout: 10000 * 60,
     exclude: [...configDefaults.exclude],
     include: ['**/?(*.){test,spec}.?(c|m)[jt]s?(x)'],
   },

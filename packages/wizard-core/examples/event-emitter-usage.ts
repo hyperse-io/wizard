@@ -1,5 +1,5 @@
 import { EventEmitter } from '../src/events/index.js';
-import type { CreateEventMap } from '../src/types/typeEvent.js';
+import type { CreateEventMap } from '../src/types/type-event.js';
 
 /**
  * @description
