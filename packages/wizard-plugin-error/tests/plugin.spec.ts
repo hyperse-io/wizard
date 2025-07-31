@@ -78,7 +78,6 @@ describe('createErrorPlugin', () => {
       showTimestamp: true,
       showLevelName: true,
       use24HourClock: true,
-      showArrow: true,
       showDate: true,
       noColor: true,
     });
@@ -103,8 +102,6 @@ describe('createErrorPlugin', () => {
     expect(result).toContain('[ ERROR ]');
     expect(result).toContain(' HpsErrorLogger ');
     expect(result).toContain(' hps-logger-plugin-stdout ');
-    expect(result).toContain(' >> ');
-    expect(result).toContain('error');
     expect(result).toContain(
       'Invalid command name "test " command names cannot contain spaces or multiple consecutive spaces.'
     );
