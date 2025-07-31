@@ -2878,7 +2878,6 @@ __metadata:
   dependencies:
     "@hyperse/eslint-config-hyperse": "npm:^1.4.5"
     "@hyperse/wizard-core": "workspace:*"
-    "@hyperse/wizard-utils": "workspace:*"
     "@types/node": "npm:^24.0.10"
     "@types/resolve": "npm:1.20.6"
     "@vitest/coverage-istanbul": "npm:^3.2.4"
