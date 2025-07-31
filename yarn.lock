@@ -2939,6 +2939,8 @@ __metadata:
     "@heroui/react": "npm:^2.7.11"
     "@hyperse/eslint-config-hyperse": "npm:^1.4.5"
     "@hyperse/next-config": "npm:^1.0.5"
+    "@iconify/react": "npm:^6.0.0"
+    "@lottiefiles/dotlottie-react": "npm:^0.14.3"
     "@tailwindcss/postcss": "npm:^4.1.11"
     "@tailwindcss/typography": "npm:^0.5.16"
     "@types/node": "npm:^24.0.10"
@@ -2984,6 +2986,17 @@ __metadata:
     vitest: "npm:^3.2.4"
   languageName: unknown
   linkType: soft
+
+"@iconify/react@npm:^6.0.0":
+  version: 6.0.0
+  resolution: "@iconify/react@npm:6.0.0"
+  dependencies:
+    "@iconify/types": "npm:^2.0.0"
+  peerDependencies:
+    react: ">=16"
+  checksum: 10c0/612cbc56e7b270076ce2c087c260cd53a0325875057202f2032f0a1fb0a88da44aec6cb63aab17530f35effa1f9fd5a86d0ab74ef99123ce30e5c49bca767b67
+  languageName: node
+  linkType: hard
 
 "@iconify/types@npm:^2.0.0":
   version: 2.0.0
@@ -3311,6 +3324,24 @@ __metadata:
     "@jridgewell/resolve-uri": "npm:^3.1.0"
     "@jridgewell/sourcemap-codec": "npm:^1.4.14"
   checksum: 10c0/3d1ce6ebc69df9682a5a8896b414c6537e428a1d68b02fcc8363b04284a8ca0df04d0ee3013132252ab14f2527bc13bea6526a912ecb5658f0e39fd2860b4df4
+  languageName: node
+  linkType: hard
+
+"@lottiefiles/dotlottie-react@npm:^0.14.3":
+  version: 0.14.4
+  resolution: "@lottiefiles/dotlottie-react@npm:0.14.4"
+  dependencies:
+    "@lottiefiles/dotlottie-web": "npm:0.49.0"
+  peerDependencies:
+    react: ^17 || ^18 || ^19
+  checksum: 10c0/fd6b675430a2eea3f48e02ba864f7ab5980528d0a37af9dacd0d950d8920f75c924ac9644ea9de44f3388dfe0b379292ebfa9b879423e10f87e5bd3d025c91e2
+  languageName: node
+  linkType: hard
+
+"@lottiefiles/dotlottie-web@npm:0.49.0":
+  version: 0.49.0
+  resolution: "@lottiefiles/dotlottie-web@npm:0.49.0"
+  checksum: 10c0/8f356f82d83af7f30f52d2a35d41a8cbe8cb48ed33dabe1d19288cedecc80e2259d21279ab2e3a0c38f925d0b7625c144f86c38396930908b95c303874c62b45
   languageName: node
   linkType: hard
 
