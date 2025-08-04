@@ -5,5 +5,5 @@ export type {
   EventListener,
   EventMap,
   EventNames,
-} from '../types/typeEvent.js';
+} from '../types/type-event.js';
 export { EventEmitter } from './EventEmitter.js';

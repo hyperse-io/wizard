@@ -1,73 +1,38 @@
 ---
-description:
-  Nextra is a framework built on top of Next.js that enables the creation of
-  content-focused websites. It combines the robust features of Next.js with
-  enhanced capabilities for crafting Markdown-based content.
+title: Introduction
+description: Wizard is a modern, type-safe CLI framework that provides powerful command-line tool building capabilities. It combines robust TypeScript support with enhanced features for crafting interactive command-line applications.
 ---
 
-import { cloneElement } from 'react';
-import { Cards, Image } from 'nextra/components';
+# Wizard - Modern CLI Framework
 
-export default function MdxLayout(props) {
-  return cloneElement(props.children, {
-    components: {
-      img: Image,
-    },
-  });
-}
+Wizard is a modern, type-safe CLI framework designed for building interactive command-line applications. It provides a powerful feature set that enables developers to easily create feature-rich CLI tools.
 
-# Introduction
+## ✨ Core Features
 
-**Nextra** is a framework on top of Next.js, that lets you build content focused
-websites. It has all the great features from Next.js, plus extra power to create
-Markdown-based content with ease.
+- 🚀 **Type Safety** - Full TypeScript support with excellent developer experience
+- 🌍 **Internationalization** - Built-in multi-language support for easy localization
+- 🔌 **Plugin System** - Flexible plugin architecture for feature extension
+- 🎯 **Event-Driven** - Event-based design supporting async operations and error handling
+- 🛠️ **Command Builder** - Intuitive command definition API with subcommand and argument parsing
+- 📝 **Logging System** - Integrated logging functionality with different log levels
+- 🎨 **Theme Support** - Support for colored output and theme customization
+- ⚡ **High Performance** - Pipeline-based architecture for efficient command execution
 
-## Quick start
+## 🏗️ Project Architecture
 
-To start using Nextra, you need to select a theme first:
+Wizard uses a modular design with the following core packages:
 
-<Cards num={2}>
-  <Cards.Card arrow title="Documentation theme" href="/docs/docs-theme/start">
-    <>![Documentation theme screenshot](/assets/docs-theme.png)</>
-  </Cards.Card>
-  <Cards.Card arrow title="Blog theme" href="/docs/blog-theme/start">
-    <>![Blog theme screenshot](/assets/blog-theme.png)</>
-  </Cards.Card>
-</Cards>
+- **@hyperse/wizard** - Main package providing the complete CLI framework
+- **@hyperse/wizard-core** - Core library providing basic functionality
+- **@hyperse/wizard-utils** - Utility function library
+- **@hyperse/wizard-plugin-\*** - Various plugin packages
 
-If you want to use Nextra without using these built-in themes, you can follow
-the [Custom Theme](/docs/custom-theme) docs.
+### Plugin Ecosystem
 
-## FAQ
+Wizard provides a rich plugin ecosystem:
 
-The Nextra FAQ is a collection of useful questions and answers about the
-project. If you have a question that isn't answered here, please
-[open a discussion](https://github.com/shuding/nextra/discussions).
-
-<details>
-  {/* prettier-ignore */}
-  <summary>Can I use Nextra with Next.js `pages` router?</summary>
-Nextra 4 only works with the `app` router. Only Nextra 1/2/3 supports the
-`pages` router.
-
-</details>
-
-<details>
-  <summary>Can I use X with Nextra?</summary>
-The answer is "yes" for most things. Since Nextra is just a Next.js plugin, almost all the things
-that can be done with React can be done with Nextra. Here are some examples and guides:
-
-- [Use Tailwind CSS](/docs/guide/tailwind-css)
-- [Use custom CSS and Sass](/docs/guide/custom-css)
-- [Use custom fonts](https://nextjs.org/docs/basic-features/font-optimization)
-
-</details>
-
-<details>
-  {/* prettier-ignore */}
-  <summary>How can I add a live coding component in Nextra?</summary>
-There are libraries like [Sandpack](https://sandpack.codesandbox.io) and
-[react-live](https://github.com/FormidableLabs/react-live) that can help you
-add live coding components to your MDX.
-
-</details>
+- **@hyperse/wizard-plugin-help** - Help information plugin
+- **@hyperse/wizard-plugin-version** - Version information plugin
+- **@hyperse/wizard-plugin-error** - Error handling plugin
+- **@hyperse/wizard-plugin-loader** - Plugin loader
+- **@hyperse/wizard-plugin-bash** - Bash integration plugin

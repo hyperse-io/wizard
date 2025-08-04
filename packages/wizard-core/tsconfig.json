@@ -6,9 +6,7 @@
     "noImplicitAny": true,
     "noEmit": false,
     "incremental": true,
-    "paths": {
-      "@hyperse/wizard-utils": ["../wizard-utils/src/index.js"]
-    },
+    "paths": {},
     "types": ["vitest/globals"]
   },
   "include": ["**/*.ts", "**/*.tsx"],

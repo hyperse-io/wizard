@@ -1,39 +1,38 @@
 import type { FC, ReactNode } from 'react';
 import type { Metadata } from 'next';
-import NextImage from 'next/image';
-import { Anchor, Banner, Head } from 'nextra/components';
+import { Banner, Head } from 'nextra/components';
 import { getPageMap } from 'nextra/page-map';
 import { Footer, Layout, Link, Navbar } from 'nextra-theme-docs';
 import cn from 'clsx';
 import { Logo } from '@/components/Icons/Logo';
-import xyflow from './showcase/_logos/xyflow.png';
+import { HeroUIProvider } from '@heroui/react';
 import './globals.css';
 
 export const metadata: Metadata = {
-  description: 'Make beautiful websites with Next.js & MDX.',
-  metadataBase: new URL('https://nextra.site'),
+  description:
+    'Hyperse Wizard is a modern, type-safe CLI framework core library that provides powerful command-line tool building capabilities.',
+  metadataBase: new URL('https://www.hyperse.net/'),
   keywords: [
-    'Nextra',
-    'Next.js',
-    'React',
+    'Hyperse',
+    'Wizard',
+    'CLI',
+    'Framework',
+    'TypeScript',
     'JavaScript',
-    'MDX',
-    'Markdown',
-    'Static Site Generator',
   ],
-  generator: 'Next.js',
-  applicationName: 'Nextra',
+  generator: 'Hyperse',
+  applicationName: 'Hyperse Wizard',
   appleWebApp: {
-    title: 'Nextra',
+    title: 'Hyperse Wizard',
   },
   title: {
-    default: 'Nextra – Next.js Static Site Generator',
-    template: '%s | Nextra',
+    default: 'Hyperse Wizard – Hyperse Wizard',
+    template: '%s | Hyperse Wizard',
   },
   openGraph: {
     // https://github.com/vercel/next.js/discussions/50189#discussioncomment-10826632
     url: './',
-    siteName: 'Nextra',
+    siteName: 'Hyperse Wizard',
     locale: 'en_US',
     type: 'website',
   },
@@ -41,7 +40,7 @@ export const metadata: Metadata = {
     'msapplication-TileColor': '#fff',
   },
   twitter: {
-    site: 'https://nextra.site',
+    site: 'https://www.hyperse.net/',
   },
   alternates: {
     // https://github.com/vercel/next.js/discussions/50189#discussioncomment-10826632
@@ -51,11 +50,8 @@ export const metadata: Metadata = {
 
 const banner = (
   <Banner dismissible={false}>
-    🎉 Nextra 4.0 is released. dimaMachina is looking{' '}
-    <Link href="https://github.com/dimaMachina" className="text-current!">
-      for a new job or consulting
-    </Link>
-    .
+    🎉 Hyperse Wizard is a modern, type-safe CLI framework core library that
+    provides powerful command-line tool building capabilities.
   </Banner>
 );
 const navbar = (
@@ -70,7 +66,7 @@ const navbar = (
             'hover:[mask-position:100%]'
           )}
         />
-        <span className="font-extralight">Hyperse</span>
+        <span className="font-extralight">Hyperse Wizard</span>
       </div>
     }
     projectLink="https://github.com/hyperse-io"
@@ -85,11 +81,10 @@ const footer = (
       title="vercel.com homepage"
       href="https://vercel.com?utm_source=nextra.site"
     >
-      Powered by
-      <Logo height="20" />
+      Powered by Hyperse
     </a>
     <p className="mt-6 text-xs">
-      © {new Date().getFullYear()} The Nextra Project.
+      {`© ${new Date().getFullYear()}`} Hyperse Inc. All rights reserved.
     </p>
   </Footer>
 );
@@ -107,26 +102,12 @@ const RootLayout: FC<{
           banner={banner}
           navbar={navbar}
           pageMap={pageMap}
-          docsRepositoryBase="https://github.com/shuding/nextra/tree/main/docs"
+          docsRepositoryBase="https://github.com/hyperse-io/wizard/tree/main/docs"
           editLink="Edit this page on GitHub"
           sidebar={{ defaultMenuCollapseLevel: 1 }}
           footer={footer}
-          toc={{
-            extraContent: (
-              <>
-                <b className="mt-2 text-xs">Sponsored by:</b>
-                <Anchor href="https://xyflow.com?utm_source=nextra.site&utm_campaign=nextra&utm_content=sidebarLink">
-                  <NextImage
-                    src={xyflow}
-                    alt="Wire your ideas with xyflow!"
-                    className="nextra-border rounded-sm border"
-                  />
-                </Anchor>
-              </>
-            ),
-          }}
         >
-          {children}
+          <HeroUIProvider validationBehavior="aria">{children}</HeroUIProvider>
         </Layout>
       </body>
     </html>

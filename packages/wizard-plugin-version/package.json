@@ -30,6 +30,7 @@
     "package.json"
   ],
   "scripts": {
+    "cli": "yarn node --import=@hyperse/ts-node/register ./tests/cli.ts",
     "build": "rimraf dist && tsc -p ./tsconfig.build.json",
     "?build-release": "When https://github.com/atlassian/changesets/issues/432 has a solution we can remove this trick",
     "build-release": "yarn build && rimraf ./_release && yarn pack && mkdir ./_release && tar zxvf ./package.tgz --directory ./_release && rm ./package.tgz",
@@ -43,8 +44,7 @@
     "typecheck": "tsc --project ./tsconfig.json --noEmit"
   },
   "dependencies": {
-    "@hyperse/wizard-core": "workspace:*",
-    "@hyperse/wizard-utils": "workspace:*"
+    "@hyperse/wizard-core": "workspace:*"
   },
   "devDependencies": {
     "@hyperse/eslint-config-hyperse": "^1.4.5",

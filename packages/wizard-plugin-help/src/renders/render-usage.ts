@@ -1,0 +1,32 @@
+import {
+  type CommandName,
+  type CommandWithI18n,
+  formatCommandName,
+  type I18n,
+  Root,
+  type Wizard,
+} from '@hyperse/wizard-core';
+import { INDENT } from '../constant.js';
+import { chalk } from '../helpers/helper-chalk.js';
+import { table } from '../helpers/helper-text-table.js';
+
+export const renderUsage = <Name extends CommandName>(
+  t: I18n['t'],
+  wizard: Wizard,
+  command: CommandWithI18n<Name>
+) => {
+  const usageMessage: string[] = [];
+  const usage = t('plugins.helpPlugin.message.usage');
+  usageMessage.push(chalk.bold(usage));
+
+  const cliName = wizard.name;
+  const commandName =
+    command.name === Root ? '' : ` ${formatCommandName(command.name)}`;
+  const showFlags = Object.keys(command.flags || {}).length > 0;
+  const flagsString = showFlags ? ' [flags]' : '';
+  usageMessage.push(
+    table([[INDENT, chalk.magenta(`$ ${cliName}${commandName}${flagsString}`)]])
+  );
+
+  return usageMessage.join('\n\n');
+};
