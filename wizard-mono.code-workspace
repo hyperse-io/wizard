@@ -9,14 +9,6 @@
       "path": "packages/wizard",
     },
     {
-      "name": "wizard-core",
-      "path": "packages/wizard-core",
-    },
-    {
-      "name": "wizard-utils",
-      "path": "packages/wizard-utils",
-    },
-    {
       "name": "wizard-plugin-help",
       "path": "packages/wizard-plugin-help",
     },
@@ -88,8 +80,6 @@
     "eslint.workingDirectories": [
       "./website",
       "./packages/wizard",
-      "./packages/wizard-core",
-      "./packages/wizard-utils",
       "./packages/wizard-plugin-help",
       "./packages/wizard-plugin-error",
       "./packages/wizard-plugin-bash",

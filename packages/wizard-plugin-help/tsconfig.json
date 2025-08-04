@@ -7,10 +7,10 @@
     "noEmit": false,
     "incremental": true,
     "paths": {
-      "@hyperse/wizard-core": ["../wizard-core/src/index.ts"]
+      "@hyperse/wizard": ["../wizard/src/index.ts"]
     },
     "types": ["vitest/globals"]
   },
-  "include": ["**/*.ts", "**/*.tsx", "../wizard-utils/src/getDirname.ts"],
+  "include": ["**/*.ts", "**/*.tsx"],
   "exclude": ["**/node_modules", "**/.*/", "dist", "build"]
 }

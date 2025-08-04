@@ -44,7 +44,7 @@
     "typecheck": "tsc --project ./tsconfig.json --noEmit"
   },
   "dependencies": {
-    "@hyperse/wizard-core": "workspace:*"
+    "@hyperse/wizard": "workspace:*"
   },
   "devDependencies": {
     "@hyperse/eslint-config-hyperse": "^1.4.5",

@@ -1,4 +1,4 @@
-import { definePlugin } from '@hyperse/wizard-core';
+import { definePlugin } from '@hyperse/wizard';
 import { errorMessages } from './i18n/messages.js';
 
 export type ErrorPluginOptions = {

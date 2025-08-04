@@ -1,4 +1,4 @@
-import type { DefineMessageType, SupportedLocales } from '@hyperse/wizard-core';
+import type { DefineMessageType, SupportedLocales } from '@hyperse/wizard';
 import type { helpMessages } from './messages.js';
 
 export type HelpPluginLocaleOverrideMessages = {
@@ -17,6 +17,6 @@ export type HelpPluginLocaleMessages = {
     DefineMessageType<HelpPluginLocaleOverrideMessages>['helpPlugin'];
 };
 
-declare module '@hyperse/wizard-core' {
+declare module '@hyperse/wizard' {
   export interface PluginLocaleMessages extends HelpPluginLocaleMessages {}
 }

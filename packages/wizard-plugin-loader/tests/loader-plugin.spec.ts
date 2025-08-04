@@ -1,5 +1,5 @@
 import { rmSync } from 'node:fs';
-import { createWizard } from '@hyperse/wizard-core';
+import { createWizard } from '@hyperse/wizard';
 import { createLoaderPlugin } from '../src/create-loader-plugin.js';
 import { createFixtureFiles, sleep } from './utils/test-utils.js';
 

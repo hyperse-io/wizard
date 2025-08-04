@@ -2,7 +2,7 @@ import memoize, { memoizeClear } from 'memoize';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import resolve from 'resolve';
-import type { LocaleMessageResolver, Plugin } from '@hyperse/wizard-core';
+import type { LocaleMessageResolver, Plugin } from '@hyperse/wizard';
 import type { PluginItem } from '../types/type-plugin-item.js';
 import { findPluginsInNodeModules } from './helper-find-plugins-in-node-modules.js';
 import { searchParentDir } from './helper-search-parent-dir.js';

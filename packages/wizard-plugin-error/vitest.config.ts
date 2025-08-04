@@ -5,10 +5,7 @@ export default defineConfig({
   plugins: [],
   resolve: {
     alias: {
-      '@hyperse/wizard-core': getDirname(
-        import.meta.url,
-        '../wizard-core/src/index.ts'
-      ),
+      '@hyperse/wizard': getDirname(import.meta.url, '../wizard/src/index.ts'),
     },
   },
   test: {

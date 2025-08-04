@@ -1,4 +1,4 @@
-import { definePlugin } from '@hyperse/wizard-core';
+import { definePlugin } from '@hyperse/wizard';
 import { loadCliPlugins } from './helpers/helper-load-plugin.js';
 import { loaderMessages } from './i18n/messages.js';
 

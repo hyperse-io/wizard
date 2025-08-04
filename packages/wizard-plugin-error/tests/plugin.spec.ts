@@ -3,12 +3,12 @@ import {
   createWizard,
   type DefineMessageType,
   definePlugin,
-} from '@hyperse/wizard-core';
+} from '@hyperse/wizard';
 import { createErrorPlugin } from '../src/create-error-plugin.js';
 import { errorCliMessages } from './i18n/message.js';
 import { sleep } from './utils/test-utils.js';
 
-declare module '@hyperse/wizard-core' {
+declare module '@hyperse/wizard' {
   export interface CliLocaleMessages
     extends DefineMessageType<typeof errorCliMessages> {}
 }

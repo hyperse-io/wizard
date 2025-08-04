@@ -1,4 +1,4 @@
-import type { FlagsWithI18n, I18n } from '@hyperse/wizard-core';
+import type { FlagsWithI18n, I18n } from '@hyperse/wizard';
 import { DELIMITER, INDENT } from '../constant.js';
 import { chalk } from './helper-chalk.js';
 import { gracefulFlagName } from './helper-string-utils.js';

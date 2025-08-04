@@ -1,5 +1,5 @@
 import { type DeepPartial, mergeOptions } from '@hyperse/deep-merge';
-import type { LocaleMessagesPluginsObject } from '@hyperse/wizard-core';
+import type { LocaleMessagesPluginsObject } from '@hyperse/wizard';
 import type { HelpPluginLocaleOverrideMessages } from '../i18n/i18n.js';
 
 /**

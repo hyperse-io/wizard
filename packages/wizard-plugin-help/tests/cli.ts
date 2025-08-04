@@ -1,15 +1,11 @@
-import type { DefineMessageType } from '@hyperse/wizard-core';
-import {
-  createWizard,
-  defineCommand,
-  definePlugin,
-} from '@hyperse/wizard-core';
+import type { DefineMessageType } from '@hyperse/wizard';
+import { createWizard, defineCommand, definePlugin } from '@hyperse/wizard';
 import { createHelpPlugin } from '../src/create-help-plugin.js';
 import { buildPluginMessages, helpCliMessages } from './i18n/message.js';
 
 process.env.HPS_WIZARD_LOCALE = 'zh';
 
-declare module '@hyperse/wizard-core' {
+declare module '@hyperse/wizard' {
   export interface CliLocaleMessages
     extends DefineMessageType<typeof helpCliMessages> {}
 

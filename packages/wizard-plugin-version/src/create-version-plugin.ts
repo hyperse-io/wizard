@@ -1,4 +1,4 @@
-import { defineCommand, definePlugin } from '@hyperse/wizard-core';
+import { defineCommand, definePlugin } from '@hyperse/wizard';
 import { gracefulVersion } from './helpers/helper-graceful-version.js';
 import { versionMessages } from './i18n/messages.js';
 
