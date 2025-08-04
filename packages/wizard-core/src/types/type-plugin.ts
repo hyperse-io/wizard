@@ -1,4 +1,4 @@
-import type { LogLevel } from '@hyperse/logger';
+import type { Logger, LogLevel } from '@hyperse/logger';
 import type { Wizard } from '../core/Wizard.js';
 import type { CommandNameToContext } from './type-command-builder.js';
 import type { Flags } from './type-flag.js';
@@ -16,6 +16,10 @@ export type PluginContext = {
    * The threshold log level.
    */
   logLevel: LogLevel;
+  /**
+   * The logger instance provided by the wizard core.
+   */
+  logger: Logger;
   /**
    * Whether to use color.
    */

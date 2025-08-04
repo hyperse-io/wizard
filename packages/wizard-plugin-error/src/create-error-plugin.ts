@@ -1,26 +1,31 @@
-import type { StdoutOptions } from '@hyperse/logger-plugin-stdout';
 import { definePlugin } from '@hyperse/wizard-core';
-import { createErrorLogger } from './create-logger.js';
 import { errorMessages } from './i18n/messages.js';
 
-export type ErrorPluginOptions = Partial<StdoutOptions>;
+export type ErrorPluginOptions = {
+  /**
+   * Whether to exit the process when an error occurs.
+   *
+   * @default true
+   */
+  exitProcess?: boolean;
+};
 
 /**
  * Create a plugin that logs errors to the console.
  * @param options - The options for the plugin.
  * @returns The plugin.
  */
-export const createErrorPlugin = (options: ErrorPluginOptions = {}) => {
+export const createErrorPlugin = (options?: ErrorPluginOptions) => {
+  const { exitProcess = true } = options || {};
   return definePlugin({
     name: 'plugins.errorPlugin.name',
     localeMessages: errorMessages,
     setup: (wizard, pluginCtx) => {
-      const logger = createErrorLogger({
-        noColor: pluginCtx.noColor,
-        ...options,
-      });
       return wizard.errorHandler((err: any) => {
-        logger.error(err);
+        pluginCtx.logger.error(err);
+        if (exitProcess) {
+          setTimeout(process.exit(1), 100);
+        }
       });
     },
   });

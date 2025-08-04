@@ -1,15 +1,9 @@
 import { type DeepPartial, simpleDeepClone } from '@hyperse/deep-merge';
 import type { LogLevel } from '@hyperse/logger';
-import { createLogger, type Logger, type LoggerContext } from '@hyperse/logger';
+import { createLogger, type Logger } from '@hyperse/logger';
 import { createStdoutPlugin } from '@hyperse/logger-plugin-stdout';
 import { Pipeline } from '@hyperse/pipeline';
-import {
-  DefaultLogLevel,
-  DefaultNoColor,
-  Root,
-  rootName,
-  WizardName,
-} from '../constants.js';
+import { Root, rootName, WizardName } from '../constants.js';
 import { CommandHandlerNotFoundError } from '../errors/CommandHandlerNotFoundError.js';
 import { InvalidCommandNameError } from '../errors/CommandInvalidNameError.js';
 import { EventEmitter } from '../events/EventEmitter.js';
@@ -526,6 +520,7 @@ export class Wizard<
         : undefined,
       logLevel: this.options.logLevel,
       noColor: this.options.noColor,
+      logger: this.#logger,
     }) as unknown as Wizard<
       MergeCommandNameToContext<NameToContext, PluginCommandMapping>,
       GlobalFlags

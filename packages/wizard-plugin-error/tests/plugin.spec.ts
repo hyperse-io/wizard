@@ -35,7 +35,7 @@ describe('createErrorPlugin', () => {
       noColor: true,
     });
 
-    const plugin = createErrorPlugin();
+    const plugin = createErrorPlugin({ exitProcess: false });
 
     cli.use(plugin).use(
       definePlugin({
@@ -71,15 +71,7 @@ describe('createErrorPlugin', () => {
     });
 
     const plugin = createErrorPlugin({
-      capitalizeLevelName: true,
-      showPrefix: false,
-      showLoggerName: true,
-      showPluginName: true,
-      showTimestamp: true,
-      showLevelName: true,
-      use24HourClock: true,
-      showDate: true,
-      noColor: true,
+      exitProcess: false,
     });
 
     cli.use(plugin).use(
@@ -99,9 +91,8 @@ describe('createErrorPlugin', () => {
 
     expect(printer).toHaveBeenCalled();
     const result = printer.mock.calls[0][0];
+    console.log(result);
     expect(result).toContain('[ ERROR ]');
-    expect(result).toContain(' HpsErrorLogger ');
-    expect(result).toContain(' hps-logger-plugin-stdout ');
     expect(result).toContain(
       'Invalid command name "test " command names cannot contain spaces or multiple consecutive spaces.'
     );
