@@ -75,7 +75,7 @@ The current command chain being executed, with internationalized descriptions an
 
 The global flags configuration with internationalized descriptions and metadata.
 
-### Public methods
+### Methods
 
 #### setupLogger
 
@@ -123,66 +123,8 @@ Sets global flags that are available to all commands.
 
 Sets an error handler to catch and handle errors during execution.
 
-### EventEmitter methods
-
-Since Wizard extends EventEmitter, it also provides all the event emitter methods:
-
 #### on
 
 `(event: string, listener: EventListener) => Wizard`
 
 Adds an event listener for the specified event.
-
-#### once
-
-`(event: string, listener: EventListener) => Wizard`
-
-Adds a one-time event listener that will be removed after the first execution.
-
-#### off
-
-`(event: string, listener: EventListener) => Wizard`
-
-Removes an event listener for the specified event.
-
-#### removeAllListeners
-
-`(event?: string) => Wizard`
-
-Removes all listeners for a specific event, or all listeners if no event is specified.
-
-#### emit
-
-`(event: string, data: any) => boolean`
-
-Emits an event with the specified data. Returns true if the event had listeners.
-
-#### listenerCount
-
-`(event: string) => number`
-
-Returns the number of listeners for a specific event.
-
-#### listeners
-
-`(event: string) => EventListener[]`
-
-Returns an array of listeners for a specific event.
-
-#### eventNames
-
-`() => string[]`
-
-Returns an array of event names that have listeners.
-
-#### setMaxListeners
-
-`(n: number) => Wizard`
-
-Sets the maximum number of listeners that can be added to a single event.
-
-#### getMaxListeners
-
-`() => number`
-
-Returns the maximum number of listeners that can be added to a single event.

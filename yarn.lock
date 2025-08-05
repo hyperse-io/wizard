@@ -2802,7 +2802,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@hyperse/wizard-plugin-error@workspace:packages/wizard-plugin-error":
+"@hyperse/wizard-plugin-error@workspace:*, @hyperse/wizard-plugin-error@workspace:packages/wizard-plugin-error":
   version: 0.0.0-use.local
   resolution: "@hyperse/wizard-plugin-error@workspace:packages/wizard-plugin-error"
   dependencies:
@@ -2823,7 +2823,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@hyperse/wizard-plugin-help@workspace:packages/wizard-plugin-help":
+"@hyperse/wizard-plugin-help@workspace:*, @hyperse/wizard-plugin-help@workspace:packages/wizard-plugin-help":
   version: 0.0.0-use.local
   resolution: "@hyperse/wizard-plugin-help@workspace:packages/wizard-plugin-help"
   dependencies:
@@ -2846,7 +2846,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@hyperse/wizard-plugin-loader@workspace:packages/wizard-plugin-loader":
+"@hyperse/wizard-plugin-loader@workspace:*, @hyperse/wizard-plugin-loader@workspace:packages/wizard-plugin-loader":
   version: 0.0.0-use.local
   resolution: "@hyperse/wizard-plugin-loader@workspace:packages/wizard-plugin-loader"
   dependencies:
@@ -2867,7 +2867,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@hyperse/wizard-plugin-version@workspace:packages/wizard-plugin-version":
+"@hyperse/wizard-plugin-version@workspace:*, @hyperse/wizard-plugin-version@workspace:packages/wizard-plugin-version":
   version: 0.0.0-use.local
   resolution: "@hyperse/wizard-plugin-version@workspace:packages/wizard-plugin-version"
   dependencies:
@@ -2896,6 +2896,10 @@ __metadata:
     "@hyperse/eslint-config-hyperse": "npm:^1.4.5"
     "@hyperse/next-config": "npm:^1.0.5"
     "@hyperse/wizard": "workspace:*"
+    "@hyperse/wizard-plugin-error": "workspace:*"
+    "@hyperse/wizard-plugin-help": "workspace:*"
+    "@hyperse/wizard-plugin-loader": "workspace:*"
+    "@hyperse/wizard-plugin-version": "workspace:*"
     "@iconify/react": "npm:^6.0.0"
     "@lottiefiles/dotlottie-react": "npm:^0.14.3"
     "@tailwindcss/postcss": "npm:^4.1.11"

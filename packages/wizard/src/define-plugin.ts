@@ -16,7 +16,6 @@ import type { Plugin } from './types/type-plugin.js';
  * });
  * ```
  * @param plugin - The plugin to define.
- * @returns The plugin.
  */
 export const definePlugin = <
   CommandMapping extends CommandNameToContext,

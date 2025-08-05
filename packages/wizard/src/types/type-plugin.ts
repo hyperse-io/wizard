@@ -41,8 +41,20 @@ export interface Plugin<
   Result extends CommandNameToContext = {},
   GlobalFlags extends Flags = Flags,
 > {
+  /**
+   * The name of the plugin.
+   */
   name: LocaleMessageResolver;
+
+  /**
+   * The locale messages provided by the plugin.
+   */
   localeMessages?: LocaleMessagesPluginsObject;
+  /**
+   * The setup method of the plugin.
+   * This function is called when the plugin is registered with the Wizard instance.
+   * It receives the current Wizard instance and the plugin context, and should return a (possibly extended) Wizard instance.
+   */
   setup: (
     cli: Wizard<NameToContext, GlobalFlags>,
     ctx: PluginContext

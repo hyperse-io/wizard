@@ -4,4 +4,53 @@ description: Version information plugin with semantic versioning support
 icon: LightningIcon
 ---
 
+import { generateDefinition, TSDoc } from 'nextra/tsdoc';
+
 # Version Plugin
+
+The Version Plugin provides version information for CLI applications built with Wizard.
+
+## Installation
+
+```sh npm2yarn
+npm install @hyperse/wizard-plugin-version
+```
+
+## Quick Start
+
+```ts filename="cli.ts"
+import { createWizard } from '@hyperse/wizard';
+import { createVersionPlugin } from '@hyperse/wizard-plugin-version';
+
+const cli = createWizard({
+  name: 'my-cli',
+  description: 'My CLI application',
+  version: '1.0.0',
+});
+
+cli.use(createVersionPlugin()).parse();
+
+// execute command
+// node ./cli.js --version
+
+// print version information
+// v1.0.0
+```
+
+## API Reference
+
+<TSDoc
+  definition={generateDefinition({
+    code: `
+export { createVersionPlugin as default } from '@hyperse/wizard-plugin-version'`,
+  })}
+/>
+
+- VersionPluginOptions
+
+<TSDoc
+  definition={generateDefinition({
+    code: `
+export { VersionPluginOptions as default } from '@hyperse/wizard-plugin-version'`,
+  })}
+/>

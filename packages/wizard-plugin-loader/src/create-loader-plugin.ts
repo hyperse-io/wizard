@@ -31,7 +31,6 @@ export type LoaderPluginOptions = {
 /**
  * Create a plugin that logs errors to the console.
  * @param options - The options for the plugin.
- * @returns The plugin.
  */
 export const createLoaderPlugin = async (options: LoaderPluginOptions) => {
   const {

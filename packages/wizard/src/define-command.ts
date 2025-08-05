@@ -11,7 +11,6 @@ import type {
  *
  * @param command The command to define.
  * @param handler The handler for the command.
- * @returns The command.
  */
 export const defineCommand = <Name extends string, Ctx extends object>(
   name: Name,

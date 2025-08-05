@@ -21,7 +21,19 @@
     "types": ["vitest/globals"],
     "paths": {
       "@/*": ["./src/*"],
-      "@hyperse/wizard": ["../packages/wizard/src/index.ts"]
+      "@hyperse/wizard": ["../packages/wizard/src/index.ts"],
+      "@hyperse/wizard-plugin-error": [
+        "../packages/wizard-plugin-error/src/index.ts"
+      ],
+      "@hyperse/wizard-plugin-version": [
+        "../packages/wizard-plugin-version/src/index.ts"
+      ],
+      "@hyperse/wizard-plugin-help": [
+        "../packages/wizard-plugin-help/src/index.ts"
+      ],
+      "@hyperse/wizard-plugin-loader": [
+        "../packages/wizard-plugin-loader/src/index.ts"
+      ]
     },
     "plugins": [
       {

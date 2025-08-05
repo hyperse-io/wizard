@@ -4,14 +4,134 @@ description: Command support
 icon: LinkIcon
 ---
 
-# Core API
+import { generateDefinition, TSDoc } from 'nextra/tsdoc';
 
-## Create Cli
+# Command
 
-## Setup Command
+The Command is the core mechanism within the @hyperse/wizard framework that enables definition, parsing, and execution of CLI commands. This system provides type-safe command creation, argument parsing, and handler execution while integrating with the broader event-driven architecture.
 
-## Setup Subcommand
+## CommandBuilder
 
-## Setup Plugin
+### Name
 
-## Setup Locale
+<TSDoc
+  definition={generateDefinition({
+    code: `
+    import { Root } from '@hyperse/wizard'
+    type CommandName = { Name: string | typeof Root }
+    export default CommandName`,
+  })}
+/>
+
+### Options
+
+<TSDoc
+  definition={generateDefinition({
+    code: `
+export { CommandOptions as default } from '@hyperse/wizard'`,
+  })}
+/>
+
+### Properties
+
+<TSDoc
+  definition={generateDefinition({
+    code: `
+export { CommandBuilder as default } from '@hyperse/wizard'`,
+  })}
+/>
+
+### Command Properties
+
+<TSDoc
+  definition={generateDefinition({
+    code: `
+export { Command as default } from '@hyperse/wizard'`,
+  })}
+/>
+
+## Flags
+
+Wizard's flag parsing is powered by [type-flag](https://github.com/privatenumber/type-flag) and comes with many features:
+
+- Array & Custom types
+- Flag delimiters: --flag value, --flag=value, --flag:value, and --flag.value
+- Combined aliases: -abcd 2 → -a -b -c -d 2
+- [End of flags](https://unix.stackexchange.com/questions/11376/what-does-double-dash-double-hyphen-mean/11382#11382): Pass in -- to end flag parsing
+- Unknown flags: Unexpected flags stored in unknownFlags
+
+Read the [type-flag docs](https://github.com/privatenumber/type-flag) to learn more.
+
+Flags can be specified in the `flags` object-property, where the key is the flag name, and the value is a flag type function or an object that describes the flag.
+
+The flag name is recommended to be in camelCase as it will be interpreted to parse kebab-case equivalents.
+
+The flag type function can be any function that accepts a string and returns the parsed value. Default JavaScript constructors should cover most use-cases:
+[`String`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/String/String),
+[`Number`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Number/Number),
+[`Boolean`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Boolean/Boolean), etc.
+
+The flag description object can be used to store additional information about the flag, such as `alias`, `default`, and `description`. To accept multiple values for a flag, wrap the type function in an array.
+
+All of the provided information will be used to generate better help documentation.
+
+Example:
+
+```ts filename="cli.ts"
+import { defineCommand } from '@hyperse/wizard';
+
+const deployCmd = defineCommand<
+  'deploy',
+  { ctx: { fileType: string; ossType: string } }
+>('deploy', {
+  //locale message key
+  description: 'plugins.deploy.description',
+})
+  .flags({
+    fileType: {
+      type: String,
+      alias: 'f',
+      //locale message key
+      description: 'plugins.deploy.flags.fileType',
+      default: 'js',
+    },
+    ossType: {
+      type: String,
+      alias: 'o',
+      //locale message key
+      description: 'plugins.deploy.flags.ossType',
+      default: 'aliyun',
+    },
+  })
+  .handler((ctx) => {
+    //do something
+  });
+
+// execute command
+// node ./dist/cli.js deploy --fileType=ts --ossType=tencent
+```
+
+## Advanced Usage
+
+To seperate handlers from the cli definition, you can use the `defineCommand` utility function:
+
+<TSDoc
+  definition={generateDefinition({
+    code: `
+export { defineCommand as default } from '@hyperse/wizard'`,
+  })}
+/>
+
+Example:
+
+```ts filename="defineCommand.ts"
+import { defineCommand } from '@hyperse/wizard';
+
+const deployCmd = defineCommand<
+  'deploy',
+  { ctx: { fileType: string; ossType: string } }
+>('deploy', {
+  //locale message key
+  description: 'plugins.deploy.description',
+});
+```

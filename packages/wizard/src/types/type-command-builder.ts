@@ -160,6 +160,8 @@ export interface CommandBuilder<
   /**
    * @description
    * Registers sub-commands for the current command. Returns a new CommandBuilder with merged sub-command contexts and command maps.
+   *
+   * @remarks `Function`
    * @param {...SubCommandBuilders} subCommands - The sub-command builders to register.
    * @returns {CommandBuilder} A new CommandBuilder with updated context and command map.
    */
@@ -177,6 +179,8 @@ export interface CommandBuilder<
   /**
    * @description
    * Defines the flags for the command. Returns a new CommandBuilder with the updated flags type.
+   *
+   * @remarks `Function`
    * @param {T} flags - The flags definition object.
    * @returns {CommandBuilder} A new CommandBuilder with the specified flags type.
    */
@@ -187,6 +191,8 @@ export interface CommandBuilder<
   /**
    * @description
    * Defines a resolver function for the command. The resolver is used to resolve context before the handler is executed.
+   *
+   * @remarks `Function`
    * @param {CommandResolverFunction} fn - The resolver function.
    * @returns {CommandBuilder} A new CommandBuilder with the resolver attached.
    */
@@ -206,6 +212,8 @@ export interface CommandBuilder<
   /**
    * @description
    * Defines a handler function for the command. The handler is executed when the command is invoked.
+   *
+   * @remarks `Function`
    * @param {CommandHandlerFunction} fn - The handler function.
    * @returns {CommandBuilder} A new CommandBuilder with the handler attached.
    */
@@ -222,6 +230,8 @@ export interface CommandBuilder<
   /**
    * @description
    * Extracts the final Command object from the builder, which can be registered or executed.
+   *
+   * @remarks `Function`
    * @returns {Command} The built Command instance.
    */
   getCommand(): Command<Name, Context, SubCommandContext, CommandFlags>;

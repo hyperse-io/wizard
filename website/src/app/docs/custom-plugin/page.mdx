@@ -1,7 +1,54 @@
 ---
 title: Custom Plugin
-sidebar:
-  order: 1
+description: How to create a custom plugin
 ---
 
 # How to create a custom plugin
+
+A plugin is a function that accepts a `Wizard` instance and returns a `Wizard` instance.
+
+## Usage
+
+```ts filename="plugin.ts"
+import { definePlugin, createWizard } from '@hyperse/wizard';
+
+// define plugin
+export const createNewPlugin = () => {
+  return definePlugin({
+    // locale message key
+    name: 'plugins.newPlugin.name',
+    localeMessages: versionMessages,
+    setup: (wizard) => {
+      let cli = wizard.register(
+        defineCommand('print', {
+          // locale message key
+          description: 'plugins.newPlugin.command.description',
+        }).handler(() => {
+          process.stdout.write('hello world');
+        })
+      );
+      return cli;
+    },
+  });
+};
+
+// use plugin
+const cli = createWizard({
+  name: 'hps_cli',
+  // locale message key
+  description: 'cli.versionCli.description',
+  version: (t) => {
+    // locale message key
+    return t('cli.versionCli.version', { version: '1.0.0' });
+  },
+  localeMessages: versionCliMessages,
+  errorHandler: (e) => {
+    console.log('CLI errorHandler \n', e);
+  },
+})
+  .use(createNewPlugin())
+  .parse();
+
+// execute command
+// node ./cli.js print
+```

@@ -3,3 +3,63 @@ title: Loader Plugin
 description: Plugin loader with automatic discovery and dependency management
 icon: LightningIcon
 ---
+
+import { generateDefinition, TSDoc } from 'nextra/tsdoc';
+
+# Loader Plugin
+
+The Loader Plugin provides automatic discovery and dependency management for CLI applications built with Wizard.
+
+## Installation
+
+```sh npm2yarn
+npm install @hyperse/wizard-plugin-loader
+```
+
+## Quick Start
+
+```ts filename="cli.ts"
+import { createWizard } from '@hyperse/wizard';
+import { createLoaderPlugin } from '@hyperse/wizard-plugin-loader';
+
+const cli = createWizard({
+  name: 'my-cli',
+  description: 'My CLI application',
+  version: '1.0.0',
+});
+
+cli
+  .use(
+    createLoaderPlugin({
+      plugins: ['version-plugin'],
+      pluginPackPattern: ['help-*/package.json'],
+      pluginSearchDirs: ['./plugins'],
+      cwd: process.cwd(),
+    })
+  )
+  .parse();
+
+// execute command
+// node ./cli.js --version
+
+// print version information
+// v1.0.0
+```
+
+## API Reference
+
+<TSDoc
+  definition={generateDefinition({
+    code: `
+export { createLoaderPlugin as default } from '@hyperse/wizard-plugin-loader'`,
+  })}
+/>
+
+- LoaderPluginOptions
+
+<TSDoc
+  definition={generateDefinition({
+    code: `
+export { LoaderPluginOptions as default } from '@hyperse/wizard-plugin-loader'`,
+  })}
+/>

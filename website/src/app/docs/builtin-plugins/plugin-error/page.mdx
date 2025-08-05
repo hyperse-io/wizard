@@ -3,3 +3,48 @@ title: Error Plugin
 description: Advanced error handling plugin with error recovery and reporting
 icon: LightningIcon
 ---
+
+import { generateDefinition, TSDoc } from 'nextra/tsdoc';
+
+# Error Plugin
+
+The Error Plugin provides intelligent error handling for CLI applications built with Wizard. It automatically detects command not found errors and suggests similar commands using fuzzy matching, making your CLI more user-friendly.
+
+## Installation
+
+```sh npm2yarn
+npm install @hyperse/wizard-plugin-error
+```
+
+## Quick Start
+
+```ts filename="cli.ts"
+import { createWizard } from '@hyperse/wizard';
+import { createErrorPlugin } from '@hyperse/wizard-plugin-error';
+
+const cli = createWizard({
+  name: 'my-cli',
+  description: 'My CLI application',
+  version: '1.0.0',
+});
+
+cli.use(createErrorPlugin()).parse();
+```
+
+## API Reference
+
+<TSDoc
+  definition={generateDefinition({
+    code: `
+export { createErrorPlugin as default } from '@hyperse/wizard-plugin-error'`,
+  })}
+/>
+
+- ErrorPluginOptions
+
+<TSDoc
+  definition={generateDefinition({
+    code: `
+export { ErrorPluginOptions as default } from '@hyperse/wizard-plugin-error'`,
+  })}
+/>

@@ -67,7 +67,7 @@
   display: none;
 }
 #highlighting-card {
-  min-height: 300px;
+  min-height: 200px;
   background-image:
     linear-gradient(to top, transparent, #fff 50%),
     url(/assets/syntax-highlighting.svg);

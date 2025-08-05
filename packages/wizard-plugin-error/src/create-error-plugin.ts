@@ -15,7 +15,6 @@ export type ErrorPluginOptions = {
 /**
  * Create a plugin that logs errors to the console.
  * @param options - The options for the plugin.
- * @returns The plugin.
  */
 export const createErrorPlugin = (options?: ErrorPluginOptions) => {
   const { exitProcess = true } = options || {};
