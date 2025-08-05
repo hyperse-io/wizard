@@ -20,7 +20,8 @@
     "baseUrl": "./",
     "types": ["vitest/globals"],
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@hyperse/wizard": ["../packages/wizard/src/index.ts"]
     },
     "plugins": [
       {

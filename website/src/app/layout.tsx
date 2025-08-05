@@ -5,8 +5,7 @@ import { getPageMap } from 'nextra/page-map';
 import { Footer, Layout, Link, Navbar } from 'nextra-theme-docs';
 import cn from 'clsx';
 import { Logo } from '@/components/Icons/Logo';
-import { HeroUIProvider } from '@heroui/react';
-import './globals.css';
+import '@/styles/globals.css';
 
 export const metadata: Metadata = {
   description:
@@ -107,7 +106,7 @@ const RootLayout: FC<{
           sidebar={{ defaultMenuCollapseLevel: 1 }}
           footer={footer}
         >
-          <HeroUIProvider validationBehavior="aria">{children}</HeroUIProvider>
+          {children}
         </Layout>
       </body>
     </html>

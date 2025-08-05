@@ -1,21 +1,19 @@
 ---
 title: Getting Started
-sidebar:
-  order: 1
+description: Get started with @hyperse/wizard
 ---
 
 # Getting Started
 
 ## 📦 Installation
 
-Install via npm:
-
-<Tabs items={['npm', 'yarn']}>
-  <Tabs.Tab>npm install @hyperse/wizard</Tabs.Tab>
-  <Tabs.Tab>yarn add @hyperse/wizard</Tabs.Tab>
-</Tabs>
+```sh npm2yarn
+npm install @hyperse/wizard
+```
 
 ## 🚀 Quick Start
+
+### Create a Wizard CLI Instance
 
 ```tsx
 import { createWizard } from '@hyperse/wizard';
@@ -26,10 +24,61 @@ const hpsCli = createWizard({
   description: 'hpsCli.description',
   // i18n message key
   version: 'hpsCli.version',
+  // i18n messages
+  // cliMessages only provide the messages for the cli, not the commands and plugins
+  localeMessages: cliMessages,
 });
 ```
 
-## 🔧 Setup Command and Subcommand
+### Define Commands and Subcommands
+
+```tsx
+import { defineCommand } from '@hyperse/wizard';
+
+type MiniContext = {
+  projectCwd: string;
+};
+
+const buildCommand = defineCommand('build', {
+  // i18n message key
+  description: 'buildPlugin.command.build.description',
+})
+  .use(
+    defineCommand<'mini', MiniContext>('mini', {
+      // i18n message key
+      description: 'buildPlugin.command.build.mini.description',
+    })
+      .flags({
+        compiler: {
+          type: String,
+          // i18n message key
+          description: 'buildPlugin.command.build.mini.flags.compiler',
+          default: 'webpack',
+        },
+      })
+      .handler(async (ctx) => {
+        ctx.log.info('build mini', ctx.flags);
+      })
+  )
+  .flags({
+    projectCwd: {
+      type: Boolean,
+      // i18n message key
+      description: 'buildPlugin.command.build.flags.projectCwd',
+      default: process.cwd(),
+      required: true,
+    },
+  })
+  .resolve((ctx) => {
+    // just provide the projectCwd for subcommand to work
+    ctx.log.info('build resolve', ctx.flags);
+    return {
+      projectCwd: ctx.flags.projectCwd,
+    };
+  });
+```
+
+### Define a Plugin and Register Commands
 
 ```tsx
 import { definePlugin } from '@hyperse/wizard';
@@ -39,52 +88,15 @@ hpsCli
     definePlugin({
       name: 'buildPlugin.plugin.name',
       setup: (cli) => {
-        return cli.register(
-          defineCommand('build', {
-            description: 'buildPlugin.command.build.description',
-          })
-            .use(
-              defineCommand<
-                'mini',
-                {
-                  projectCwd: string;
-                }
-              >('mini', {
-                description: 'buildPlugin.command.build.mini.description',
-              })
-                .flags({
-                  compiler: {
-                    type: String,
-                    description:
-                      'buildPlugin.command.build.mini.flags.compiler',
-                    default: 'webpack',
-                  },
-                })
-                .handler(async (ctx) => {
-                  ctx.log.info('build mini', ctx.flags);
-                })
-            )
-            .flags({
-              projectCwd: {
-                type: Boolean,
-                description: 'buildPlugin.command.build.flags.projectCwd',
-                default: process.cwd(),
-                required: true,
-              },
-            })
-            .resolve((ctx) => {
-              ctx.log.info('build resolve', ctx.flags);
-              return {
-                projectCwd: ctx.flags.projectCwd,
-              };
-            })
-        );
+        return cli.register(buildCommand);
       },
     })
   )
-  .on('help', (ctx) => {
-    ctx.log.info('help');
+  .on('build.mini', (ctx) => {
+    // when the build.mini command is executed, the ctx will be the context of the command
+    ctx.log.info('build mini', ctx.flags);
   });
 
-hpsCli.parse();
+// parse the command
+hpsCli.parse(['build', 'mini', '--compiler=webpack']);
 ```

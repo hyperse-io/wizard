@@ -184,10 +184,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.20.13, @babel/runtime@npm:^7.5.5":
-  version: 7.27.6
-  resolution: "@babel/runtime@npm:7.27.6"
-  checksum: 10c0/89726be83f356f511dcdb74d3ea4d873a5f0cf0017d4530cb53aa27380c01ca102d573eff8b8b77815e624b1f8c24e7f0311834ad4fb632c90a770fda00bd4c8
+"@babel/runtime@npm:^7.20.13, @babel/runtime@npm:^7.24.8, @babel/runtime@npm:^7.5.5":
+  version: 7.28.2
+  resolution: "@babel/runtime@npm:7.28.2"
+  checksum: 10c0/c20afe253629d53a405a610b12a62ac74d341a2c1e0fb202bbef0c118f6b5c84f94bf16039f58fd0483dd256901259930a43976845bdeb180cab1f882c21b6e0
   languageName: node
   linkType: hard
 
@@ -2813,6 +2813,7 @@ __metadata:
     "@types/node": "npm:^24.0.10"
     "@vitest/coverage-istanbul": "npm:^3.2.4"
     "@vitest/ui": "npm:^3.2.4"
+    didyoumean2: "npm:^7.0.4"
     eslint: "npm:^9.30.1"
     jsdom: "npm:26.1.0"
     npm-run-all: "npm:4.1.5"
@@ -2858,7 +2859,6 @@ __metadata:
     eslint: "npm:^9.30.1"
     globby: "npm:^14.1.0"
     jsdom: "npm:26.1.0"
-    memoize: "npm:^10.1.0"
     npm-run-all: "npm:4.1.5"
     resolve: "npm:^1.22.10"
     rimraf: "npm:^6.0.1"
@@ -2895,6 +2895,7 @@ __metadata:
     "@heroui/react": "npm:^2.7.11"
     "@hyperse/eslint-config-hyperse": "npm:^1.4.5"
     "@hyperse/next-config": "npm:^1.0.5"
+    "@hyperse/wizard": "workspace:*"
     "@iconify/react": "npm:^6.0.0"
     "@lottiefiles/dotlottie-react": "npm:^0.14.3"
     "@tailwindcss/postcss": "npm:^4.1.11"
@@ -8415,6 +8416,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"didyoumean2@npm:^7.0.4":
+  version: 7.0.4
+  resolution: "didyoumean2@npm:7.0.4"
+  dependencies:
+    "@babel/runtime": "npm:^7.24.8"
+    fastest-levenshtein: "npm:^1.0.16"
+    lodash.deburr: "npm:^4.1.0"
+  checksum: 10c0/d822d8c35d0cd76b64915e40ee32c130debeaf8fbe5cb8eca05e4a66d54d040d346353e5aae22de85278e6194eb9ac78dd8e9916ac827a85c348898e94837988
+  languageName: node
+  linkType: hard
+
 "diff@npm:^5.0.0":
   version: 5.2.0
   resolution: "diff@npm:5.2.0"
@@ -9444,6 +9456,13 @@ __metadata:
   version: 3.0.6
   resolution: "fast-uri@npm:3.0.6"
   checksum: 10c0/74a513c2af0584448aee71ce56005185f81239eab7a2343110e5bad50c39ad4fb19c5a6f99783ead1cac7ccaf3461a6034fda89fffa2b30b6d99b9f21c2f9d29
+  languageName: node
+  linkType: hard
+
+"fastest-levenshtein@npm:^1.0.16":
+  version: 1.0.16
+  resolution: "fastest-levenshtein@npm:1.0.16"
+  checksum: 10c0/7e3d8ae812a7f4fdf8cad18e9cde436a39addf266a5986f653ea0d81e0de0900f50c0f27c6d5aff3f686bcb48acbd45be115ae2216f36a6a13a7dbbf5cad878b
   languageName: node
   linkType: hard
 
@@ -11718,6 +11737,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"lodash.deburr@npm:^4.1.0":
+  version: 4.1.0
+  resolution: "lodash.deburr@npm:4.1.0"
+  checksum: 10c0/30c068e9c3b21d65d260887a8849fa7b94692f868adcc4527136c296b4e71ced7149f58e0f37154d3c56d7950cc605ad3e10b2ee0baedf5638af0befc5013ebc
+  languageName: node
+  linkType: hard
+
 "lodash.isplainobject@npm:^4.0.6":
   version: 4.0.6
   resolution: "lodash.isplainobject@npm:4.0.6"
@@ -12212,15 +12238,6 @@ __metadata:
   dependencies:
     "@types/mdast": "npm:^4.0.0"
   checksum: 10c0/2d3c1af29bf3fe9c20f552ee9685af308002488f3b04b12fa66652c9718f66f41a32f8362aa2d770c3ff464c034860b41715902ada2306bb0a055146cef064d7
-  languageName: node
-  linkType: hard
-
-"memoize@npm:^10.1.0":
-  version: 10.1.0
-  resolution: "memoize@npm:10.1.0"
-  dependencies:
-    mimic-function: "npm:^5.0.1"
-  checksum: 10c0/6cf71f673b89778b05cd1131f573ba858627daa8fec60f2197328386acf7ab184a89e52527abbd5a605b5ccf5ee12dc0cb96efb651d9a30dcfcc89e9baacc84d
   languageName: node
   linkType: hard
 
@@ -12782,7 +12799,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mimic-function@npm:^5.0.0, mimic-function@npm:^5.0.1":
+"mimic-function@npm:^5.0.0":
   version: 5.0.1
   resolution: "mimic-function@npm:5.0.1"
   checksum: 10c0/f3d9464dd1816ecf6bdf2aec6ba32c0728022039d992f178237d8e289b48764fee4131319e72eedd4f7f094e22ded0af836c3187a7edc4595d28dd74368fd81d

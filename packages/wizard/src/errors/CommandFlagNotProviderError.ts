@@ -15,8 +15,8 @@ import { CommandI18nError } from './CommandI18nError.js';
  */
 export class CommandFlagNotProviderError extends CommandI18nError {
   constructor(
-    locale: SupportedLocales,
-    variables: { [key: string]: string | number } = {}
+    public locale: SupportedLocales,
+    public variables: { [key: string]: string | number } = {}
   ) {
     const t = useLocale(locale);
     super(t('core.command.flagNotProvided', variables), LogLevel.Error);

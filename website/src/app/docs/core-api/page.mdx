@@ -1,0 +1,29 @@
+---
+asIndexPage: true
+---
+
+import { InformationCircleIcon, LinkIcon, MarkdownIcon } from 'nextra/icons';
+import {
+  BrushIcon,
+  GlobeIcon,
+  LightningIcon,
+  PictureIcon,
+  StarsIcon,
+} from '@/components/Icons';
+import { OverviewPage } from '@/components/OverviewPage';
+
+# Guide
+
+<OverviewPage
+  filePath={metadata.filePath}
+  icons={{
+    MarkdownIcon,
+    StarsIcon,
+    LinkIcon,
+    PictureIcon,
+    LightningIcon,
+    GlobeIcon,
+    BrushIcon,
+    InformationCircleIcon,
+  }}
+/>

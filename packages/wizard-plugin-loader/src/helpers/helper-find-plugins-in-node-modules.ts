@@ -4,7 +4,7 @@ import path from 'path/posix';
 /**
  * Find plugins in node_mdoules
  * @param nodeModulesDir directory of search for plugin
- * @param pluginPackPattern ['@*\/armit-cli-plugin-*\/package.json','armit-cli-plugin-*\/package.json', '@armit/cli-plugin-*\/package.json']
+ * @param pluginPackPattern ['@*\/hps-cli-plugin-*\/package.json','hps-cli-plugin-*\/package.json', '@hps/cli-plugin-*\/package.json']
  * @returns
  */
 export const findPluginsInNodeModules = (

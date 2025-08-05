@@ -343,7 +343,12 @@ export class Wizard<
   private preparePipelineContext(argvOptions: ParseOptions) {
     try {
       const commandMap = commandTreeToMap(this.#commandBuilder);
+      this.#commandMap = simpleDeepClone(commandMap);
       const allCommandNames = Array.from(commandMap.keys());
+
+      if (allCommandNames.every((name) => name === Root)) {
+        this.#logger.warn(this.i18n.t('core.command.notProvider'));
+      }
 
       for (const commandName of allCommandNames) {
         if (!validateCommandName(commandName)) {
@@ -377,9 +382,7 @@ export class Wizard<
 
       //get command pipeline, eg: build.evolve.mini
       const commandChain = searchCommandChain(calledCommandName, commandMap);
-      for (const [cmdName, cmd] of commandMap) {
-        this.#commandMap.set(cmdName, cmd);
-      }
+
       this.#commandChain = commandChain;
 
       // Root command does not need to be validated

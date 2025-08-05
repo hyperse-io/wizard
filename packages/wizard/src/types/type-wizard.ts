@@ -42,41 +42,62 @@ export type WizardEventContext<NameToContext extends CommandNameToContext> = {
 
 /**
  * @description
- * The options for the wizard.
+ * Options for configuring a wizard instance.
  */
 export type WizardOptions = {
   /**
-   * The name of the wizard.
+   * The name of the CLI tool, shown in help and usage output.
    */
   name: string;
   /**
-   * The description of the wizard.
+   * The description of the CLI tool, supports localization.
+   * @remarks `locale message key` or `(t)=>t('locale message key')`
+   * @example
+   * ```tsx
+   * wizard.description
+   * ```
+   * or
+   * ```tsx
+   * (t)=>t('wizard.description')
+   * ```
    */
   description: CliLocaleMessageResolver;
   /**
-   * The version of the wizard.
+   * The version of the CLI tool, supports localization.
+   * @remarks `locale message key` or `(t)=>t('locale message key')`
+   * @example
+   * ```tsx
+   * wizard.version
+   * ```
+   * or
+   * ```tsx
+   * (t)=>t('wizard.version')
+   * ```
    */
   version: CliLocaleMessageResolver;
   /**
-   * The locale of the wizard.
+   * The default locale for CLI messages.
    * @default system locale
    */
   locale?: SupportedLocales;
   /**
-   * The threshold log level.
+   * The minimum log level to output. Logs below this level will be filtered out.
+   *
+   * @default LogLevel.Info
    */
   logLevel?: LogLevel;
   /**
-   * Whether to use color.
+   * Whether to disable colored log output.
+   *
+   * @default false
    */
   noColor?: boolean;
   /**
-   * The override messages.
-   *
+   * Custom or override messages for CLI localization.
    */
   localeMessages?: LocaleMessagesCliObject;
   /**
-   * The error handler.
+   * Global error handler, called when an uncaught exception occurs during CLI execution.
    */
   errorHandler?: (err: unknown) => void;
 };
