@@ -67,6 +67,7 @@ describe('createErrorPlugin', () => {
       description: 'cli.errorCli.description',
       version: 'cli.errorCli.version',
       localeMessages: errorCliMessages,
+      noColor: true,
     });
 
     const plugin = createErrorPlugin({
