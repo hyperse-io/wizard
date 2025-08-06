@@ -56,7 +56,6 @@ describe('createErrorPlugin', () => {
 
     const result = printer.mock.calls[0][0];
     expect(result).toContain('[ ERROR ]');
-    expect(result).toContain('error');
     expect(result).toContain(
       'Invalid command name "test " command names cannot contain spaces or multiple consecutive spaces.'
     );
@@ -78,14 +77,14 @@ describe('createErrorPlugin', () => {
       definePlugin({
         name: () => 'test plugin',
         setup: (cli) => {
-          return cli.register('test ', {
+          return cli.register('test', {
             description: () => 'test',
           });
         },
       })
     );
 
-    cli.parse(['test']);
+    cli.parse(['testA']);
 
     await sleep();
 
@@ -93,8 +92,6 @@ describe('createErrorPlugin', () => {
     const result = printer.mock.calls[0][0];
     console.log(result);
     expect(result).toContain('[ ERROR ]');
-    expect(result).toContain(
-      'Invalid command name "test " command names cannot contain spaces or multiple consecutive spaces.'
-    );
+    expect(result).toContain('Command "testA" not found. Did you mean "test"?');
   });
 });

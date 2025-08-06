@@ -36,4 +36,4 @@ cli.use(plugin).use(
   })
 );
 
-cli.parse(['testaaa']);
+cli.parse(['test']);

@@ -1,5 +1,5 @@
 import didyoumean from 'didyoumean2';
-import type { CommandNotFoundError } from '@hyperse/wizard';
+import { CommandNotFoundError } from '@hyperse/wizard';
 import { definePlugin, Root } from '@hyperse/wizard';
 import { errorMessages } from './i18n/messages.js';
 
@@ -22,7 +22,7 @@ export const createErrorPlugin = (options?: ErrorPluginOptions) => {
     name: 'plugins.errorPlugin.name',
     localeMessages: errorMessages,
     setup: (wizard, pluginCtx) => {
-      return wizard.errorHandler((err: CommandNotFoundError) => {
+      return wizard.errorHandler((err: any) => {
         try {
           const { t } = wizard.i18n;
           const commandMap = wizard.commandMap;
@@ -31,10 +31,14 @@ export const createErrorPlugin = (options?: ErrorPluginOptions) => {
           const hasCommands = finalCommandKeys.length > 0;
 
           const closestCommandName = didyoumean(
-            err.variables.cmdName as string,
+            err?.variables?.cmdName as string,
             finalCommandKeys
           );
-          if (hasCommands && closestCommandName) {
+          if (
+            err instanceof CommandNotFoundError &&
+            hasCommands &&
+            closestCommandName
+          ) {
             pluginCtx.logger.error(
               t('plugins.errorPlugin.messages.commandNotFound', {
                 cmdName: err.variables.cmdName,
