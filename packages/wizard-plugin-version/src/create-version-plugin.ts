@@ -40,7 +40,7 @@ export const createVersionPlugin = (options: VersionPluginOptions = {}) => {
             type: Boolean,
             description: 'plugins.versionPlugin.flags.version',
             default: false,
-            alias: 'V',
+            alias: 'v',
           })
           .interceptor(async (ctx, next) => {
             if (ctx.flags.version) {

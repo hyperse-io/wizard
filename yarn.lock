@@ -2784,24 +2784,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@hyperse/wizard-plugin-bash@workspace:packages/wizard-plugin-bash":
-  version: 0.0.0-use.local
-  resolution: "@hyperse/wizard-plugin-bash@workspace:packages/wizard-plugin-bash"
-  dependencies:
-    "@hyperse/eslint-config-hyperse": "npm:^1.4.5"
-    "@hyperse/wizard": "workspace:*"
-    "@types/node": "npm:^24.0.10"
-    "@vitest/coverage-istanbul": "npm:^3.2.4"
-    "@vitest/ui": "npm:^3.2.4"
-    eslint: "npm:^9.30.1"
-    jsdom: "npm:26.1.0"
-    npm-run-all: "npm:4.1.5"
-    rimraf: "npm:^6.0.1"
-    typescript: "npm:^5.8.3"
-    vitest: "npm:^3.2.4"
-  languageName: unknown
-  linkType: soft
-
 "@hyperse/wizard-plugin-error@workspace:*, @hyperse/wizard-plugin-error@workspace:packages/wizard-plugin-error":
   version: 0.0.0-use.local
   resolution: "@hyperse/wizard-plugin-error@workspace:packages/wizard-plugin-error"

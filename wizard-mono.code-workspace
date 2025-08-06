@@ -21,10 +21,6 @@
       "path": "packages/wizard-plugin-error",
     },
     {
-      "name": "wizard-plugin-bash",
-      "path": "packages/wizard-plugin-bash",
-    },
-    {
       "name": "wizard-plugin-loader",
       "path": "packages/wizard-plugin-loader",
     },
@@ -82,7 +78,6 @@
       "./packages/wizard",
       "./packages/wizard-plugin-help",
       "./packages/wizard-plugin-error",
-      "./packages/wizard-plugin-bash",
       "./packages/wizard-plugin-loader",
       "./packages/wizard-plugin-version"
     ],
