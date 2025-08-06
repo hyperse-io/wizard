@@ -74,9 +74,9 @@ describe('load cli command plugins', () => {
       result.find((s) => !!~String(s.name).indexOf('other'))
     ).toBeUndefined();
     expect(esm2?.name).toBe('esm-2');
-    expect(esm2?.setup({} as any, { logLevel: 2, noColor: false })).toBe(
-      'esm-2'
-    );
+    expect(
+      esm2?.setup({} as any, { logLevel: 2, noColor: false, logger: {} as any })
+    ).toBe('esm-2');
     expect(esm2).not.toBeUndefined();
     expect(
       result.find((s) => !!~String(s.name).indexOf('esm'))

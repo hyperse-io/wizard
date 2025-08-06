@@ -1,0 +1,212 @@
+---
+title: i18n
+description: Internationalization support
+icon: GlobeIcon
+---
+
+# i18n
+
+Wizard provides internationalization support across three levels: `core`, `cli`, and `plugins`. Each level is loaded in different namespaces, so you need to use the appropriate namespace based on your specific use case.
+
+- The **core** namespace is primarily used for error messages and log information within the wizard core. It does not support external extensions.
+
+- The **cli** namespace is used for information required when initializing a wizard instance, such as wizard descriptions and versions.
+
+- The **plugins** namespace is used for plugin internationalization. When creating custom plugins and loading commands, all internationalization-related information is loaded in the plugins namespace.
+
+<Callout>
+  Wizard's internationalization is built on top of `@hyperse/translator`.
+  Through TypeScript interface merging, different plugins and loading processes
+  can achieve excellent type support.
+</Callout>
+
+## core namespace
+
+The built-in internationalization messages are as follows:
+
+```ts
+export const messages = {
+  en: {
+    core: {
+      command: {
+        notProvider:
+          'No command specified. Please provide a command to execute.',
+        nameConflict:
+          'Command name "{newCmdName}" conflicts with existing command "{oldCmdName}". This may be caused by duplicate aliases.',
+        flagNotProvided:
+          'Command "{cmdName}" requires the flag "{flagName}" but it was not provided.',
+        notConfiguration: 'Command "{cmdName}" is not properly configured.',
+        notFound:
+          'Command "{cmdName}" not found. Use --help to see available commands.',
+        handlerNotFound: 'Command "{cmdName}" has no handler defined.',
+        invalidName:
+          'Invalid command name "{cmdName}" command names cannot contain spaces or multiple consecutive spaces.',
+        invalidFlagsValue:
+          'Invalid value "{flagValue}" for flag "{flagName}", the flag supported values are: {flagValues}',
+      },
+      flags: {
+        noColor: 'Disable colored output in terminal',
+        logLevel: 'Set log level. options: error, warn, info, debug, verbose',
+      },
+    },
+  },
+  zh: {
+    core: {
+      command: {
+        notProvider: '未指定命令。请提供一个要执行的命令。',
+        flagNotProvided: '命令 "{cmdName}" 需要参数 "{flagName}" 但未提供。',
+        nameConflict:
+          '命令名称 "{newCmdName}" 与现有命令 "{oldCmdName}" 冲突。这可能是由重复的别名导致的。',
+        notConfiguration: '命令 "{cmdName}" 配置不正确。',
+        notFound: '未找到命令 "{cmdName}"。使用 --help 查看可用命令。',
+        handlerNotFound: '命令 "{cmdName}" 未定义处理函数。',
+        invalidName:
+          '无效的命令名称 "{cmdName}" 命令名称不能包含空格或连续多个空格。',
+        invalidFlagsValue:
+          '无效的参数值 "{flagValue}"，参数 "{flagName}" 支持的值为：{flagValues}',
+      },
+      flags: {
+        noColor: '禁用终端日志输出颜色',
+        logLevel: '设置日志级别，可选值：error, warn, info, debug, verbose',
+      },
+    },
+  },
+};
+```
+
+## cli namespace
+
+### Messages
+
+```ts filename="messages.ts"
+export const helpCliMessages = {
+  en: {
+    helpCli: {
+      description: 'CLI description',
+      version: 'CLI v1.0.0',
+    },
+  },
+  zh: {
+    helpCli: {
+      description: '帮助信息插件',
+      version: 'CLI v1.0.0',
+    },
+  },
+};
+```
+
+### Type Merging
+
+Use interface merging to combine your custom internationalization messages with `CliLocaleMessages`.
+
+```ts filename="local.d.ts"
+import type { DefineMessageType } from '@hyperse/wizard';
+
+declare module '@hyperse/wizard' {
+  export interface CliLocaleMessages
+    extends DefineMessageType<typeof helpCliMessages> {}
+}
+```
+
+### Using
+
+```ts filename="cli.ts"
+const cli = createWizard({
+  name: 'hps_cli',
+  // Use internationalization messages
+  description: 'cli.helpCli.description',
+  // Use internationalization messages
+  version: 'cli.helpCli.version',
+  localeMessages: helpCliMessages,
+  errorHandler: (e) => {
+    console.log('CLI errorHandler \n', e);
+  },
+});
+```
+
+## plugins namespace
+
+### Messages
+
+Use interface merging to combine your custom internationalization messages with `PluginLocaleMessages`.
+
+```ts filename="messages.ts"
+export const helpMessages = {
+  en: {
+    helpPlugin: {
+      name: 'CLI Help Plugin',
+      command: {
+        description: 'Show help information',
+        example: 'cli --help or cli -h',
+      },
+      flags: {
+        help: 'Show help information',
+      },
+      message: {
+        name: 'Name:',
+        version: 'Version:',
+      },
+    },
+  },
+  zh: {
+    helpPlugin: {
+      name: '帮助信息插件',
+      command: {
+        description: '展示帮助信息',
+        example: 'cli --help 或 cli -h',
+      },
+      flags: {
+        help: '展示帮助信息',
+      },
+      message: {
+        name: '名称:',
+        version: '版本:',
+      },
+    },
+  },
+};
+```
+
+### Type Merging
+
+```ts filename="local.d.ts"
+import type { DefineMessageType } from '@hyperse/wizard';
+
+declare module '@hyperse/wizard' {
+  export interface PluginLocaleMessages
+    extends DefineMessageType<typeof helpMessages> {}
+}
+```
+
+### Using
+
+```ts filename="plugin.ts"
+definePlugin({
+  localeMessages: helpMessages,
+  // Use internationalization messages
+  name: 'plugins.helpPlugin.name',
+  setup: (wizard, pluginCtx) => {
+    const cli = wizard.register(
+      defineCommand('help', {
+        // Use internationalization messages
+        description: 'plugins.helpPlugin.command.description',
+        // Use internationalization messages
+        example: 'plugins.helpPlugin.command.example',
+      }).handler((ctx) => {})
+    );
+
+    if (flag) {
+      cli
+        .flag('help', {
+          type: Boolean,
+          // Use internationalization messages
+          description: 'plugins.helpPlugin.flags.help',
+          default: false,
+          alias: 'h',
+        })
+        .interceptor(async (ctx, next) => {});
+    }
+    return cli;
+  },
+});
+```

@@ -1,15 +1,45 @@
 ---
 title: plugin
+description: Plugin support
+icon: LightningIcon
 ---
 
-# Core API
+import { generateDefinition, TSDoc } from 'nextra/tsdoc';
 
-## Create Cli
+# Plugin
 
-## Setup Command
+The Plugin System provides a modular architecture that allows the Wizard framework to be extended with additional functionality through dynamically loaded plugins.
 
-## Setup Subcommand
+## DefinePlugin
 
-## Setup Plugin
+<TSDoc
+  definition={generateDefinition({
+    code: `
+export { definePlugin as default } from '@hyperse/wizard'`,
+  })}
+/>
 
-## Setup Locale
+### Plugin
+
+<TSDoc
+  definition={generateDefinition({
+    code: `
+export { Plugin as default } from '@hyperse/wizard'`,
+  })}
+/>
+
+## Advanced Usage
+
+To seperate handlers from the plugin definition, you can use the `definePlugin` utility function:
+
+```ts filename="definePlugin.ts"
+import { definePlugin } from '@hyperse/wizard';
+
+const deployPlugin = definePlugin({
+  name: 'deploy plugin',
+  localeMessages: helpMessages,
+  setup: (wizard, pluginCtx) => {
+    return wizard;
+  },
+});
+```

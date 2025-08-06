@@ -4,7 +4,6 @@ import {
   Cards,
   Collapse,
   FileTree,
-  Image,
   Steps,
   Tabs,
 } from 'nextra/components';

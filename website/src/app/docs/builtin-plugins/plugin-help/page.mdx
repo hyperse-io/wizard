@@ -1,34 +1,144 @@
 ---
 title: Help Plugin
+description: Comprehensive help information plugin with customizable output formats
+icon: LightningIcon
 ---
 
-import { compileMdx } from 'nextra/compile';
-import { Tabs } from 'nextra/components';
-import { MDXRemote } from 'nextra/mdx-remote';
+import { generateDefinition, TSDoc } from 'nextra/tsdoc';
 
-# Npm2Yarn
+# Help Plugin
 
-Nextra uses
-[`@theguild/remark-npm2yarn`](https://npmjs.com/package/@theguild/remark-npm2yarn)
-package that replaces the code block that has `npm2yarn` metadata with
-[`<Tabs>` and `<Tabs.Tab>` components](/docs/guide/built-ins/tabs) from
-`nextra/components`.
+The Help Plugin provides comprehensive help information for CLI applications built with Wizard.
 
-The chosen tab is saved in the local storage, which will be chosen in future
-page renders.
+## Installation
 
-## Example
+```sh npm2yarn
+npm install @hyperse/wizard-plugin-help
+```
 
-<Page />
+## Quick Start
 
-export async function Page() {
-  const codeBlock = `\`\`\`sh npm2yarn
-npm i -D @graphql-eslint/eslint-plugin
-\`\`\``;
-  const rawJs = await compileMdx(`${codeBlock}
-## Usage
-~~~md filename="Markdown" /npm2yarn/
-${codeBlock}
-~~~`);
-  return <MDXRemote compiledSource={rawJs} components={{ $Tabs: Tabs }} />;
-}
+```ts filename="cli.ts"
+import { createWizard, defineCommand, definePlugin } from '@hyperse/wizard';
+import { createHelpPlugin } from '@hyperse/wizard-plugin-help';
+
+const evolve = defineCommand('evolve', {
+  description: 'plugins.evolvePlugin.description',
+}).flags({
+  evolveName: {
+    type: String,
+    default: 'evolveName',
+    description: 'plugins.evolvePlugin.flags.evolveName',
+  },
+});
+
+const migrate = defineCommand('migrate', {
+  description: 'plugins.migratePlugin.description',
+}).flags({
+  migrateName: {
+    type: String,
+    default: 'evolveName',
+    description: 'plugins.migratePlugin.flags.migrateName',
+  },
+});
+
+const cli = createWizard({
+  name: 'hps_cli',
+  description: 'cli.helpCli.description',
+  version: 'cli.helpCli.version',
+  localeMessages: helpCliMessages,
+  errorHandler: (e) => {
+    console.log('CLI errorHandler \n', e);
+  },
+})
+  .use(
+    createHelpPlugin({
+      showBanner: true,
+      showFooter: true,
+      overrideLocaleMessages: {
+        en: {
+          helpPlugin: {
+            banner: '🎉🎉🎉Wizard cli is published by hps🎉🎉🎉',
+            footer: '@2025 wizard-plugin-help English version',
+          },
+        },
+        zh: {
+          helpPlugin: {
+            banner: '🎉🎉🎉Wizard cli 正在发布🎉🎉🎉',
+            footer: '@2025 wizard-plugin-help 中文版本',
+          },
+        },
+      },
+    })
+  )
+  .use(
+    definePlugin({
+      name: () => 'test plugin',
+      localeMessages: buildPluginMessages,
+      setup: (cli) => {
+        return cli.register(
+          defineCommand('build', {
+            description: 'plugins.buildPlugin.description',
+            example: 'plugins.buildPlugin.example',
+            help: 'plugins.buildPlugin.help',
+          })
+            .flags({
+              projectCwd: {
+                type: String,
+                default: 'projectCwd',
+                alias: 'p',
+                description: 'plugins.buildPlugin.flags.projectCwd',
+              },
+              type: {
+                type: Boolean,
+                alias: 't',
+                required: true,
+                default: true,
+                description: 'plugins.buildPlugin.flags.type',
+              },
+              timeout: {
+                type: Number,
+                description: 'plugins.buildPlugin.flags.timeout',
+              },
+            })
+            .use(evolve, migrate)
+        );
+      },
+    })
+  )
+  .flag('version', {
+    type: Boolean,
+    default: false,
+    alias: 'V',
+    description: 'plugins.versionPlugin.description',
+  });
+
+// execute command
+// node ./cli.js -h
+```
+
+- English
+
+![help](/assets/docs/help-en.png)
+
+- Chinese
+
+![help](/assets/docs/help-zh.png)
+
+## API Reference
+
+<TSDoc
+  definition={generateDefinition({
+    code: `
+export { createHelpPlugin as default } from '@hyperse/wizard-plugin-help'`,
+  })}
+/>
+
+- HelpPluginOptions
+
+<TSDoc
+  definition={generateDefinition({
+    code: `
+export { HelpPluginOptions as default } from '@hyperse/wizard-plugin-help'`,
+  })}
+/>

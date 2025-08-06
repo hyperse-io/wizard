@@ -1,26 +1,22 @@
-import memoize, { memoizeClear } from 'memoize';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import resolve from 'resolve';
-import type { LocaleMessageResolver, Plugin } from '@hyperse/wizard-core';
+import type { LocaleMessageResolver, Plugin } from '@hyperse/wizard';
 import type { PluginItem } from '../types/type-plugin-item.js';
 import { findPluginsInNodeModules } from './helper-find-plugins-in-node-modules.js';
 import { searchParentDir } from './helper-search-parent-dir.js';
 import { uniqByKey } from './helper-uniq-by-key.js';
 import { getDirname, isDirectory } from './helper-utils.js';
 
-const memoizedLoad = memoize(load, { cacheKey: JSON.stringify });
-const memoizedSearch = memoize(findPluginsInNodeModules);
-
 /**
  * Load plugin from external specificed or auto searched from `pluginSearchDirs`
  * @param plugins The manual load external plugin package names
- * @param pluginPackPattern `['armit-plugin-*\/package.json', '@*\/armit-plugin-*\/package.json', '@armit/plugin-*\/package.json']`
+ * @param pluginPackPattern `['hps-plugin-*\/package.json', '@*\/hps-plugin-*\/package.json', '@hps/plugin-*\/package.json']`
  * @param pluginSearchDirs `The directory search from, it should not include `node_modules`
  * @param cwd The directory to begin resolving from
  * @returns
  */
-async function load(
+export const loadCliPlugins = async (
   plugins: string[] = [],
   pluginPackPattern: string[] = [],
   pluginSearchDirs: string[] = [],
@@ -30,7 +26,7 @@ async function load(
     name: LocaleMessageResolver;
     setup: Plugin['setup'];
   }>
-> {
+> => {
   // unless pluginSearchDirs are provided, auto-load plugins from node_modules that are parent to `commander`
   if (pluginSearchDirs.length === 0) {
     const autoLoadDir = searchParentDir(
@@ -89,9 +85,9 @@ async function load(
         );
       }
 
-      return memoizedSearch(nodeModulesDir, pluginPackPattern).map(
+      return findPluginsInNodeModules(nodeModulesDir, pluginPackPattern).map(
         (pluginName) => {
-          // pluginName : `armit-cli-plugin-a`, `@armit/cli-plugin-b`
+          // pluginName : `hps-cli-plugin-a`, `@hps/cli-plugin-b`
           return {
             name: pluginName,
             requirePath: resolve.sync(pluginName, {
@@ -141,11 +137,4 @@ async function load(
     }
   }
   return allPlugins;
-}
-
-export const clearCache = () => {
-  memoizeClear(memoizedLoad);
-  memoizeClear(memoizedSearch);
 };
-
-export const loadCliPlugins = memoizedLoad;

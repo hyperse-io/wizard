@@ -2,13 +2,13 @@ import {
   createWizard,
   type DefineMessageType,
   definePlugin,
-} from '@hyperse/wizard-core';
+} from '@hyperse/wizard';
 import { createErrorPlugin } from '../src/create-error-plugin.js';
 import { errorCliMessages } from './i18n/message.js';
 
 process.env.HPS_WIZARD_LOCALE = 'zh';
 
-declare module '@hyperse/wizard-core' {
+declare module '@hyperse/wizard' {
   export interface CliLocaleMessages
     extends DefineMessageType<typeof errorCliMessages> {}
 }
@@ -28,6 +28,9 @@ cli.use(plugin).use(
     setup: (cli) => {
       return cli.register('test', {
         description: () => 'test',
+        handler: () => {
+          console.log('execute test');
+        },
       });
     },
   })

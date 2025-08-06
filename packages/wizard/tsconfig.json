@@ -2,15 +2,11 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "baseUrl": "./",
-    "jsx": "react-jsx",
     "allowJs": false,
     "noImplicitAny": true,
     "noEmit": false,
     "incremental": true,
-    "paths": {
-      "@hyperse/wizard-core": ["../wizard-core/src/index.js"],
-      "@hyperse/wizard-utils": ["../wizard-utils/src/index.js"]
-    },
+    "paths": {},
     "types": ["vitest/globals"]
   },
   "include": ["**/*.ts", "**/*.tsx"],

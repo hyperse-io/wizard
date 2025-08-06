@@ -1,4 +1,4 @@
-import type { I18n, Wizard } from '@hyperse/wizard-core';
+import type { I18n, Wizard } from '@hyperse/wizard';
 import { chalk } from '../helpers/helper-chalk.js';
 import { formatFlags } from '../helpers/helper-format-flags.js';
 import { table } from '../helpers/helper-text-table.js';

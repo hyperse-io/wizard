@@ -3,7 +3,7 @@ import {
   defineCommand,
   definePlugin,
   localeMessageValue,
-} from '@hyperse/wizard-core';
+} from '@hyperse/wizard';
 import { assertNoColor } from './helpers/helper-assert-nocolor.js';
 import { setupChalk } from './helpers/helper-chalk.js';
 import { mergeMessages } from './helpers/helper-merge-messages.js';

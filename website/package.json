@@ -33,6 +33,11 @@
   },
   "dependencies": {
     "@heroui/react": "^2.7.11",
+    "@hyperse/wizard": "workspace:*",
+    "@hyperse/wizard-plugin-error": "workspace:*",
+    "@hyperse/wizard-plugin-help": "workspace:*",
+    "@hyperse/wizard-plugin-loader": "workspace:*",
+    "@hyperse/wizard-plugin-version": "workspace:*",
     "@iconify/react": "^6.0.0",
     "@lottiefiles/dotlottie-react": "^0.14.3",
     "@tailwindcss/typography": "^0.5.16",

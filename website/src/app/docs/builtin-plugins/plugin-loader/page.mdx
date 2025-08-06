@@ -1,67 +1,65 @@
 ---
 title: Loader Plugin
+description: Plugin loader with automatic discovery and dependency management
+icon: LightningIcon
 ---
 
-# Rendering Tables
+import { generateDefinition, TSDoc } from 'nextra/tsdoc';
 
-This guide covers different ways to render tables in MDX, including GFM syntax
-and literal HTML tag.
+# Loader Plugin
 
-## GFM syntax
+The Loader Plugin provides automatic discovery and dependency management for CLI applications built with Wizard.
 
-In Markdown, it is preferable to write tables via
-[GFM syntax](https://github.github.com/gfm/#tables-extension-).
+## Installation
 
-```mdx filename="MDX"
-| left   | center | right |
-| :----- | :----: | ----: |
-| foo    |  bar   |   baz |
-| banana | apple  |  kiwi |
+```sh npm2yarn
+npm install @hyperse/wizard-plugin-loader
 ```
 
-will be rendered as:
+## Quick Start
 
-| left   | center | right |
-| :----- | :----: | ----: |
-| foo    |  bar   |   baz |
-| banana | apple  |  kiwi |
+```ts filename="cli.ts"
+import { createWizard } from '@hyperse/wizard';
+import { createLoaderPlugin } from '@hyperse/wizard-plugin-loader';
 
-## Literal HTML tables
-
-If you try to render table with literal HTML elements `<table>{:js}`,
-`<thead>{:js}`, `<tbody>{:js}`, `<tr>{:js}`, `<th>{:js}` and `<td>{:js}` – your
-table will be unstyled because
-[MDX](https://mdxjs.com/docs/using-mdx/#components) doesn't replace literal HTML
-elements with components provided by `useMDXComponents(){:js}`[^1].
-
-> [!TIP]
->
-> Instead, use the [built-in `<Table>` component](/docs/guide/built-ins/table)
-> available via `nextra/components`.
-
-## Changing default behaviour
-
-If you want to use standard HTML elements for your tables but have them styled
-with components provided by `useMDXComponents(){:js}`[^1], you can do this by
-configuring Nextra.
-
-To achieve this, pass the `whiteListTagsStyling` option to the Nextra function,
-including an array of tags you want to replace.
-
-Here's an example configuration in your `next.config.mjs` file:
-
-```js filename="next.config.mjs" {4}
-import nextra from 'nextra';
-
-const withNextra = nextra({
-  whiteListTagsStyling: ['table', 'thead', 'tbody', 'tr', 'th', 'td'],
+const cli = createWizard({
+  name: 'my-cli',
+  description: 'My CLI application',
+  version: '1.0.0',
 });
 
-export default withNextra();
+cli
+  .use(
+    createLoaderPlugin({
+      plugins: ['version-plugin'],
+      pluginPackPattern: ['help-*/package.json'],
+      pluginSearchDirs: ['./plugins'],
+      cwd: process.cwd(),
+    })
+  )
+  .parse();
+
+// execute command
+// node ./cli.js --version
+
+// print version information
+// v1.0.0
 ```
 
-In this example, the tags `<table>`, `<thead>`, `<tbody>`, `<tr>`, `<th>`, and
-`<td>` will be replaced with corresponding MDX components, allowing for
-customized styling.
+## API Reference
 
-[^1]: https://mdxjs.com/packages/react/#usemdxcomponentscomponents
+<TSDoc
+  definition={generateDefinition({
+    code: `
+export { createLoaderPlugin as default } from '@hyperse/wizard-plugin-loader'`,
+  })}
+/>
+
+- LoaderPluginOptions
+
+<TSDoc
+  definition={generateDefinition({
+    code: `
+export { LoaderPluginOptions as default } from '@hyperse/wizard-plugin-loader'`,
+  })}
+/>

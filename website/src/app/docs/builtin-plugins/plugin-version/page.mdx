@@ -1,58 +1,56 @@
 ---
 title: Version Plugin
+description: Version information plugin with semantic versioning support
+icon: LightningIcon
 ---
 
-import { Steps } from 'nextra/components';
+import { generateDefinition, TSDoc } from 'nextra/tsdoc';
 
-# Customize the Cascade Layers
+# Version Plugin
 
-In some scenarios, you may need more control over the Nextra predefined CSS to
-avoid unintended overrides of styles within cascade layers. Below is an example
-of how `nextra-theme-docs` uses
-[postcss-import](https://github.com/postcss/postcss-import) to place predefined
-CSS into a specified cascade layer:
+The Version Plugin provides version information for CLI applications built with Wizard.
 
-<Steps>
+## Installation
 
-## Install `postcss-import`
-
-Install `postcss-import` and add it to `postcss.config.mjs`:
-
-```js filename="postcss.config.mjs"
-export default {
-  plugins: {
-    'postcss-import': {},
-    // ... your other PostCSS plugins (e.g., `autoprefixer`, `cssnano`)
-  },
-};
+```sh npm2yarn
+npm install @hyperse/wizard-plugin-version
 ```
 
-## Set up the cascade layers
+## Quick Start
 
-In your CSS file (e.g. `styles.css`), import the `nextra-docs-theme` CSS and
-specify the layers:
+```ts filename="cli.ts"
+import { createWizard } from '@hyperse/wizard';
+import { createVersionPlugin } from '@hyperse/wizard-plugin-version';
 
-```css filename="styles.css"
-@layer nextra, my-base;
+const cli = createWizard({
+  name: 'my-cli',
+  description: 'My CLI application',
+  version: '1.0.0',
+});
 
-@import 'nextra-theme-docs/dist/style.css' layer(nextra);
+cli.use(createVersionPlugin()).parse();
 
-@layer my-base {
-  /* my base styles */
-}
+// execute command
+// node ./cli.js --version
+
+// print version information
+// v1.0.0
 ```
 
-## Import your CSS file
+## API Reference
 
-Import your CSS file at the top-level layout of your application (e.g.
-`app/layout.jsx`) to apply the styles.
+<TSDoc
+  definition={generateDefinition({
+    code: `
+export { createVersionPlugin as default } from '@hyperse/wizard-plugin-version'`,
+  })}
+/>
 
-```jsx filename="app/layout.jsx"
-import '../path/to/your/styles.css';
+- VersionPluginOptions
 
-export default async function RootLayout({ children }) {
-  // ... Your layout logic here
-}
-```
-
-</Steps>
+<TSDoc
+  definition={generateDefinition({
+    code: `
+export { VersionPluginOptions as default } from '@hyperse/wizard-plugin-version'`,
+  })}
+/>

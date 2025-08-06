@@ -1,4 +1,4 @@
-import type { FlagOptions } from '@hyperse/wizard-core';
+import type { FlagOptions } from '@hyperse/wizard';
 
 /**
  * @description

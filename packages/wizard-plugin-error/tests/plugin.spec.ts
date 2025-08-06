@@ -3,12 +3,12 @@ import {
   createWizard,
   type DefineMessageType,
   definePlugin,
-} from '@hyperse/wizard-core';
+} from '@hyperse/wizard';
 import { createErrorPlugin } from '../src/create-error-plugin.js';
 import { errorCliMessages } from './i18n/message.js';
 import { sleep } from './utils/test-utils.js';
 
-declare module '@hyperse/wizard-core' {
+declare module '@hyperse/wizard' {
   export interface CliLocaleMessages
     extends DefineMessageType<typeof errorCliMessages> {}
 }
@@ -35,7 +35,7 @@ describe('createErrorPlugin', () => {
       noColor: true,
     });
 
-    const plugin = createErrorPlugin();
+    const plugin = createErrorPlugin({ exitProcess: false });
 
     cli.use(plugin).use(
       definePlugin({
@@ -56,7 +56,6 @@ describe('createErrorPlugin', () => {
 
     const result = printer.mock.calls[0][0];
     expect(result).toContain('[ ERROR ]');
-    expect(result).toContain('error');
     expect(result).toContain(
       'Invalid command name "test " command names cannot contain spaces or multiple consecutive spaces.'
     );
@@ -68,42 +67,32 @@ describe('createErrorPlugin', () => {
       description: 'cli.errorCli.description',
       version: 'cli.errorCli.version',
       localeMessages: errorCliMessages,
+      noColor: true,
     });
 
     const plugin = createErrorPlugin({
-      capitalizeLevelName: true,
-      showPrefix: false,
-      showLoggerName: true,
-      showPluginName: true,
-      showTimestamp: true,
-      showLevelName: true,
-      use24HourClock: true,
-      showDate: true,
-      noColor: true,
+      exitProcess: false,
     });
 
     cli.use(plugin).use(
       definePlugin({
         name: () => 'test plugin',
         setup: (cli) => {
-          return cli.register('test ', {
+          return cli.register('test', {
             description: () => 'test',
           });
         },
       })
     );
 
-    cli.parse(['test']);
+    cli.parse(['testA']);
 
     await sleep();
 
     expect(printer).toHaveBeenCalled();
     const result = printer.mock.calls[0][0];
+    console.log(result);
     expect(result).toContain('[ ERROR ]');
-    expect(result).toContain(' HpsErrorLogger ');
-    expect(result).toContain(' hps-logger-plugin-stdout ');
-    expect(result).toContain(
-      'Invalid command name "test " command names cannot contain spaces or multiple consecutive spaces.'
-    );
+    expect(result).toContain('Command "testA" not found. Did you mean "test"?');
   });
 });

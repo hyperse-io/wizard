@@ -46,7 +46,8 @@
   "dependencies": {
     "@hyperse/logger": "^1.1.3",
     "@hyperse/logger-plugin-stdout": "^1.0.7",
-    "@hyperse/wizard-core": "workspace:*"
+    "@hyperse/wizard": "workspace:*",
+    "didyoumean2": "^7.0.4"
   },
   "devDependencies": {
     "@hyperse/eslint-config-hyperse": "^1.4.5",

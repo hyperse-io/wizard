@@ -5,34 +5,66 @@ description: Wizard is a modern, type-safe CLI framework that provides powerful 
 
 # Wizard - Modern CLI Framework
 
-Wizard is a modern, type-safe CLI framework designed for building interactive command-line applications. It provides a powerful feature set that enables developers to easily create feature-rich CLI tools.
+**@hyperse/wizard** is a modern, type-safe CLI framework built with TypeScript that provides powerful command-line tool building capabilities. It combines robust TypeScript support with enhanced features for crafting interactive command-line applications with excellent developer experience.
+
+```mermaid
+sequenceDiagram
+participant CLI as CLI User
+participant Wizard as @hyperse/wizard
+participant Plugins as Plugins (error, help, loader, version)
+participant Logger as Logger
+
+    CLI->>Wizard: Start CLI with args
+    Wizard->>Plugins: Load and register plugins
+    Plugins->>Wizard: Register commands and hooks
+    Wizard->>Logger: Initialize logger
+    CLI->>Wizard: Execute command
+    Wizard->>Plugins: Handle command (via plugin hooks)
+    Plugins->>Logger: Log output/errors
+    Wizard->>CLI: Output result or error (with suggestions)
+
+```
+
+### Key Design Principles
+
+- **Type Safety First** - Full TypeScript support with excellent IntelliSense and compile-time error checking
+- **Plugin Architecture** - Modular design allowing easy extension and customization
+- **Event-Driven** - Built-in event system for handling complex workflows and async operations
+- **Developer Experience** - Intuitive APIs with comprehensive documentation and examples
 
 ## ✨ Core Features
 
-- 🚀 **Type Safety** - Full TypeScript support with excellent developer experience
-- 🌍 **Internationalization** - Built-in multi-language support for easy localization
-- 🔌 **Plugin System** - Flexible plugin architecture for feature extension
-- 🎯 **Event-Driven** - Event-based design supporting async operations and error handling
-- 🛠️ **Command Builder** - Intuitive command definition API with subcommand and argument parsing
-- 📝 **Logging System** - Integrated logging functionality with different log levels
-- 🎨 **Theme Support** - Support for colored output and theme customization
-- ⚡ **High Performance** - Pipeline-based architecture for efficient command execution
+- 🚀 Type Safety: Full TypeScript support, type-safe APIs, great DX
+- 🌍 Internationalization: Built-in multi-language and easy locale switching
+- 🔌 Plugin System: Flexible, extensible plugin architecture
+- 🎯 Event-Driven: Event-based, async-ready, supports middleware
+- 🛠️ Command Builder: Intuitive command definitions, subcommands, type inference
+- 📝 Logging: Built-in multi-level logging, configurable output
+- 🎨 Theme: Colored output, theme customization, cross-platform
+- ⚡ Performance: Fast startup, efficient execution, low overhead
 
 ## 🏗️ Project Architecture
 
 Wizard uses a modular design with the following core packages:
 
-- **@hyperse/wizard** - Main package providing the complete CLI framework
-- **@hyperse/wizard-core** - Core library providing basic functionality
-- **@hyperse/wizard-utils** - Utility function library
-- **@hyperse/wizard-plugin-\*** - Various plugin packages
+### Core Package
+
+- **@hyperse/wizard** - Core library providing basic functionality and APIs
 
 ### Plugin Ecosystem
 
-Wizard provides a rich plugin ecosystem:
+Wizard provides a rich plugin ecosystem for common CLI functionality:
 
-- **@hyperse/wizard-plugin-help** - Help information plugin
-- **@hyperse/wizard-plugin-version** - Version information plugin
-- **@hyperse/wizard-plugin-error** - Error handling plugin
-- **@hyperse/wizard-plugin-loader** - Plugin loader
-- **@hyperse/wizard-plugin-bash** - Bash integration plugin
+- **@hyperse/wizard-plugin-help** - Comprehensive help information plugin with customizable output formats
+- **@hyperse/wizard-plugin-version** - Version information plugin with semantic versioning support
+- **@hyperse/wizard-plugin-error** - Advanced error handling plugin with error recovery and reporting
+- **@hyperse/wizard-plugin-loader** - Plugin loader with automatic discovery and dependency management
+
+## 🎯 Next Steps
+
+Ready to get started? Check out the following guides:
+
+- [Getting Started](./docs/getting-started/) - Learn how to create your first CLI application
+- [Core API](./docs/core-api/) - Explore the core APIs and functionality
+- [Custom Plugins](./docs/custom-plugin/) - Learn how to create your own plugins
+- [Built-in Plugins](./docs/builtin-plugins/) - Discover available plugins and their features

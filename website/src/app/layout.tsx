@@ -5,8 +5,7 @@ import { getPageMap } from 'nextra/page-map';
 import { Footer, Layout, Link, Navbar } from 'nextra-theme-docs';
 import cn from 'clsx';
 import { Logo } from '@/components/Icons/Logo';
-import { HeroUIProvider } from '@heroui/react';
-import './globals.css';
+import '@/styles/globals.css';
 
 export const metadata: Metadata = {
   description:
@@ -49,10 +48,7 @@ export const metadata: Metadata = {
 };
 
 const banner = (
-  <Banner dismissible={false}>
-    🎉 Hyperse Wizard is a modern, type-safe CLI framework core library that
-    provides powerful command-line tool building capabilities.
-  </Banner>
+  <Banner dismissible={false}>🎉 Hyperse Wizard has been published.</Banner>
 );
 const navbar = (
   <Navbar
@@ -96,7 +92,14 @@ const RootLayout: FC<{
 
   return (
     <html lang="en" suppressHydrationWarning>
-      <Head />
+      <Head>
+        <link
+          rel="icon"
+          href="/wizard/favicon.svg"
+          type="image/png"
+          sizes="32x32"
+        />
+      </Head>
       <body>
         <Layout
           banner={banner}
@@ -107,7 +110,7 @@ const RootLayout: FC<{
           sidebar={{ defaultMenuCollapseLevel: 1 }}
           footer={footer}
         >
-          <HeroUIProvider validationBehavior="aria">{children}</HeroUIProvider>
+          {children}
         </Layout>
       </body>
     </html>

@@ -1,8 +1,8 @@
-import { defineCommand, definePlugin } from '@hyperse/wizard-core';
+import { defineCommand, definePlugin } from '@hyperse/wizard';
 import { gracefulVersion } from './helpers/helper-graceful-version.js';
 import { versionMessages } from './i18n/messages.js';
 
-interface VersionPluginOptions {
+export type VersionPluginOptions = {
   /**
    * Whether to register the global version flag.
    *
@@ -16,7 +16,7 @@ interface VersionPluginOptions {
    * @default false
    */
   hiddenPrefix?: boolean;
-}
+};
 
 export const createVersionPlugin = (options: VersionPluginOptions = {}) => {
   return definePlugin({

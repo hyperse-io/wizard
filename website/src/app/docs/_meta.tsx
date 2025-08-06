@@ -4,9 +4,6 @@ const mate: MetaRecord = {
   'getting-started': {
     title: 'Getting Started',
   },
-  i18n: {
-    title: 'i18n',
-  },
   'core-api': {
     title: 'Core API',
   },

@@ -1,9 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import {
-  createWizard,
-  defineCommand,
-  definePlugin,
-} from '@hyperse/wizard-core';
+import { createWizard, defineCommand, definePlugin } from '@hyperse/wizard';
 import { createHelpPlugin } from '../src/create-help-plugin.js';
 
 // Mock process.stdout.write to capture output

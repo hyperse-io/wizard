@@ -1,49 +1,50 @@
 ---
 title: Error Plugin
+description: Advanced error handling plugin with error recovery and reporting
+icon: LightningIcon
 ---
 
-import { compileMdx } from 'nextra/compile';
-import { Mermaid } from 'nextra/components';
-import { MDXRemote } from 'nextra/mdx-remote';
+import { generateDefinition, TSDoc } from 'nextra/tsdoc';
 
-# Mermaid
+# Error Plugin
 
-Nextra supports [mermaid](https://mermaid.js.org) diagrams. Like in GitHub you
-can use it in your Markdown files by using the `mermaid` code block language.
-Out of the box, Nextra uses
-[`@theguild/remark-mermaid`](https://npmjs.com/package/@theguild/remark-mermaid)
-package that replaces the code block with the `<Mermaid>` component.
+The Error Plugin provides intelligent error handling for CLI applications built with Wizard. It automatically detects command not found errors and suggests similar commands using fuzzy matching, making your CLI more user-friendly.
 
-## Example
+## Installation
 
-<Demo />
+```sh npm2yarn
+npm install @hyperse/wizard-plugin-error
+```
 
-export async function Demo() {
-  const mermaidCodeblock = `\`\`\`mermaid
-graph TD;
-subgraph AA [Consumers]
-A[Mobile app];
-B[Web app];
-C[Node.js client];
-end
-subgraph BB [Services]
-E[REST API];
-F[GraphQL API];
-G[SOAP API];
-end
-Z[GraphQL API];
-A --> Z;
-B --> Z;
-C --> Z;
-Z --> E;
-Z --> F;
-Z --> G;
-\`\`\``;
-  const rawJs = await compileMdx(`${mermaidCodeblock}
-## Usage
-~~~md filename="Markdown"
-${mermaidCodeblock}
-~~~
-`);
-  return <MDXRemote compiledSource={rawJs} components={{ Mermaid }} />;
-}
+## Quick Start
+
+```ts filename="cli.ts"
+import { createWizard } from '@hyperse/wizard';
+import { createErrorPlugin } from '@hyperse/wizard-plugin-error';
+
+const cli = createWizard({
+  name: 'my-cli',
+  description: 'My CLI application',
+  version: '1.0.0',
+});
+
+cli.use(createErrorPlugin()).parse();
+```
+
+## API Reference
+
+<TSDoc
+  definition={generateDefinition({
+    code: `
+export { createErrorPlugin as default } from '@hyperse/wizard-plugin-error'`,
+  })}
+/>
+
+- ErrorPluginOptions
+
+<TSDoc
+  definition={generateDefinition({
+    code: `
+export { ErrorPluginOptions as default } from '@hyperse/wizard-plugin-error'`,
+  })}
+/>

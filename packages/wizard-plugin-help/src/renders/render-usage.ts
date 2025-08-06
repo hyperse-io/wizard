@@ -5,7 +5,7 @@ import {
   type I18n,
   Root,
   type Wizard,
-} from '@hyperse/wizard-core';
+} from '@hyperse/wizard';
 import { INDENT } from '../constant.js';
 import { chalk } from '../helpers/helper-chalk.js';
 import { table } from '../helpers/helper-text-table.js';

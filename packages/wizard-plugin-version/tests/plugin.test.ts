@@ -1,5 +1,5 @@
 import { vi } from 'vitest';
-import { createWizard } from '@hyperse/wizard-core';
+import { createWizard } from '@hyperse/wizard';
 import { createVersionPlugin } from '../src/create-version-plugin.js';
 import { sleep } from './utils/test-utils.js';
 

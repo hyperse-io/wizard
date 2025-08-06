@@ -1,4 +1,4 @@
-import { definePlugin } from '@hyperse/wizard-core';
+import { definePlugin } from '@hyperse/wizard';
 import { loadCliPlugins } from './helpers/helper-load-plugin.js';
 import { loaderMessages } from './i18n/messages.js';
 
@@ -31,7 +31,6 @@ export type LoaderPluginOptions = {
 /**
  * Create a plugin that logs errors to the console.
  * @param options - The options for the plugin.
- * @returns The plugin.
  */
 export const createLoaderPlugin = async (options: LoaderPluginOptions) => {
   const {
