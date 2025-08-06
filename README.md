@@ -1,11 +1,4 @@
-<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; position: relative;box-shadow: 0 4px 24px rgba(0,0,0,0.18), 0 1.5px 4px rgba(0,0,0,0.12); border-radius: 12px;overflow: hidden;min-width: 800px;padding: 24px;">
-  <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-image: linear-gradient(-45deg, #00000001 1.32%, #00000090 80.72%); z-index: 1;"></div>
-  <div style="flex: 1;height: 100%;display: flex;justify-content: center;flex-direction: column;align-items: center;">
-  <span style="font-size: 48px; font-weight: bold;">Wizard</span>
-  <span style="font-size: 24px; ">A modern, Type-safe CLI framework </span>
-  </div>
-  <iframe src="https://lottie.host/embed/54fa7056-86de-4060-b948-7c2326bc1b30/MJ9SU1B1ga.lottie" style="flex: 1;height: 240px;border: none; "></iframe>
-</div>
+![Wizard](./website/public/wizard-bg.png)
 
 <p align="center">A modern, type-safe CLI framework built with TypeScript that provides powerful command-line tool.</p>
 <p align="center">
