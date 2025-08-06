@@ -7,6 +7,24 @@ description: Wizard is a modern, type-safe CLI framework that provides powerful 
 
 **@hyperse/wizard** is a modern, type-safe CLI framework built with TypeScript that provides powerful command-line tool building capabilities. It combines robust TypeScript support with enhanced features for crafting interactive command-line applications with excellent developer experience.
 
+```mermaid
+sequenceDiagram
+participant CLI as CLI User
+participant Wizard as @hyperse/wizard
+participant Plugins as Plugins (error, help, loader, version)
+participant Logger as Logger
+
+    CLI->>Wizard: Start CLI with args
+    Wizard->>Plugins: Load and register plugins
+    Plugins->>Wizard: Register commands and hooks
+    Wizard->>Logger: Initialize logger
+    CLI->>Wizard: Execute command
+    Wizard->>Plugins: Handle command (via plugin hooks)
+    Plugins->>Logger: Log output/errors
+    Wizard->>CLI: Output result or error (with suggestions)
+
+```
+
 ### Key Design Principles
 
 - **Type Safety First** - Full TypeScript support with excellent IntelliSense and compile-time error checking
