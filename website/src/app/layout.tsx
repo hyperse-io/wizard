@@ -48,10 +48,7 @@ export const metadata: Metadata = {
 };
 
 const banner = (
-  <Banner dismissible={false}>
-    🎉 Hyperse Wizard is a modern, type-safe CLI framework core library that
-    provides powerful command-line tool building capabilities.
-  </Banner>
+  <Banner dismissible={false}>🎉 Hyperse Wizard has been published.</Banner>
 );
 const navbar = (
   <Navbar
@@ -95,7 +92,14 @@ const RootLayout: FC<{
 
   return (
     <html lang="en" suppressHydrationWarning>
-      <Head />
+      <Head>
+        <link
+          rel="icon"
+          href="/wizard/favicon.svg"
+          type="image/png"
+          sizes="32x32"
+        />
+      </Head>
       <body>
         <Layout
           banner={banner}
