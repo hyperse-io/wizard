@@ -56,7 +56,7 @@ const buildCommand = defineCommand('build', {
           default: 'webpack',
         },
       })
-      .handler(async (ctx) => {
+      .process(async (ctx) => {
         ctx.log.info('build mini', ctx.flags);
       })
   )
@@ -69,7 +69,7 @@ const buildCommand = defineCommand('build', {
       required: true,
     },
   })
-  .resolve((ctx) => {
+  .resolveSubCommand((ctx) => {
     // just provide the projectCwd for subcommand to work
     ctx.log.info('build resolve', ctx.flags);
     return {

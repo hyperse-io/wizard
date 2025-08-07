@@ -22,7 +22,7 @@ export const createErrorPlugin = (options?: ErrorPluginOptions) => {
     name: 'plugins.errorPlugin.name',
     localeMessages: errorMessages,
     setup: (wizard, pluginCtx) => {
-      return wizard.errorHandler((err: any) => {
+      return wizard.errorHandler(async (err: any) => {
         try {
           const { t } = wizard.i18n;
           const commandMap = wizard.commandMap;
@@ -39,20 +39,20 @@ export const createErrorPlugin = (options?: ErrorPluginOptions) => {
             hasCommands &&
             closestCommandName
           ) {
-            pluginCtx.logger.error(
+            await pluginCtx.logger.error(
               t('plugins.errorPlugin.messages.commandNotFound', {
                 cmdName: err.variables.cmdName,
                 closestCommandName,
               })
             );
           } else {
-            pluginCtx.logger.error(err);
+            await pluginCtx.logger.error(err);
           }
         } catch (error: any) {
-          pluginCtx.logger.error(error);
+          await pluginCtx.logger.error(error);
         } finally {
           if (exitProcess) {
-            setTimeout(() => process.exit(1), 100);
+            process.exit(1);
           }
         }
       });

@@ -8,7 +8,7 @@ import { generateDefinition, TSDoc } from 'nextra/tsdoc';
 
 # Command
 
-The Command is the core mechanism within the @hyperse/wizard framework that enables definition, parsing, and execution of CLI commands. This system provides type-safe command creation, argument parsing, and handler execution while integrating with the broader event-driven architecture.
+The Command is the core mechanism within the @hyperse/wizard framework that enables definition, parsing, and execution of CLI commands. This system provides type-safe command creation, argument parsing, and process execution while integrating with the broader event-driven architecture.
 
 ## CommandBuilder
 
@@ -103,7 +103,7 @@ const deployCmd = defineCommand<
       default: 'aliyun',
     },
   })
-  .handler((ctx) => {
+  .process((ctx) => {
     //do something
   });
 

@@ -1,6 +1,5 @@
 import { createWizard } from '../../src/create-wizard.js';
 import { defineCommand, definePlugin } from '../../src/index.js';
-import { sleep } from '../utils/test-utils.js';
 import { cliMessages, messages } from './messages.js';
 
 describe('useLocale', () => {
@@ -37,7 +36,7 @@ describe('useLocale', () => {
           default: 'user/project/foo',
         },
       })
-      .handler((ctx) => {
+      .process((ctx) => {
         commandAHandler(ctx);
       });
 
@@ -58,7 +57,7 @@ describe('useLocale', () => {
           default: 'user/project/foo',
         },
       })
-      .handler((ctx) => {
+      .process((ctx) => {
         commandBHandler(ctx);
       });
 
@@ -88,8 +87,7 @@ describe('useLocale', () => {
       });
 
     // cmd: commandA
-    cli.parse(['commandA', 'commandB']);
-    await sleep();
+    await cli.parse(['commandA', 'commandB']);
 
     expect(cli.name).toBe('cli');
     expect(cli.description).toBe('Wizard 的命令行工具。');
@@ -112,8 +110,7 @@ describe('useLocale', () => {
     commandBHandler.mockClear();
     eventBHandler.mockClear();
 
-    cli.parse(['commandA']);
-    await sleep();
+    await cli.parse(['commandA']);
 
     const commandAResult = commandAHandler.mock.results[0].value;
 
@@ -163,7 +160,7 @@ describe('useLocale', () => {
           default: 'user/project/foo',
         },
       })
-      .handler((ctx) => {
+      .process((ctx) => {
         commandAHandler(ctx);
       });
 
@@ -188,7 +185,7 @@ describe('useLocale', () => {
           default: 'user/project/foo',
         },
       })
-      .handler((ctx) => {
+      .process((ctx) => {
         commandBHandler(ctx);
       });
 
@@ -218,8 +215,7 @@ describe('useLocale', () => {
       });
 
     // cmd: commandA
-    cli.parse(['commandA', 'commandB']);
-    await sleep();
+    await cli.parse(['commandA', 'commandB']);
 
     expect(cli.name).toBe('cli');
     expect(cli.description).toBe('A CLI for Wizard.');
@@ -246,8 +242,7 @@ describe('useLocale', () => {
     commandBHandler.mockClear();
     eventBHandler.mockClear();
 
-    cli.parse(['commandA']);
-    await sleep();
+    await cli.parse(['commandA']);
 
     const commandAResult = commandAHandler.mock.results[0].value;
 
@@ -299,7 +294,7 @@ describe('useLocale', () => {
           default: 'user/project/foo',
         },
       })
-      .handler((ctx) => {
+      .process((ctx) => {
         commandAHandler(ctx);
       });
 
@@ -324,7 +319,7 @@ describe('useLocale', () => {
           default: 'user/project/foo',
         },
       })
-      .handler((ctx) => {
+      .process((ctx) => {
         commandBHandler(ctx);
       });
 
@@ -352,8 +347,7 @@ describe('useLocale', () => {
       });
 
     // cmd: commandA
-    cli.parse(['commandA', 'commandB']);
-    await sleep();
+    await cli.parse(['commandA', 'commandB']);
 
     expect(cli.name).toBe('cli');
     expect(cli.description).toBe('en.cli.description');

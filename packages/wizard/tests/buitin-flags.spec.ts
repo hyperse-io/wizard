@@ -2,7 +2,6 @@ import { LogLevel } from '@hyperse/logger';
 import { createWizard } from '../src/create-wizard.js';
 import { defineCommand } from '../src/define-command.js';
 import { definePlugin } from '../src/index.js';
-import { sleep } from './utils/test-utils.js';
 
 describe('builtin flags', () => {
   const buildHandler = vi.fn();
@@ -30,7 +29,7 @@ describe('builtin flags', () => {
         default: 'user/project/foo',
       },
     })
-    .handler((ctx) => {
+    .process((ctx) => {
       buildHandler(ctx);
     });
 
@@ -79,8 +78,7 @@ describe('builtin flags', () => {
         await next();
       });
     // cmd: build
-    cli.parse(['build', '--logLevel', 'debug', '--noColor']);
-    await sleep();
+    await cli.parse(['build', '--logLevel', 'debug', '--noColor']);
     expect(buildHandler).toHaveBeenCalled();
     expect(buildHandler.mock.lastCall?.[0]).toMatchObject({
       locale: 'en',
@@ -156,10 +154,9 @@ describe('builtin flags', () => {
     const printer = vi.fn();
     process.stdout.write = printer;
 
-    //logLevel: verbose
-    cli.parse(['-h', '--logLevel', 'verbose']);
     printer.mockReset();
-    await sleep();
+    //logLevel: verbose
+    await cli.parse(['-h', '--logLevel', 'verbose']);
     let logResult = printer.mock.calls.map((call) => call[0]).join('');
     expect(logResult).toContain('help error log');
     expect(logResult).toContain('help warn log');
@@ -169,8 +166,7 @@ describe('builtin flags', () => {
 
     //logLevel: debug
     printer.mockReset();
-    cli.parse(['-h', '--logLevel', 'debug']);
-    await sleep();
+    await cli.parse(['-h', '--logLevel', 'debug']);
     logResult = printer.mock.calls.map((call) => call[0]).join('');
     expect(logResult).toContain('help error log');
     expect(logResult).toContain('help warn log');
@@ -180,8 +176,7 @@ describe('builtin flags', () => {
 
     // logLevel: info
     printer.mockReset();
-    cli.parse(['-h', '--logLevel', 'info']);
-    await sleep();
+    await cli.parse(['-h', '--logLevel', 'info']);
     expect(printer).toHaveBeenCalled();
     logResult = printer.mock.calls.map((call) => call[0]).join('');
     expect(logResult).toContain('help error log');
@@ -192,8 +187,7 @@ describe('builtin flags', () => {
 
     //logLevel: warn
     printer.mockReset();
-    cli.parse(['-h', '--logLevel', 'warn']);
-    await sleep();
+    await cli.parse(['-h', '--logLevel', 'warn']);
     logResult = printer.mock.calls.map((call) => call[0]).join('');
     expect(logResult).toContain('help error log');
     expect(logResult).toContain('help warn log');
@@ -203,8 +197,7 @@ describe('builtin flags', () => {
 
     //logLevel: error
     printer.mockReset();
-    cli.parse(['-h', '--logLevel', 'error']);
-    await sleep();
+    await cli.parse(['-h', '--logLevel', 'error']);
     logResult = printer.mock.calls.map((call) => call[0]).join('');
     expect(logResult).toContain('help error log');
     expect(logResult).not.toContain('help warn log');

@@ -1,4 +1,6 @@
-export const cliMessages = {
+import { defineLocaleMessages } from '../../src/define-locale-messages.js';
+
+export const cliMessages = defineLocaleMessages({
   en: {
     name: 'Wizard CLI',
     description: 'A CLI for Wizard.',
@@ -9,9 +11,9 @@ export const cliMessages = {
     description: 'Wizard 的命令行工具。',
     version: '{version}',
   },
-};
+});
 
-export const messages = {
+export const messages = defineLocaleMessages({
   en: {
     pluginA: {
       name: 'Plugin A',
@@ -56,4 +58,4 @@ export const messages = {
       },
     },
   },
-};
+});

@@ -95,7 +95,7 @@ Parses command line arguments and executes the corresponding command. This is th
 
 Registers a command using a command builder.
 
-`(name: string, options: CommandBuilderOptions & { handler?: CommandHandlerFunction }) => Wizard`
+`(name: string, options: CommandBuilderOptions & { process?: CommandProcessFunction }) => Wizard`
 
 Registers a command by name and options.
 

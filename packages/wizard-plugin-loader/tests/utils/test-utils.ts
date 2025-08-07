@@ -2,12 +2,6 @@ import { mkdirSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-export async function sleep(ms = 100) {
-  return await new Promise<void>((resolver) => {
-    setTimeout(resolver, ms);
-  });
-}
-
 export const getDirname = (url: string, subDir = '') => {
   return join(dirname(fileURLToPath(url)), subDir);
 };

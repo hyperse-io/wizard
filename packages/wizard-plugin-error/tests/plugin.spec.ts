@@ -1,4 +1,3 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   createWizard,
   type DefineMessageType,
@@ -6,7 +5,6 @@ import {
 } from '@hyperse/wizard';
 import { createErrorPlugin } from '../src/create-error-plugin.js';
 import { errorCliMessages } from './i18n/message.js';
-import { sleep } from './utils/test-utils.js';
 
 declare module '@hyperse/wizard' {
   export interface CliLocaleMessages
@@ -48,9 +46,7 @@ describe('createErrorPlugin', () => {
       })
     );
 
-    cli.parse(['test']);
-
-    await sleep();
+    await cli.parse(['test']);
 
     expect(printer).toHaveBeenCalled();
 
@@ -85,9 +81,7 @@ describe('createErrorPlugin', () => {
       })
     );
 
-    cli.parse(['testA']);
-
-    await sleep();
+    await cli.parse(['testA']);
 
     expect(printer).toHaveBeenCalled();
     const result = printer.mock.calls[0][0];

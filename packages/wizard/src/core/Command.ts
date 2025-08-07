@@ -1,12 +1,12 @@
 import type {
   Command,
   CommandContext,
-  CommandHandlerFunction,
   CommandName,
   CommandOptions,
-  CommandResolverFunction,
-  HandlerContext,
-  ResolverContext,
+  CommandProcessFunction,
+  CommandResolveSubContextFunction,
+  ProcessContext,
+  ResolveSubContextCtx,
 } from '../types/type-command.js';
 import type { Flags } from '../types/type-flag.js';
 import type { LocaleMessageResolver } from '../types/type-locale-messages.js';
@@ -34,12 +34,12 @@ class CommandImpl<
   private cmdFlags: CommandFlags;
   private cmdSubCommands: Command<any, any, any, any>[] = [];
   private cmdParentCommand: Command<any, any, any, any>;
-  private cmdResolverFn: CommandResolverFunction<
-    ResolverContext<Name, Context>,
+  private cmdResolveSubContextFn: CommandResolveSubContextFunction<
+    ResolveSubContextCtx<Name, Context>,
     SubCommandContext
   >;
-  private cmdHandlerFn: CommandHandlerFunction<
-    HandlerContext<Name, Context, CommandFlags>
+  private cmdProcessFn: CommandProcessFunction<
+    ProcessContext<Name, Context, CommandFlags>
   >;
 
   constructor(name: Name, options: CommandOptions) {
@@ -77,12 +77,12 @@ class CommandImpl<
     return this.cmdSubCommands;
   }
 
-  get resolver() {
-    return this.cmdResolverFn;
+  get resolveSubContext() {
+    return this.cmdResolveSubContextFn;
   }
 
-  get handler() {
-    return this.cmdHandlerFn;
+  get process() {
+    return this.cmdProcessFn;
   }
 
   setFlags(flags: CommandFlags): void {
@@ -101,19 +101,19 @@ class CommandImpl<
     this.cmdSubCommands = [...this.cmdSubCommands, ...subCommands];
   }
 
-  setResolver(
-    fn: CommandResolverFunction<
-      ResolverContext<Name, Context>,
+  setResolveSubContext(
+    fn: CommandResolveSubContextFunction<
+      ResolveSubContextCtx<Name, Context>,
       SubCommandContext
     >
   ) {
-    this.cmdResolverFn = fn;
+    this.cmdResolveSubContextFn = fn;
   }
 
-  setHandler(
-    fn: CommandHandlerFunction<HandlerContext<Name, Context, CommandFlags>>
+  setProcess(
+    fn: CommandProcessFunction<ProcessContext<Name, Context, CommandFlags>>
   ): void {
-    this.cmdHandlerFn = fn;
+    this.cmdProcessFn = fn;
   }
 }
 
@@ -121,7 +121,7 @@ class CommandImpl<
  * @description
  * Create a command instance.
  *
- * This function initializes and returns a command instance (CommandImpl), which can be further configured with handlers, resolvers, subcommands, arguments, and flags.
+ * This function initializes and returns a command instance (CommandImpl), which can be further configured with process, resolveSubContext, subcommands, arguments, and flags.
  *
  * @template Name - The type of the command name, usually a string or RootType.
  * @template Context - The type of the command context, defaults to CommandContext.

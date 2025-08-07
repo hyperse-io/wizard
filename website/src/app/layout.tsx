@@ -65,7 +65,7 @@ const navbar = (
         <span className="font-extralight">Hyperse Wizard</span>
       </div>
     }
-    projectLink="https://github.com/hyperse-io"
+    projectLink="https://github.com/hyperse-io/wizard"
   />
 );
 const footer = (
@@ -105,7 +105,7 @@ const RootLayout: FC<{
           banner={banner}
           navbar={navbar}
           pageMap={pageMap}
-          docsRepositoryBase="https://github.com/hyperse-io/wizard/tree/main/docs"
+          docsRepositoryBase="https://github.com/hyperse-io/wizard/tree/main/website"
           editLink="Edit this page on GitHub"
           sidebar={{ defaultMenuCollapseLevel: 1 }}
           footer={footer}

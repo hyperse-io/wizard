@@ -4,8 +4,8 @@ import { createLogger, type Logger } from '@hyperse/logger';
 import { createStdoutPlugin } from '@hyperse/logger-plugin-stdout';
 import { Pipeline } from '@hyperse/pipeline';
 import { Root, rootName, WizardName } from '../constants.js';
-import { CommandHandlerNotFoundError } from '../errors/CommandHandlerNotFoundError.js';
 import { InvalidCommandNameError } from '../errors/CommandInvalidNameError.js';
+import { CommandProcessNotFoundError } from '../errors/CommandProcessNotFoundError.js';
 import { EventEmitter } from '../events/EventEmitter.js';
 import { createBuiltinFlags } from '../helpers/helper-create-builtin-flags.js';
 import { createBuiltinInterceptor } from '../helpers/helper-create-builtin-interceptor.js';
@@ -29,14 +29,14 @@ import {
   validateCommandName,
 } from '../helpers/index.js';
 import { useLocale } from '../i18n/index.js';
-import { messages } from '../i18n/messages.js';
+import { coreMessages } from '../i18n/messages.js';
 import type { ParseOptions } from '../types/type-argv.js';
 import type {
   Command,
   CommandContext,
-  CommandHandlerFunction,
   CommandName,
-  HandlerContext,
+  CommandProcessFunction,
+  ProcessContext,
 } from '../types/type-command.js';
 import type {
   CommandBuilder as CommandBuilderType,
@@ -85,7 +85,7 @@ export class Wizard<
   #logger: Logger;
   #locale: SupportedLocales = 'en';
   #localeMessages: LocaleMessagesObject;
-  #errorHandlers: ((err: unknown) => void)[] = [];
+  #errorHandlers: ((err: unknown) => void | Promise<void>)[] = [];
   #cliPipeline: Pipeline<CliPipelineContext>;
   #commandBuilder: CommandBuilderType<CommandName>;
   #commandChain: Command<CommandName>[] = [];
@@ -109,7 +109,7 @@ export class Wizard<
     }
     this.#localeMessages = mergeLocaleMessages(
       'cli',
-      messages,
+      coreMessages,
       options.localeMessages
     );
     this.setupRootCommand();
@@ -167,10 +167,10 @@ export class Wizard<
    * @description
    * Handles the error.
    */
-  private handleError(e: unknown) {
+  private async handleError(e: unknown) {
     if (this.#errorHandlers.length > 0) {
       for (const errorHandler of this.#errorHandlers) {
-        errorHandler(e);
+        await errorHandler(e);
       }
     } else {
       throw e;
@@ -180,8 +180,6 @@ export class Wizard<
   /**
    * @description
    * Sets up the command pipeline.
-   *
-   * @param parsedFlags The parsed flags.
    */
   private setupInterceptorPipeline() {
     if (this.#interceptors.length === 0) {
@@ -233,7 +231,7 @@ export class Wizard<
 
   /**
    * @description
-   * Executes the resolver or handler for the command.
+   * Executes the resolveSubContext or process for the command.
    *
    * @param lastCommandName The name of the last command.
    * @param commandPipeline The command pipeline.
@@ -261,29 +259,29 @@ export class Wizard<
 
     if (calledCommandName !== name && subCommands.length > 0) {
       // check has subCommand
-      const resolver = command.resolver || (() => {});
-      let resolverResult: CommandContext;
-      if (typeof resolver === 'function') {
-        resolverResult = await resolver(commandBasicInfo);
+      const resolveSubContext = command.resolveSubContext || (() => {});
+      let subContext: CommandContext;
+      if (typeof resolveSubContext === 'function') {
+        subContext = await resolveSubContext(commandBasicInfo);
       } else {
-        resolverResult = resolver;
+        subContext = resolveSubContext;
       }
 
-      ctx.ctx = resolverResult;
+      ctx.ctx = subContext;
       await next();
       return;
     }
 
-    // check has handler
-    const handler = command.handler;
+    // check has process
+    const process = command.process;
 
-    if (!handler) {
-      throw new CommandHandlerNotFoundError(this.#locale, {
+    if (!process) {
+      throw new CommandProcessNotFoundError(this.#locale, {
         cmdName: formatCommandName(name),
       });
     }
 
-    handler({
+    await process({
       ...commandBasicInfo,
       ctx: ctx.ctx,
       unknownFlags: ctx.unknownFlags,
@@ -340,7 +338,7 @@ export class Wizard<
    * 1. Parses command line arguments and flags, sets them on ctx, and calls setupCommandPipeline.
    * 2. Mounts error handling middleware to catch and handle errors during execution.
    */
-  private preparePipelineContext(argvOptions: ParseOptions) {
+  private async preparePipelineContext(argvOptions: ParseOptions) {
     try {
       const commandMap = commandTreeToMap(this.#commandBuilder);
       this.#commandMap = simpleDeepClone(commandMap);
@@ -400,7 +398,7 @@ export class Wizard<
       this.setupCommandPipeline(calledCommandName, commandChain);
       return parsedFlags;
     } catch (error) {
-      this.handleError(error);
+      await this.handleError(error);
       return;
     }
   }
@@ -412,24 +410,24 @@ export class Wizard<
    * @param optionsOrArgv The options or argv to parse.
    * @returns The wizard instance.
    */
-  public parse(optionsOrArgv: string[] | ParseOptions = resolveArgv()) {
+  public async parse(optionsOrArgv: string[] | ParseOptions = resolveArgv()) {
     const argvOptions = resolveOptionsOrArgv(optionsOrArgv);
     this.resetPipeline();
     this.setupInterceptorPipeline();
-    const pipelineContext = this.preparePipelineContext(argvOptions);
+    const pipelineContext = await this.preparePipelineContext(argvOptions);
     if (!pipelineContext) {
       return;
     }
     this.#cliPipeline.use(async (_, next, error) => {
       if (error) {
-        this.handleError(error);
+        await this.handleError(error);
       }
       await next();
     });
 
     if (argvOptions.run) {
       process.title = this.name;
-      this.#cliPipeline.execute({
+      await this.#cliPipeline.execute({
         ...pipelineContext,
         optionsOrArgv,
       });
@@ -468,23 +466,24 @@ export class Wizard<
   >(
     name: Name,
     options: CommandBuilderOptions & {
-      handler?: CommandHandlerFunction<HandlerContext<Name, {}, {}>>;
+      process?: CommandProcessFunction<ProcessContext<Name, {}, {}>>;
     }
   ): Wizard<MergeCommandNameToContext<NameToContext, NewNameToContext>>;
 
   public register(
     builderOrName: any,
     options?: CommandBuilderOptions & {
-      handler?: CommandHandlerFunction<any>;
+      process?: CommandProcessFunction<any>;
     }
   ) {
     if (typeof builderOrName === 'string' && options) {
       // (name, options) overload
-      const { handler, ...rest } = options;
+      const { process, ...rest } = options;
+
       const builder = createCommandBuilder(
         builderOrName,
         rest as CommandBuilderOptions
-      ).handler(handler || (() => {}));
+      ).process(process || (() => {}));
       return this.register(builder);
     } else {
       // (builder) overload
@@ -573,7 +572,7 @@ export class Wizard<
    * @param handler The error handler.
    * @returns The wizard instance.
    */
-  public errorHandler(handler: (err: any) => void) {
+  public errorHandler(handler: (err: any) => void | Promise<void>) {
     this.#errorHandlers.push(handler);
     return this;
   }

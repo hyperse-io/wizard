@@ -1,7 +1,7 @@
 import type { RequiredDeep, UnionToTuple, ValueOf } from 'type-fest';
 import type { DeepPartial } from '@hyperse/deep-merge';
 import type { createTranslator } from '@hyperse/translator';
-import type { messages } from '../i18n/messages.js';
+import type { CoreLocaleMessages } from '../i18n/messages.js';
 
 /**
  * @description
@@ -12,24 +12,13 @@ import type { messages } from '../i18n/messages.js';
  */
 export type DefineMessageType<T> = UnionToTuple<ValueOf<T>>[0];
 
-export type DefaultLocaleMessages = typeof messages;
-
 /**
  * @description
  * Locale messages keys.
  *
  * @returns The locale messages keys.
  */
-export type SupportedLocales = keyof DefaultLocaleMessages;
-
-/**
- * @description
- * Default locale messages.
- *
- * @returns The default locale messages.
- */
-export type DefaultLocaleMessage =
-  DefineMessageType<DefaultLocaleMessages>['core'];
+export type SupportedLocales = 'en' | 'zh';
 
 /**
  * @description
@@ -54,7 +43,7 @@ export interface CliLocaleMessages {}
  * @returns The locale messages.
  */
 export interface LocaleMessages {
-  core?: DefaultLocaleMessage;
+  core?: CoreLocaleMessages;
   plugins?: PluginLocaleMessages;
   cli?: CliLocaleMessages;
 }

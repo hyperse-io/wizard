@@ -28,7 +28,7 @@ export const createVersionPlugin = (options: VersionPluginOptions = {}) => {
       let cli = wizard.register(
         defineCommand('version', {
           description: 'plugins.versionPlugin.command.description',
-        }).handler(() => {
+        }).process(() => {
           process.stdout.write(gracefullyVersion);
           process.stdout.write('\n');
         })

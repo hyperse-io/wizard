@@ -28,7 +28,7 @@ cli.use(plugin).use(
     setup: (cli) => {
       return cli.register('test', {
         description: () => 'test',
-        handler: () => {
+        process: () => {
           console.log('execute test');
         },
       });

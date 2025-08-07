@@ -1,4 +1,3 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createWizard, defineCommand, definePlugin } from '@hyperse/wizard';
 import { createHelpPlugin } from '../src/create-help-plugin.js';
 
@@ -36,7 +35,7 @@ describe('createHelpPlugin', () => {
   });
 
   describe('help flag functionality', () => {
-    it('should register help flag by default', () => {
+    it('should register help flag by default', async () => {
       const cli = createWizard({
         name: 'test-cli',
         description: () => 'Test CLI',
@@ -44,14 +43,14 @@ describe('createHelpPlugin', () => {
       });
 
       cli.use(createHelpPlugin());
-      cli.parse(['--help']);
+      await cli.parse(['--help']);
 
       expect(mockStdoutWrite).toHaveBeenCalled();
       const output = mockStdoutWrite.mock.calls[0][0];
       expect(output).toContain('test-cli');
     });
 
-    it('should register help flag with alias -h', () => {
+    it('should register help flag with alias -h', async () => {
       const cli = createWizard({
         name: 'test-cli',
         description: () => 'Test CLI',
@@ -59,14 +58,14 @@ describe('createHelpPlugin', () => {
       });
 
       cli.use(createHelpPlugin());
-      cli.parse(['-h']);
+      await cli.parse(['-h']);
 
       expect(mockStdoutWrite).toHaveBeenCalled();
       const output = mockStdoutWrite.mock.calls[0][0];
       expect(output).toContain('test-cli');
     });
 
-    it('should not register help flag when flag option is false', () => {
+    it('should not register help flag when flag option is false', async () => {
       const cli = createWizard({
         name: 'test-cli',
         description: () => 'Test CLI',
@@ -76,12 +75,12 @@ describe('createHelpPlugin', () => {
       cli.use(createHelpPlugin({ flag: false }));
 
       // Should not throw error when help flag is not registered
-      expect(() => {
-        cli.parse(['--help']);
+      expect(async () => {
+        await cli.parse(['--help']);
       }).not.toThrow();
     });
 
-    it('should display banner when provided in help flag', () => {
+    it('should display banner when provided in help flag', async () => {
       const cli = createWizard({
         name: 'test-cli',
         description: () => 'Test CLI',
@@ -101,14 +100,14 @@ describe('createHelpPlugin', () => {
           },
         })
       );
-      cli.parse(['--help']);
+      await cli.parse(['--help']);
 
       expect(mockStdoutWrite).toHaveBeenCalled();
       const output = mockStdoutWrite.mock.calls[0][0];
       expect(output).toContain(banner);
     });
 
-    it('should display footer when provided in help flag', () => {
+    it('should display footer when provided in help flag', async () => {
       const cli = createWizard({
         name: 'test-cli',
         description: () => 'Test CLI',
@@ -128,7 +127,7 @@ describe('createHelpPlugin', () => {
           },
         })
       );
-      cli.parse(['--help']);
+      await cli.parse(['--help']);
 
       expect(mockStdoutWrite).toHaveBeenCalled();
       const output = mockStdoutWrite.mock.calls[0][0];
@@ -137,7 +136,7 @@ describe('createHelpPlugin', () => {
   });
 
   describe('with global flags', () => {
-    it('should display global flags in help', () => {
+    it('should display global flags in help', async () => {
       const cli = createWizard({
         name: 'test-cli',
         description: () => 'Test CLI',
@@ -152,7 +151,7 @@ describe('createHelpPlugin', () => {
         alias: 'v',
       });
 
-      cli.parse(['--help']);
+      await cli.parse(['--help']);
 
       expect(mockStdoutWrite).toHaveBeenCalled();
       const output = mockStdoutWrite.mock.calls[0][0];
@@ -160,7 +159,7 @@ describe('createHelpPlugin', () => {
       expect(output).toContain('Enable verbose output');
     });
 
-    it('should display multiple global flags in help', () => {
+    it('should display multiple global flags in help', async () => {
       const cli = createWizard({
         name: 'test-cli',
         description: () => 'Test CLI',
@@ -181,7 +180,7 @@ describe('createHelpPlugin', () => {
         alias: 'd',
       });
 
-      cli.parse(['--help']);
+      await cli.parse(['--help']);
 
       expect(mockStdoutWrite).toHaveBeenCalled();
       const output = mockStdoutWrite.mock.calls[0][0];
@@ -191,7 +190,7 @@ describe('createHelpPlugin', () => {
   });
 
   describe('complex CLI structure', () => {
-    it('should handle complex CLI with multiple commands and flags', () => {
+    it('should handle complex CLI with multiple commands and flags', async () => {
       const evolve = defineCommand('evolve', {
         description: () => 'Evolve description',
       }).flags({
@@ -279,7 +278,7 @@ describe('createHelpPlugin', () => {
         description: () => 'Version 2 flag',
       });
 
-      cli.parse(['--help']);
+      await cli.parse(['--help']);
 
       expect(mockStdoutWrite).toHaveBeenCalled();
       const output = mockStdoutWrite.mock.calls[0][0];
@@ -298,7 +297,7 @@ describe('createHelpPlugin', () => {
   });
 
   describe('help flag behavior', () => {
-    it('should show help and exit when help flag is true', () => {
+    it('should show help and exit when help flag is true', async () => {
       const cli = createWizard({
         name: 'test-cli',
         description: () => 'Test CLI',
@@ -310,7 +309,7 @@ describe('createHelpPlugin', () => {
       // Add a command that should not execute when help flag is used
       const testCommand = defineCommand('test', {
         description: () => 'Test command',
-      }).handler(() => {
+      }).process(() => {
         throw new Error('This should not execute');
       });
 
@@ -323,16 +322,14 @@ describe('createHelpPlugin', () => {
         })
       );
 
-      // Should not throw error because help flag handler should prevent execution
-      expect(() => {
-        cli.parse(['test', '--help']);
-      }).not.toThrow();
+      // Should not throw error because help flag process should prevent execution
+      await cli.parse(['test', '--help']);
       expect(mockStdoutWrite).toHaveBeenCalled();
     });
   });
 
   describe('edge cases', () => {
-    it('should handle empty banner and footer', () => {
+    it('should handle empty banner and footer', async () => {
       const cli = createWizard({
         name: 'test-cli',
         description: () => 'Test CLI',
@@ -345,7 +342,7 @@ describe('createHelpPlugin', () => {
           showFooter: false,
         })
       );
-      cli.parse(['--help']);
+      await cli.parse(['--help']);
 
       expect(mockStdoutWrite).toHaveBeenCalled();
       const output = mockStdoutWrite.mock.calls[0][0];

@@ -1,7 +1,7 @@
 import { rmSync } from 'node:fs';
 import { createWizard } from '@hyperse/wizard';
 import { createLoaderPlugin } from '../src/create-loader-plugin.js';
-import { createFixtureFiles, sleep } from './utils/test-utils.js';
+import { createFixtureFiles } from './utils/test-utils.js';
 
 describe('Loader Plugin Integration', () => {
   let fixtureCwd: string;
@@ -14,7 +14,7 @@ describe('Loader Plugin Integration', () => {
       'node_modules/version-plugin/index.js':
         'export * from "version-plugin/create-version-plugin"',
       'node_modules/version-plugin/create-version-plugin.js':
-        'export const createVersionPlugin = () => { return { name: ()=>"version-plugin", setup: (wizard) => { return wizard.register("version", { description:()=>"version-plugin", handler: () => { console.log("execute version command"); } }); } }; };',
+        'export const createVersionPlugin = () => { return { name: ()=>"version-plugin", setup: (wizard) => { return wizard.register("version", { description:()=>"version-plugin", process: () => { console.log("execute version command"); } }); } }; };',
 
       // `help-plugin`
       'node_modules/help-plugin/package.json':
@@ -22,7 +22,7 @@ describe('Loader Plugin Integration', () => {
       'node_modules/help-plugin/index.js':
         'export * from "help-plugin/create-help-plugin"',
       'node_modules/help-plugin/create-help-plugin.js':
-        'export const createHelpPlugin = () => { return { name: ()=>"help-plugin", setup: (wizard) => { return wizard.register("help", { description:()=>"help-plugin", handler: () => { console.log("execute help command"); } }); } }; };',
+        'export const createHelpPlugin = () => { return { name: ()=>"help-plugin", setup: (wizard) => { return wizard.register("help", { description:()=>"help-plugin", process: () => { console.log("execute help command"); } }); } }; };',
     });
   });
 
@@ -34,6 +34,9 @@ describe('Loader Plugin Integration', () => {
   });
 
   it('should correctly load and register external plugins and their commands', async () => {
+    const print = vi.fn();
+    const originalConsoleLog = console.log;
+    console.log = print;
     const cli = createWizard({
       name: 'cli',
       description: () =>
@@ -49,13 +52,16 @@ describe('Loader Plugin Integration', () => {
     });
 
     cli.use(loaderPlugin);
-    cli.parse(['version']);
-
-    await sleep();
+    await cli.parse(['version']);
 
     const commandMap = cli.commandMap;
     expect(commandMap).toBeDefined();
+
+    const mockResult = print.mock.calls;
+    console.log = originalConsoleLog;
+
     expect(commandMap.get('version')).toBeDefined();
     expect(commandMap.get('help')).toBeDefined();
+    expect(mockResult?.[0]?.[0]).toContain('execute version command');
   });
 });

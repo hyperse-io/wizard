@@ -23,7 +23,7 @@ export const createNewPlugin = () => {
         defineCommand('print', {
           // locale message key
           description: 'plugins.newPlugin.command.description',
-        }).handler(() => {
+        }).process(() => {
           process.stdout.write('hello world');
         })
       );

@@ -1,12 +1,12 @@
 import type {
   Command,
   CommandContext,
-  CommandHandlerFunction,
   CommandName,
   CommandOptions,
-  CommandResolverFunction,
-  HandlerContext,
-  ResolverContext,
+  CommandProcessFunction,
+  CommandResolveSubContextFunction,
+  ProcessContext,
+  ResolveSubContextCtx,
 } from './type-command.js';
 import type { Flags } from './type-flag.js';
 
@@ -190,15 +190,15 @@ export interface CommandBuilder<
 
   /**
    * @description
-   * Defines a resolver function for the command. The resolver is used to resolve context before the handler is executed.
+   * Defines a resolver function for the command. The resolveSubContext is used to resolve context before the handler is executed.
    *
    * @remarks `Function`
-   * @param {CommandResolverFunction} fn - The resolver function.
-   * @returns {CommandBuilder} A new CommandBuilder with the resolver attached.
+   * @param {CommandResolveSubContextFunction} fn - The resolveSubContext function.
+   * @returns {CommandBuilder} A new CommandBuilder with the resolveSubContext attached.
    */
-  resolver(
-    fn: CommandResolverFunction<
-      ResolverContext<Name, Context>,
+  resolveSubContext(
+    fn: CommandResolveSubContextFunction<
+      ResolveSubContextCtx<Name, Context>,
       SubCommandContext
     >
   ): CommandBuilder<
@@ -211,14 +211,14 @@ export interface CommandBuilder<
 
   /**
    * @description
-   * Defines a handler function for the command. The handler is executed when the command is invoked.
+   * Defines a process function for the command. The process is executed when the command is invoked.
    *
    * @remarks `Function`
-   * @param {CommandHandlerFunction} fn - The handler function.
-   * @returns {CommandBuilder} A new CommandBuilder with the handler attached.
+   * @param {CommandProcessFunction} fn - The process function.
+   * @returns {CommandBuilder} A new CommandBuilder with the process attached.
    */
-  handler(
-    fn: CommandHandlerFunction<HandlerContext<Name, Context, CommandFlags>>
+  process(
+    fn: CommandProcessFunction<ProcessContext<Name, Context, CommandFlags>>
   ): CommandBuilder<
     Name,
     Context,
