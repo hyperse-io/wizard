@@ -3,8 +3,9 @@ import type { Metadata } from 'next';
 import { HomeView } from './widgets/HomeView';
 
 export const metadata: Metadata = {
+  title: 'Wizard',
   description:
-    'Build fast, customizable, and content-rich websites with Nextra. Powered by Next.js, it offers seamless Markdown support, customizable themes, file conventions, and easy integration with MDX, making it perfect for documentation, blogs, and static websites.',
+    'Wizard is a CLI framework for building modern, efficient, and scalable command-line applications.',
 };
 
 const IndexPage: FC = () => {
