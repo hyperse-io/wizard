@@ -15,7 +15,7 @@ export const errorMessages = defineLocaleMessages({
       name: 'CLI 错误日志打印插件',
       messages: {
         commandNotFound:
-          '命令 "{cmdName}" 未找到。你是想执行 "{closestCommandName}" 吗？',
+          '命令 "{cmdName}" 未找到。你是指 "{closestCommandName}" 吗？',
       },
     },
   },
