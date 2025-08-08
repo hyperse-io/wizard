@@ -94,6 +94,18 @@ a.cta:focus-visible span {
   width: 320px;
   height: 320px;
   border-radius: 50%;
+  background-image: linear-gradient(-45deg, #3941e620 0%, #473eeb50 100%);
+  filter: blur(72px);
+  transform: translate(-50%, -50%);
+}
+
+.image_bg_dark {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 320px;
+  height: 320px;
+  border-radius: 50%;
   background-image: linear-gradient(-45deg, #3941e660 0%, #473eeb60 100%);
   filter: blur(72px);
   transform: translate(-50%, -50%);

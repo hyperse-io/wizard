@@ -11,7 +11,7 @@
   <a aria-label="Top language" href="https://github.com/hyperse-io/wizard/search?l=typescript">
     <img alt="GitHub top language" src="https://img.shields.io/github/languages/top/hyperse-io/wizard?style=flat-square&labelColor=000&color=blue">
   </a>
-  <a aria-label="Licence" href="https://github.com/hyperse-io/wizard/blob/main/LICENSE">
+  <a aria-label="Licence" href="https://github.com/hyperse-io/wizard/blob/main/LICENSE.md">
     <img alt="Licence" src="https://img.shields.io/github/license/hyperse-io/wizard?style=flat-quare&labelColor=000000" />
   </a>
 </p>
@@ -51,4 +51,4 @@ Wizard provides a rich plugin ecosystem for common CLI functionality:
 
 ## License
 
-This project is licensed under the [MIT LICENSE](./LICENSE).
+This project is licensed under the [GPLv3 LICENSE](./LICENSE.md).

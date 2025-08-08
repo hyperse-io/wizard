@@ -68,17 +68,9 @@
 }
 #highlighting-card {
   min-height: 200px;
-  background-image:
-    linear-gradient(to top, transparent, #fff 50%),
-    url(/assets/syntax-highlighting.svg);
   background-size: 634px;
   background-position: -6px calc(100% + 4px);
   background-repeat: no-repeat;
-}
-.dark #highlighting-card {
-  background-image:
-    linear-gradient(to top, transparent, #202020 50%),
-    url(/assets/syntax-highlighting.svg);
 }
 .feat-darkmode {
   min-height: 300px;
@@ -111,14 +103,14 @@
   min-width: 155px;
 }
 #a11y-card {
-  background-image: url(/assets/high-contrast.png);
+  background-image: url(/wizard/assets/high-contrast.png);
   background-position: -160px 160px;
 }
 @media screen and (max-width: 1300px) {
   #a11y-card {
     background-image:
       linear-gradient(to bottom, white, transparent),
-      url(/assets/high-contrast.png);
+      url(/wizard/assets/high-contrast.png);
   }
 }
 @media screen and (max-width: 1200px) {
@@ -151,7 +143,7 @@
     background-size: 136%;
   }
   #a11y-card {
-    background-image: url(/assets/high-contrast.png);
+    background-image: url(/wizard/assets/high-contrast.png);
     background-position: center 160px;
   }
 }

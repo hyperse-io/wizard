@@ -77,7 +77,8 @@ All of the provided information will be used to generate better help documentati
 
 Example:
 
-```ts filename="cli.ts"
+```ts twoslash
+// @filename: @hyperse/wizard/dist/index.d.ts
 import { defineCommand } from '@hyperse/wizard';
 
 const deployCmd = defineCommand<
@@ -124,7 +125,8 @@ export { defineCommand as default } from '@hyperse/wizard'`,
 
 Example:
 
-```ts filename="defineCommand.ts"
+```ts twoslash
+// @filename: @hyperse/wizard/dist/index.d.ts
 import { defineCommand } from '@hyperse/wizard';
 
 const deployCmd = defineCommand<

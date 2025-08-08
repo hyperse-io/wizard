@@ -41,6 +41,7 @@
     "?build-release": "When https://github.com/atlassian/changesets/issues/432 has a solution we can remove this trick",
     "g:build-release": "yarn workspaces foreach -At run build-release",
     "g:build-local": "yarn workspaces foreach -At run build",
+    "g:build-website": "yarn workspace @hyperse/wizard-website run build:ghpage",
     "g:test": "yarn workspaces foreach -At run test",
     "g:test-unit": "yarn workspaces foreach --all -ptv run test-unit",
     "g:test-e2e": "yarn workspaces foreach -At run test-e2e",
