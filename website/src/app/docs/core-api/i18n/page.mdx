@@ -38,7 +38,7 @@ export const messages = {
         notConfiguration: 'Command "{cmdName}" is not properly configured.',
         notFound:
           'Command "{cmdName}" not found. Use --help to see available commands.',
-        handlerNotFound: 'Command "{cmdName}" has no handler defined.',
+        processNotFound: 'Command "{cmdName}" has no process defined.',
         invalidName:
           'Invalid command name "{cmdName}" command names cannot contain spaces or multiple consecutive spaces.',
         invalidFlagsValue:
@@ -59,7 +59,7 @@ export const messages = {
           '命令名称 "{newCmdName}" 与现有命令 "{oldCmdName}" 冲突。这可能是由重复的别名导致的。',
         notConfiguration: '命令 "{cmdName}" 配置不正确。',
         notFound: '未找到命令 "{cmdName}"。使用 --help 查看可用命令。',
-        handlerNotFound: '命令 "{cmdName}" 未定义处理函数。',
+        processNotFound: '命令 "{cmdName}" 未定义处理函数。',
         invalidName:
           '无效的命令名称 "{cmdName}" 命令名称不能包含空格或连续多个空格。',
         invalidFlagsValue:
@@ -78,8 +78,11 @@ export const messages = {
 
 ### Messages
 
-```ts filename="messages.ts"
-export const helpCliMessages = {
+```ts twoslash
+// @filename: @hyperse/wizard/dist/index.d.ts
+import { defineLocaleMessages } from '@hyperse/wizard';
+
+export const helpCliMessages = defineLocaleMessages({
   en: {
     helpCli: {
       description: 'CLI description',
@@ -92,14 +95,15 @@ export const helpCliMessages = {
       version: 'CLI v1.0.0',
     },
   },
-};
+});
 ```
 
 ### Type Merging
 
 Use interface merging to combine your custom internationalization messages with `CliLocaleMessages`.
 
-```ts filename="local.d.ts"
+```ts twoslash
+// @filename: @hyperse/wizard/dist/index.d.ts
 import type { DefineMessageType } from '@hyperse/wizard';
 
 declare module '@hyperse/wizard' {
@@ -110,14 +114,44 @@ declare module '@hyperse/wizard' {
 
 ### Using
 
-```ts filename="cli.ts"
+```ts twoslash
+// @filename: @hyperse/wizard/dist/index.d.ts
+import {
+  createWizard,
+  defineLocaleMessages,
+  DefineMessageType,
+} from '@hyperse/wizard';
+
+// define cli locale messages
+const helpCliMessages = defineLocaleMessages({
+  en: {
+    helpCli: {
+      description: 'CLI description',
+      version: 'CLI v1.0.0',
+    },
+  },
+  zh: {
+    helpCli: {
+      description: '帮助信息插件',
+      version: 'CLI v1.0.0',
+    },
+  },
+});
+
+// merge cli locale messages
+declare module '@hyperse/wizard' {
+  export interface CliLocaleMessages
+    extends DefineMessageType<typeof helpCliMessages> {}
+}
+
 const cli = createWizard({
   name: 'hps_cli',
+  localeMessages: helpCliMessages,
   // Use internationalization messages
   description: 'cli.helpCli.description',
+  //                        ^|
   // Use internationalization messages
   version: 'cli.helpCli.version',
-  localeMessages: helpCliMessages,
   errorHandler: (e) => {
     console.log('CLI errorHandler \n', e);
   },
@@ -130,8 +164,11 @@ const cli = createWizard({
 
 Use interface merging to combine your custom internationalization messages with `PluginLocaleMessages`.
 
-```ts filename="messages.ts"
-export const helpMessages = {
+```ts twoslash
+// @filename: @hyperse/wizard/dist/index.d.ts
+import { defineLocaleMessages } from '@hyperse/wizard';
+
+export const helpMessages = defineLocaleMessages({
   en: {
     helpPlugin: {
       name: 'CLI Help Plugin',
@@ -164,12 +201,13 @@ export const helpMessages = {
       },
     },
   },
-};
+});
 ```
 
 ### Type Merging
 
-```ts filename="local.d.ts"
+```ts twoslash
+// @filename: @hyperse/wizard/dist/index.d.ts
 import type { DefineMessageType } from '@hyperse/wizard';
 
 declare module '@hyperse/wizard' {
@@ -180,11 +218,63 @@ declare module '@hyperse/wizard' {
 
 ### Using
 
-```ts filename="plugin.ts"
+```ts twoslash
+// @filename: @hyperse/wizard/dist/index.d.ts
+import {
+  defineCommand,
+  definePlugin,
+  PluginLocaleMessages,
+  DefineMessageType,
+  defineLocaleMessages,
+} from '@hyperse/wizard';
+
+// define plugin locale messages
+const helpMessages = defineLocaleMessages({
+  en: {
+    helpPlugin: {
+      name: 'CLI Help Plugin',
+      command: {
+        description: 'Show help information',
+        example: 'cli --help or cli -h',
+      },
+      flags: {
+        help: 'Show help information',
+      },
+      message: {
+        name: 'Name:',
+        version: 'Version:',
+      },
+    },
+  },
+  zh: {
+    helpPlugin: {
+      name: '帮助信息插件',
+      command: {
+        description: '展示帮助信息',
+        example: 'cli --help 或 cli -h',
+      },
+      flags: {
+        help: '展示帮助信息',
+      },
+      message: {
+        name: '名称:',
+        version: '版本:',
+      },
+    },
+  },
+});
+
+// merge plugin locale messages
+declare module '@hyperse/wizard' {
+  export interface PluginLocaleMessages
+    extends DefineMessageType<typeof helpMessages> {}
+}
+
 definePlugin({
   localeMessages: helpMessages,
   // Use internationalization messages
   name: 'plugins.helpPlugin.name',
+  //                        ^|
   setup: (wizard, pluginCtx) => {
     const cli = wizard.register(
       defineCommand('help', {
@@ -192,7 +282,7 @@ definePlugin({
         description: 'plugins.helpPlugin.command.description',
         // Use internationalization messages
         example: 'plugins.helpPlugin.command.example',
-      }).handler((ctx) => {})
+      }).process((ctx) => {})
     );
 
     if (flag) {
@@ -201,6 +291,7 @@ definePlugin({
           type: Boolean,
           // Use internationalization messages
           description: 'plugins.helpPlugin.flags.help',
+          //                                 ^|
           default: false,
           alias: 'h',
         })

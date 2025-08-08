@@ -1,4 +1,6 @@
-export const errorCliMessages = {
+import { defineLocaleMessages } from '@hyperse/wizard';
+
+export const errorCliMessages = defineLocaleMessages({
   en: {
     errorCli: {
       description: 'Error plugin description',
@@ -11,4 +13,4 @@ export const errorCliMessages = {
       version: 'CLI v1.0.0',
     },
   },
-};
+});

@@ -11,7 +11,7 @@
     "type": "git",
     "url": "git@github.com:hyperse-io/wizard.git"
   },
-  "license": "MIT",
+  "license": "GPLv3",
   "type": "module",
   "scripts": {
     "build": "next build && yarn postbuild",

@@ -1,4 +1,6 @@
-export const versionCliMessages = {
+import { defineLocaleMessages } from '@hyperse/wizard';
+
+export const versionCliMessages = defineLocaleMessages({
   en: {
     versionCli: {
       description: 'CLI description',
@@ -11,4 +13,4 @@ export const versionCliMessages = {
       version: 'CLI {version} 中文版本',
     },
   },
-};
+});

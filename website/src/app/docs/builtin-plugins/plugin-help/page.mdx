@@ -18,7 +18,8 @@ npm install @hyperse/wizard-plugin-help
 
 ## Quick Start
 
-```ts filename="cli.ts"
+```ts twoslash
+// @filename: @hyperse/wizard-plugin-help/dist/index.d.ts
 import { createWizard, defineCommand, definePlugin } from '@hyperse/wizard';
 import { createHelpPlugin } from '@hyperse/wizard-plugin-help';
 
@@ -109,7 +110,7 @@ const cli = createWizard({
   .flag('version', {
     type: Boolean,
     default: false,
-    alias: 'V',
+    alias: 'v',
     description: 'plugins.versionPlugin.description',
   });
 

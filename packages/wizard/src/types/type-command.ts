@@ -61,12 +61,12 @@ export type CommandContext<Context extends object = object> = Context;
 
 /**
  * @description
- * HandlerContext provides the full context for a command handler function, including command name, flags, logger, locale, i18n, and any custom context.
+ * ProcessContext provides the full context for a command process function, including command name, flags, logger, locale, i18n, and any custom context.
  * @template Name - The type of the command name (string or RootType)
- * @template Context - The type of the context object passed to the handler.
+ * @template Context - The type of the context object passed to the process.
  * @template CommandFlags - The type of the flags object for the command.
  */
-export interface HandlerContext<
+export interface ProcessContext<
   Name extends string | RootType,
   Context extends CommandContext,
   CommandFlags extends Flags,
@@ -105,20 +105,20 @@ export interface HandlerContext<
 
 /**
  * @description
- * CommandHandlerFunction is the function signature for a command handler, receiving a HandlerContext and returning void or a Promise.
- * @template handlerContext - The type of the context object passed to the handler.
+ * CommandProcessFunction is the function signature for a command process, receiving a ProcessContext and returning void or a Promise.
+ * @template ProcessContext - The type of the context object passed to the process.
  */
-export type CommandHandlerFunction<
-  handlerContext extends HandlerContext<any, any, any>,
-> = (ctx: handlerContext) => void;
+export type CommandProcessFunction<
+  ProcessCtx extends ProcessContext<any, any, any>,
+> = (ctx: ProcessCtx) => void | Promise<void>;
 
 /**
  * @description
- * ResolverContext provides the context for a command resolver function, similar to HandlerContext but without flags.
+ * ResolveSubContextCtx provides the context for a command resolveSubContext function, similar to HandlerContext but without flags.
  * @template Name - The type of the command name (string or RootType)
  * @template Context - The type of the context object passed to handlers/resolvers
  */
-export interface ResolverContext<
+export interface ResolveSubContextCtx<
   Name extends string | RootType,
   Context extends CommandContext,
 > extends CommandBasicInfoWithI18n {
@@ -150,8 +150,8 @@ export interface ResolverContext<
  * @template resolverContext - The type of the context object passed to the resolver.
  * @template SubCommandContext - The type of the context object for sub-commands.
  */
-export type CommandResolverFunction<
-  resolverContext extends ResolverContext<any, any>,
+export type CommandResolveSubContextFunction<
+  resolverContext extends ResolveSubContextCtx<any, any>,
   SubCommandContext extends object,
 > =
   | SubCommandContext
@@ -208,17 +208,17 @@ export interface Command<
   get subCommands(): Command<Name, any, any, any>[];
 
   /**
-   * Returns the handler function for this command.
+   * Returns the process function for this command.
    */
-  get handler(): CommandHandlerFunction<
-    HandlerContext<Name, Context, CommandFlags>
+  get process(): CommandProcessFunction<
+    ProcessContext<Name, Context, CommandFlags>
   >;
 
   /**
    * Returns the resolver function for this command.
    */
-  get resolver(): CommandResolverFunction<
-    ResolverContext<Name, Context>,
+  get resolveSubContext(): CommandResolveSubContextFunction<
+    ResolveSubContextCtx<Name, Context>,
     SubCommandContext
   >;
 
@@ -245,21 +245,21 @@ export interface Command<
   ): void;
 
   /**
-   * Sets the resolver function for this command, which can provide context for sub-commands.
-   * @param fn - The resolver function.
+   * Sets the resolveSubContext function for this command, which can provide context for sub-commands.
+   * @param fn - The resolveSubContext function.
    */
-  setResolver(
-    fn: CommandResolverFunction<
-      ResolverContext<Name, Context>,
+  setResolveSubContext(
+    fn: CommandResolveSubContextFunction<
+      ResolveSubContextCtx<Name, Context>,
       SubCommandContext
     >
   ): void;
 
   /**
-   * Sets the handler function for this command, which is executed when the command is invoked.
-   * @param fn - The handler function.
+   * Sets the process function for this command, which is executed when the command is invoked.
+   * @param fn - The process function.
    */
-  setHandler(
-    fn: CommandHandlerFunction<HandlerContext<Name, Context, CommandFlags>>
+  setProcess(
+    fn: CommandProcessFunction<ProcessContext<Name, Context, CommandFlags>>
   ): void;
 }

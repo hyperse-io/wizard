@@ -1,4 +1,6 @@
-export const errorMessages = {
+import { defineLocaleMessages } from '@hyperse/wizard';
+
+export const errorMessages = defineLocaleMessages({
   en: {
     errorPlugin: {
       name: 'CLI Error Log plugin',
@@ -13,8 +15,8 @@ export const errorMessages = {
       name: 'CLI 错误日志打印插件',
       messages: {
         commandNotFound:
-          '命令 "{cmdName}" 未找到。你是想执行 "{closestCommandName}" 吗？',
+          '命令 "{cmdName}" 未找到。你是指 "{closestCommandName}" 吗？',
       },
     },
   },
-};
+});

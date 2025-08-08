@@ -1,4 +1,6 @@
-export const loaderMessages = {
+import { defineLocaleMessages } from '@hyperse/wizard';
+
+export const loaderMessages = defineLocaleMessages({
   en: {
     loaderPlugin: {
       name: 'CLI Loader plugin',
@@ -9,4 +11,4 @@ export const loaderMessages = {
       name: 'CLI 插件加载器',
     },
   },
-};
+});

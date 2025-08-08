@@ -32,7 +32,8 @@ export { Plugin as default } from '@hyperse/wizard'`,
 
 To seperate handlers from the plugin definition, you can use the `definePlugin` utility function:
 
-```ts filename="definePlugin.ts"
+```ts twoslash
+// @filename: @hyperse/wizard/dist/index.d.ts
 import { definePlugin } from '@hyperse/wizard';
 
 const deployPlugin = definePlugin({

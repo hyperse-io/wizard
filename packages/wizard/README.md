@@ -54,7 +54,7 @@ Create a CLI instance.
 Define a command.
 
 - `name`: Command name
-- `options`: Command configuration (description, flags, handler, etc.)
+- `options`: Command configuration (description, flags, process, etc.)
 
 ### Wizard Class
 
@@ -88,7 +88,7 @@ Contributions are welcome! Please see the [Contributing Guide](../../CONTRIBUTIN
 
 ## 📄 License
 
-This project is licensed under the [MIT License](../../LICENSE).
+This project is licensed under the [GPLv3 License](../../LICENSE.md).
 
 ## 🔗 Links
 

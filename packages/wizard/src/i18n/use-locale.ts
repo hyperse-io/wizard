@@ -5,7 +5,7 @@ import type {
   LocaleMessagesObject,
   SupportedLocales,
 } from '../types/type-locale-messages.js';
-import { messages as defaultMessages } from './messages.js';
+import { coreMessages } from './messages.js';
 
 /**
  * @description
@@ -22,7 +22,7 @@ import { messages as defaultMessages } from './messages.js';
  */
 export const useLocale = (
   locale: SupportedLocales,
-  messages: LocaleMessagesObject = defaultMessages,
+  messages: LocaleMessagesObject = coreMessages,
   logger?: Logger
 ): I18n['t'] => {
   return createTranslator<LocaleMessagesObject, SupportedLocales>({

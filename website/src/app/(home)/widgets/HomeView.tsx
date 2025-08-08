@@ -67,7 +67,8 @@ export const HomeView: FC = () => {
         <div
           className={`${styles.right_layout} order-first hidden md:order-none md:block`}
         >
-          <div className={styles.image_bg} />
+          <div className={`${styles.image_bg_dark} hidden dark:block`} />
+          <div className={`${styles.image_bg} block dark:hidden`} />
           <DotLottieReact
             src="/wizard/assets/lottie/niu.lottie"
             loop
@@ -84,8 +85,8 @@ export const HomeView: FC = () => {
               id="highlighting-card"
               className="space-y-4"
             >
-              <div className="flex size-10 items-center justify-center rounded-sm bg-slate-500/40">
-                <Icon icon={feature.icon} className="size-6 text-white" />
+              <div className="flex size-10 items-center justify-center rounded-sm bg-transparent dark:bg-slate-500/10">
+                <Icon icon={feature.icon} className="size-6" />
               </div>
               <h4 className="flex items-center gap-2 text-xl font-bold">
                 {feature.title}

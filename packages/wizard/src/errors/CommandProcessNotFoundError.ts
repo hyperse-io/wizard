@@ -5,17 +5,17 @@ import { CommandI18nError } from './CommandI18nError.js';
 
 /**
  * @description
- * This error should be thrown when a command is not found.
+ * This error should be thrown when a command process is not found.
  *
  * @example
- * throw new CommandHandlerNotFoundError('en', { cmdName: 'build' });
+ * throw new CommandProcessNotFoundError('en', { cmdName: 'build' });
  */
-export class CommandHandlerNotFoundError extends CommandI18nError {
+export class CommandProcessNotFoundError extends CommandI18nError {
   constructor(
     public locale: SupportedLocales,
     public variables: { [key: string]: string | number } = {}
   ) {
     const t = useLocale(locale);
-    super(t('core.command.handlerNotFound', variables), LogLevel.Error);
+    super(t('core.command.processNotFound', variables), LogLevel.Error);
   }
 }

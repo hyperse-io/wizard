@@ -1,11 +1,11 @@
 import type {
   Command as CommandType,
   CommandContext,
-  CommandHandlerFunction,
   CommandName,
-  CommandResolverFunction,
-  HandlerContext,
-  ResolverContext,
+  CommandProcessFunction,
+  CommandResolveSubContextFunction,
+  ProcessContext,
+  ResolveSubContextCtx,
 } from '../types/type-command.js';
 import type {
   CommandBuilder,
@@ -91,9 +91,9 @@ class CommandBuilderImpl<
     >;
   }
 
-  resolver(
-    fn: CommandResolverFunction<
-      ResolverContext<Name, Context>,
+  resolveSubContext(
+    fn: CommandResolveSubContextFunction<
+      ResolveSubContextCtx<Name, Context>,
       SubCommandContext
     >
   ): CommandBuilder<
@@ -103,12 +103,12 @@ class CommandBuilderImpl<
     NameToContext,
     CommandFlags
   > {
-    this.command.setResolver(fn);
+    this.command.setResolveSubContext(fn);
     return this;
   }
 
-  handler(
-    fn: CommandHandlerFunction<HandlerContext<Name, Context, CommandFlags>>
+  process(
+    fn: CommandProcessFunction<ProcessContext<Name, Context, CommandFlags>>
   ): CommandBuilder<
     Name,
     Context,
@@ -116,7 +116,7 @@ class CommandBuilderImpl<
     NameToContext,
     CommandFlags
   > {
-    this.command.setHandler(fn);
+    this.command.setProcess(fn);
     return this;
   }
 
@@ -148,7 +148,7 @@ class CommandBuilderImpl<
  * @description
  * Create a command builder (CommandBuilder).
  *
- * This function initializes and returns a command builder instance, which supports chainable configuration of command handlers, resolvers, subcommands, arguments, and flags.
+ * This function initializes and returns a command builder instance, which supports chainable configuration of command process, resolveSubContext, subcommands, arguments, and flags.
  *
  * @template Name - The type of the command name, usually a string or RootType.
  * @template Context - The type of the command context, defaults to CommandContext.

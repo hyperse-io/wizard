@@ -7,7 +7,6 @@ import {
 import { createHelpPlugin } from '../src/create-help-plugin.js';
 import type { buildPluginMessages } from './i18n/message.js';
 import { helpCliMessages } from './i18n/message.js';
-import { sleep } from './utils/test-utils.js';
 
 declare module '@hyperse/wizard' {
   export interface CliLocaleMessages
@@ -108,8 +107,7 @@ describe('createHelpPlugin - CLI help functionality', () => {
    * Footer
    */
   it('should display main CLI help when using -h flag', async () => {
-    cli.parse(['-h']);
-    await sleep();
+    await cli.parse(['-h']);
 
     expect(printer).toHaveBeenCalled();
     expect(printer.mock.calls[0][0]).toBeDefined();
@@ -139,8 +137,7 @@ describe('createHelpPlugin - CLI help functionality', () => {
   });
 
   it('should display main CLI help when using --help flag', async () => {
-    cli.parse(['--help']);
-    await sleep();
+    await cli.parse(['--help']);
 
     expect(printer).toHaveBeenCalled();
     expect(printer.mock.calls[0][0]).toBeDefined();
@@ -170,8 +167,7 @@ describe('createHelpPlugin - CLI help functionality', () => {
   });
 
   it('should display help information when using help command', async () => {
-    cli.parse(['help']);
-    await sleep();
+    await cli.parse(['help']);
 
     expect(printer).toHaveBeenCalled();
     expect(printer.mock.calls[0][0]).toBeDefined();
@@ -198,8 +194,7 @@ describe('createHelpPlugin - CLI help functionality', () => {
   });
 
   it('should display build command help with subcommands and flags when using -h or --help', async () => {
-    cli.parse(['build', '-h']);
-    await sleep();
+    await cli.parse(['build', '-h']);
 
     expect(printer).toHaveBeenCalled();
     expect(printer.mock.calls[0][0]).toBeDefined();
@@ -235,8 +230,7 @@ describe('createHelpPlugin - CLI help functionality', () => {
     expect(result).toContain('🎉🎉🎉Wizard cli is published by hps🎉🎉🎉');
     expect(result).toContain('@2025 wizard-plugin-help');
 
-    cli.parse(['build', '--help']);
-    await sleep();
+    await cli.parse(['build', '--help']);
 
     expect(printer).toHaveBeenCalled();
     expect(printer.mock.calls[0][0]).toBeDefined();
@@ -274,8 +268,7 @@ describe('createHelpPlugin - CLI help functionality', () => {
   });
 
   it('should display build command help with flags when using build-type flag and -h', async () => {
-    cli.parse(['build', '--build-type', 'prod', '-h']);
-    await sleep();
+    await cli.parse(['build', '--build-type', 'prod', '-h']);
 
     expect(printer).toHaveBeenCalled();
     expect(printer.mock.calls[0][0]).toBeDefined();
@@ -313,8 +306,7 @@ describe('createHelpPlugin - CLI help functionality', () => {
   });
 
   it('should display help command specific information when using help -h', async () => {
-    cli.parse(['help', '-h']);
-    await sleep();
+    await cli.parse(['help', '-h']);
 
     expect(printer).toHaveBeenCalled();
     expect(printer.mock.calls[0][0]).toBeDefined();

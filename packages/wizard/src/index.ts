@@ -2,6 +2,7 @@ export * from './constants.js';
 export * from './core/index.js';
 export { createWizard } from './create-wizard.js';
 export { defineCommand } from './define-command.js';
+export { defineLocaleMessages } from './define-locale-messages.js';
 export { definePlugin } from './define-plugin.js';
 export * from './errors/index.js';
 export * from './helpers/index.js';

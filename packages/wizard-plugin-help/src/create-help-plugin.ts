@@ -103,7 +103,7 @@ export const createHelpPlugin = (options: HelpPluginOptions = {}) => {
         defineCommand('help', {
           description: 'plugins.helpPlugin.command.description',
           example: 'plugins.helpPlugin.command.example',
-        }).handler((ctx) => {
+        }).process((ctx) => {
           setupChalk(assertNoColor(pluginCtx.noColor, ctx.flags?.noColor));
           const commandChain = wizard.commandChain;
           const lastCommand = commandChain[commandChain.length - 1];

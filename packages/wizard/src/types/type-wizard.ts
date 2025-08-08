@@ -99,5 +99,5 @@ export type WizardOptions = {
   /**
    * Global error handler, called when an uncaught exception occurs during CLI execution.
    */
-  errorHandler?: (err: unknown) => void;
+  errorHandler?: (err: unknown) => void | Promise<void>;
 };

@@ -1,4 +1,6 @@
-export const helpCliMessages = {
+import { defineLocaleMessages } from '@hyperse/wizard';
+
+export const helpCliMessages = defineLocaleMessages({
   en: {
     helpCli: {
       description: 'CLI description',
@@ -11,9 +13,9 @@ export const helpCliMessages = {
       version: 'CLI v1.0.0',
     },
   },
-};
+});
 
-export const buildPluginMessages = {
+export const buildPluginMessages = defineLocaleMessages({
   en: {
     versionPlugin: {
       description: 'version description',
@@ -76,4 +78,4 @@ export const buildPluginMessages = {
       },
     },
   },
-};
+});

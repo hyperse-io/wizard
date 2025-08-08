@@ -1,7 +1,6 @@
 import { createWizard } from '../src/create-wizard.js';
 import { defineCommand } from '../src/define-command.js';
 import { definePlugin } from '../src/index.js';
-import { sleep } from './utils/test-utils.js';
 
 describe('cli', () => {
   const miniHandler = vi.fn();
@@ -36,7 +35,7 @@ describe('cli', () => {
         default: '1.0.0',
       },
     })
-    .handler((ctx) => miniHandler(ctx));
+    .process((ctx) => miniHandler(ctx));
 
   const evolveCmd = defineCommand<'evolve', { root1: { root11: string } }>(
     'evolve',
@@ -59,10 +58,10 @@ describe('cli', () => {
       },
     })
     .use(miniCmd)
-    .resolver(async () => {
+    .resolveSubContext(async () => {
       return Promise.resolve({ miniConfig: { miniKey: 'mini' } });
     })
-    .handler((ctx) => {
+    .process((ctx) => {
       evolveHandler(ctx);
     });
 
@@ -81,8 +80,8 @@ describe('cli', () => {
       },
     })
     .use(evolveCmd)
-    .resolver({ root1: { root11: 'root11' } })
-    .handler((ctx) => buildHandler(ctx));
+    .resolveSubContext({ root1: { root11: 'root11' } })
+    .process((ctx) => buildHandler(ctx));
 
   const deployCmd = defineCommand<'deploy', { root1: { root11: string } }>(
     'deploy',
@@ -104,7 +103,7 @@ describe('cli', () => {
         default: 'aliyun',
       },
     })
-    .handler((ctx) => {
+    .process((ctx) => {
       deployHandler(ctx);
     });
 
@@ -133,8 +132,7 @@ describe('cli', () => {
       .on('error', errorEvent);
 
     // cmd: build
-    cli.parse(['build']);
-    await sleep();
+    await cli.parse(['build']);
     expect(miniHandler).not.toHaveBeenCalled();
     expect(evolveHandler).not.toHaveBeenCalled();
     expect(buildHandler).toHaveBeenCalled();
@@ -174,8 +172,7 @@ describe('cli', () => {
       .on('error', errorEvent);
 
     // cmd: build evolve mini
-    cli.parse(['build', 'evolve']);
-    await sleep();
+    await cli.parse(['build', 'evolve']);
     expect(buildHandler).not.toHaveBeenCalled();
     expect(miniHandler).not.toHaveBeenCalled();
     expect(evolveHandler).toHaveBeenCalled();
@@ -217,8 +214,7 @@ describe('cli', () => {
       .on('error', errorEvent);
 
     // cmd: build evolve mini
-    cli.parse(['build', 'evolve', 'mini']);
-    await sleep();
+    await cli.parse(['build', 'evolve', 'mini']);
     expect(buildHandler).not.toHaveBeenCalled();
     expect(evolveHandler).not.toHaveBeenCalled();
     expect(miniHandler).toHaveBeenCalled();
@@ -258,14 +254,13 @@ describe('cli', () => {
       .on('error', errorEvent);
 
     // cmd: build evolve mini
-    cli.parse([
+    await cli.parse([
       'deploy',
       '-h',
       '--compiler=vite',
       '--fileType=js',
       '--ossType=azure',
     ]);
-    await sleep();
     expect(buildHandler).not.toHaveBeenCalled();
     expect(evolveHandler).not.toHaveBeenCalled();
     expect(miniHandler).not.toHaveBeenCalled();
@@ -296,7 +291,7 @@ describe('cli', () => {
           setup: (wizard) =>
             wizard.register('customPlugin', {
               description: () => 'customPlugin description',
-              handler: (ctx) => {
+              process: (ctx) => {
                 customPluginHandler(ctx);
               },
             }),
@@ -305,11 +300,46 @@ describe('cli', () => {
       .on('customPlugin', customPluginEvent);
 
     // cmd: customPlugin
-    cli.parse(['customPlugin']);
-    await sleep();
+    await cli.parse(['customPlugin']);
     expect(customPluginHandler).toHaveBeenCalled();
     const description = customPluginHandler.mock.lastCall?.[0]?.description;
     expect(description).toBeDefined();
     expect(description).toBe('customPlugin description');
+  });
+
+  it('test command with async process', async () => {
+    const customPluginEvent = vi.fn();
+    const customPluginHandler = vi.fn();
+    const cli = createWizard({
+      name: 'wWizard',
+      description: () => 'wWizard description',
+      version: () => '1.0.0',
+      errorHandler: errorEvent,
+    })
+      .use(
+        definePlugin({
+          name: () => 'process plugin',
+          setup: (wizard) =>
+            wizard.register('processPlugin', {
+              description: () => 'processPlugin description',
+              process: async () => {
+                const result = new Promise((resolve) => {
+                  setTimeout(() => {
+                    resolve('processPlugin result');
+                  }, 1000);
+                });
+                customPluginHandler(await result);
+              },
+            }),
+        })
+      )
+      .on('processPlugin', customPluginEvent);
+
+    // cmd: customPlugin
+    await cli.parse(['processPlugin']);
+    expect(customPluginHandler).toHaveBeenCalled();
+    const result = customPluginHandler.mock.lastCall?.[0];
+    expect(result).toBeDefined();
+    expect(result).toBe('processPlugin result');
   });
 });

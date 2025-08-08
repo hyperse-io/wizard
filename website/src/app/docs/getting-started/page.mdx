@@ -15,78 +15,184 @@ npm install @hyperse/wizard
 
 ### Create CLI Instance
 
-```tsx
-import { createWizard } from '@hyperse/wizard';
+CLI instance is the core of Wizard CLI. You can use it to register commands, plugins, and other configurations. The following demonstrates how to create a CLI instance, define multilingual support, and register the commands and plugins.
+
+```ts twoslash
+// @filename: @hyperse/wizard/dist/index.d.ts
+import {
+  createWizard,
+  defineLocaleMessages,
+  DefineMessageType,
+} from '@hyperse/wizard';
+
+// define cli locale messages
+const hpsCliMessages = defineLocaleMessages({
+  en: {
+    hpsCli: {
+      description: 'CLI description',
+      version: 'CLI v1.0.0',
+    },
+  },
+  zh: {
+    hpsCli: {
+      description: '帮助信息插件',
+      version: 'CLI v1.0.0',
+    },
+  },
+});
+
+// merge cli locale messages
+declare module '@hyperse/wizard' {
+  export interface CliLocaleMessages
+    extends DefineMessageType<typeof hpsCliMessages> {}
+}
 
 const hpsCli = createWizard({
   name: 'hps',
-  // i18n message key
-  description: 'hpsCli.description',
-  // i18n message key
-  version: 'hpsCli.version',
-  // i18n messages
+  // Use internationalization messages
+  version: 'cli.hpsCli.version',
   // cliMessages only provide the messages for the cli, not the commands and plugins
   localeMessages: cliMessages,
+  // Use internationalization messages
+  description: 'cli.hpsCli.description',
+  //                       ^|
 });
 ```
 
 ### Define Commands and Subcommands
 
-```tsx
-import { defineCommand } from '@hyperse/wizard';
+Commands and subcommands are the main features of Wizard CLI. You can use commands and subcommands to organize your CLI and extend its functionality. The following demonstrates how to define a command and a subcommand, and how to use them in the CLI instance.
+
+```ts twoslash
+// @filename: @hyperse/wizard/dist/index.d.ts
+// @errors: 2345
+import type { DefineMessageType } from '@hyperse/wizard';
+import { defineCommand, defineLocaleMessages } from '@hyperse/wizard';
+
+// define plugin locale messages
+const buildPluginMessages = defineLocaleMessages({
+  en: {
+    buildPlugin: {
+      build: {
+        description: 'Build description',
+        mini: {
+          description: 'Build mini description',
+          flags: {
+            compiler: 'Compiler',
+          },
+        },
+        flags: {
+          projectCwd: 'projectCwd',
+        },
+      },
+    },
+  },
+  zh: {
+    buildPlugin: {
+      build: {
+        description: '构建项目插件',
+        mini: {
+          description: '构建小程序插件',
+          flags: {
+            compiler: '构建小程序插件',
+          },
+        },
+        flags: {
+          projectCwd: '项目路径',
+        },
+      },
+    },
+  },
+});
+
+// merge plugin locale messages
+declare module '@hyperse/wizard' {
+  export interface PluginLocaleMessages
+    extends DefineMessageType<typeof buildPluginMessages> {}
+}
+
+type BuildContext = {
+  buildOptions: {
+    type: 'webpack' | 'vite';
+  };
+};
 
 type MiniContext = {
   projectCwd: string;
 };
 
-const buildCommand = defineCommand('build', {
+const buildCommand = defineCommand<'build', BuildContext>('build', {
   // i18n message key
-  description: 'buildPlugin.command.build.description',
+  description: 'plugins.buildPlugin.build.description',
 })
   .use(
     defineCommand<'mini', MiniContext>('mini', {
       // i18n message key
-      description: 'buildPlugin.command.build.mini.description',
+      description: 'plugins.buildPlugin.build.mini.description',
     })
       .flags({
         compiler: {
           type: String,
           // i18n message key
-          description: 'buildPlugin.command.build.mini.flags.compiler',
+          description: 'plugins.buildPlugin.build.mini.flags.compiler',
+          //                    ^|
           default: 'webpack',
         },
       })
-      .handler(async (ctx) => {
-        ctx.log.info('build mini', ctx.flags);
-      })
+      .process(async (ctx) => {})
   )
   .flags({
     projectCwd: {
       type: Boolean,
       // i18n message key
-      description: 'buildPlugin.command.build.flags.projectCwd',
+      description: 'plugins.buildPlugin.build.flags.projectCwd',
       default: process.cwd(),
       required: true,
     },
   })
-  .resolve((ctx) => {
-    // just provide the projectCwd for subcommand to work
-    ctx.log.info('build resolve', ctx.flags);
+  .resolveSubContext((ctx) => {
+    //                  ^?
     return {
-      projectCwd: ctx.flags.projectCwd,
+      project: '/foo',
     };
   });
 ```
 
 ### Define Plugin
 
-```tsx
-import { definePlugin } from '@hyperse/wizard';
+Plugin is the extension mechanism of Wizard CLI. You can use plugins to register commands, extend features, and add localization messages. The following demonstrates how to define a plugin, add multilingual support, and register the plugin to the CLI instance.
+
+```ts twoslash
+// @filename: @hyperse/wizard/dist/index.d.ts
+// @errors: 2345
+import type { DefineMessageType } from '@hyperse/wizard';
+import { definePlugin, defineLocaleMessages } from '@hyperse/wizard';
+
+// define plugin locale messages
+const buildPluginMessages = defineLocaleMessages({
+  en: {
+    buildPlugin: {
+      name: 'build plugin',
+    },
+  },
+  zh: {
+    buildPlugin: {
+      name: '构建项目插件',
+    },
+  },
+});
+
+// merge plugin locale messages
+declare module '@hyperse/wizard' {
+  export interface PluginLocaleMessages
+    extends DefineMessageType<typeof buildPluginMessages> {}
+}
 
 hpsCli
   .use(
     definePlugin({
-      name: 'buildPlugin.plugin.name',
+      name: 'plugins.buildPlugin.name',
+      //                      ^|
       setup: (cli) => {
         return cli.register(buildCommand);
       },

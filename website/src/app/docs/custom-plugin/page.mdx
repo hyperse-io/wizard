@@ -9,10 +9,10 @@ A plugin is a function that accepts a `Wizard` instance and returns a `Wizard` i
 
 ## Usage
 
-```ts filename="plugin.ts"
+```ts twoslash
+// @filename: @hyperse/wizard/dist/index.d.ts
 import { definePlugin, createWizard } from '@hyperse/wizard';
 
-// define plugin
 export const createNewPlugin = () => {
   return definePlugin({
     // locale message key
@@ -23,7 +23,7 @@ export const createNewPlugin = () => {
         defineCommand('print', {
           // locale message key
           description: 'plugins.newPlugin.command.description',
-        }).handler(() => {
+        }).process(() => {
           process.stdout.write('hello world');
         })
       );

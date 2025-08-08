@@ -10,10 +10,15 @@ import { generateDefinition, TSDoc } from 'nextra/tsdoc';
 
 createWizard is the main function to create a wizard instance.
 
-```tsx
-import { createWizard } from '@hyperse/wizard';
+```ts twoslash
+// @filename: @hyperse/wizard/dist/index.d.ts
+import { createWizard, WizardOptions } from '@hyperse/wizard';
 
-const wizard = createWizard(options: WizardOptions);
+const wizard = createWizard({
+  name: 'hps_cli',
+  description: 'cli.hpsCli.description',
+  version: 'cli.hpsCli.version',
+});
 ```
 
 ### WizardOptions
@@ -25,106 +30,17 @@ export { WizardOptions as default } from '@hyperse/wizard'`,
   })}
 />
 
-### Properties
+### Wizard Properties
 
-#### name
-
-`string`
-
-The name of the CLI tool
-
-#### description
-
-`string`
-
-The description of the CLI tool, supports localization.
-
-#### version
-
-`string`
-
-The version of the CLI tool, supports localization.
-
-#### locale
-
-`SupportedLocales`
-
-The current locale of the wizard. Supported locales are `'en'` and `'zh'`.
-
-#### i18n
-
-`{ t: Translator }`
-
-The i18n instance for internationalization. The `t` function is used to translate messages.
-
-#### commandMap
-
-`Map<CommandName, Command<CommandName>>`
-
-The map of all registered commands with their internationalized descriptions and metadata.
-
-#### commandChain
-
-`Command<CommandName>[]`
-
-The current command chain being executed, with internationalized descriptions and metadata.
-
-#### globalFlags
-
-`Flags`
-
-The global flags configuration with internationalized descriptions and metadata.
-
-### Methods
-
-#### setupLogger
-
-`(loggerOptions: { noColor?: boolean; logLevel?: LogLevel }) => void`
-
-Sets up the logger with custom options for color output and log level.
-
-#### parse
-
-`(optionsOrArgv?: string[] | ParseOptions) => void`
-
-Parses command line arguments and executes the corresponding command. This is the main entry point for running the CLI.
-
-#### register
-
-`(builder: CommandBuilder) => Wizard`
-
-Registers a command using a command builder.
-
-`(name: string, options: CommandBuilderOptions & { handler?: CommandHandlerFunction }) => Wizard`
-
-Registers a command by name and options.
-
-#### use
-
-`(plugin: Plugin) => Wizard`
-
-Registers a plugin to extend the wizard's functionality.
-
-#### interceptor
-
-`(interceptor: GlobalInterceptorHandler) => Wizard`
-
-Registers a global interceptor that runs before command execution.
-
-#### flag
-
-`(name: string, options: FlagOptions) => Wizard`
-
-Sets global flags that are available to all commands.
-
-#### errorHandler
-
-`(handler: (err: any) => void) => Wizard`
-
-Sets an error handler to catch and handle errors during execution.
-
-#### on
-
-`(event: string, listener: EventListener) => Wizard`
-
-Adds an event listener for the specified event.
+<TSDoc
+  definition={generateDefinition({
+    code: `
+        import { Wizard } from '@hyperse/wizard'
+        type PublicMembers<T> = Pick<T, {
+        [K in keyof T]: K extends string ? K : never
+        }[keyof T]>;
+        type myTye=PublicMembers<Wizard>
+        export default myTye;
+        `,
+  })}
+/>

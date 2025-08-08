@@ -9,8 +9,12 @@ import type {
  * @description
  * Define a command.
  *
- * @param command The command to define.
- * @param handler The handler for the command.
+ * @template Name The type of the command name, usually a string literal type.
+ * @template Ctx The type of the command context object, used to pass custom data to process.
+ *
+ * @param name The name of the command, used as the identifier in the CLI.
+ * @param options The detailed configuration for the command, including description, arguments, flags, process, etc.
+ * @returns Returns a command builder object for further configuration and subcommand registration.
  */
 export const defineCommand = <Name extends string, Ctx extends object>(
   name: Name,

@@ -1,4 +1,23 @@
-export const messages = {
+import { defineLocaleMessages } from '../define-locale-messages.js';
+
+export type CoreLocaleMessages = {
+  command: {
+    notProvider: string;
+    nameConflict: string;
+    flagNotProvided: string;
+    notConfiguration: string;
+    notFound: string;
+    processNotFound: string;
+    invalidName: string;
+    invalidFlagsValue: string;
+  };
+  flags: {
+    noColor: string;
+    logLevel: string;
+  };
+};
+
+export const coreMessages = defineLocaleMessages({
   en: {
     core: {
       command: {
@@ -11,7 +30,7 @@ export const messages = {
         notConfiguration: 'Command "{cmdName}" is not properly configured.',
         notFound:
           'Command "{cmdName}" not found. Use --help to see available commands.',
-        handlerNotFound: 'Command "{cmdName}" has no handler defined.',
+        processNotFound: 'Command "{cmdName}" has no process defined.',
         invalidName:
           'Invalid command name "{cmdName}" command names cannot contain spaces or multiple consecutive spaces.',
         invalidFlagsValue:
@@ -32,7 +51,7 @@ export const messages = {
           '命令名称 "{newCmdName}" 与现有命令 "{oldCmdName}" 冲突。这可能是由重复的别名导致的。',
         notConfiguration: '命令 "{cmdName}" 配置不正确。',
         notFound: '未找到命令 "{cmdName}"。使用 --help 查看可用命令。',
-        handlerNotFound: '命令 "{cmdName}" 未定义处理函数。',
+        processNotFound: '命令 "{cmdName}" 未定义处理函数。',
         invalidName:
           '无效的命令名称 "{cmdName}" 命令名称不能包含空格或连续多个空格。',
         invalidFlagsValue:
@@ -44,4 +63,4 @@ export const messages = {
       },
     },
   },
-};
+});

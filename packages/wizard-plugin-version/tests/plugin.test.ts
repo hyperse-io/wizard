@@ -1,7 +1,5 @@
-import { vi } from 'vitest';
 import { createWizard } from '@hyperse/wizard';
 import { createVersionPlugin } from '../src/create-version-plugin.js';
-import { sleep } from './utils/test-utils.js';
 
 describe('version plugin', () => {
   let stdoutWriteSpy: any;
@@ -21,7 +19,7 @@ describe('version plugin', () => {
     stdoutWriteSpy?.mockRestore();
   });
 
-  it('should print version with -version flag', () => {
+  it('should print version with -version flag', async () => {
     const cli = createWizard({
       name: 'cli',
       description: () => 'cli',
@@ -29,23 +27,11 @@ describe('version plugin', () => {
       errorHandler: () => {},
     });
     cli.use(createVersionPlugin());
-    cli.parse(['-version']);
-    expect(output.length).toBe(0);
-  });
-
-  it('should print version with --version flag', () => {
-    const cli = createWizard({
-      name: 'cli',
-      description: () => 'cli',
-      version: () => '1.0.0',
-      errorHandler: () => {},
-    });
-    cli.use(createVersionPlugin());
-    cli.parse(['--version']);
+    await cli.parse(['-version']);
     expect(output.join('')).toBe('v1.0.0\n');
   });
 
-  it('should print version with -V alias', () => {
+  it('should print version with --version flag', async () => {
     const cli = createWizard({
       name: 'cli',
       description: () => 'cli',
@@ -53,7 +39,19 @@ describe('version plugin', () => {
       errorHandler: () => {},
     });
     cli.use(createVersionPlugin());
-    cli.parse(['-V']);
+    await cli.parse(['--version']);
+    expect(output.join('')).toBe('v1.0.0\n');
+  });
+
+  it('should print version with -V alias', async () => {
+    const cli = createWizard({
+      name: 'cli',
+      description: () => 'cli',
+      version: () => '1.0.0',
+      errorHandler: () => {},
+    });
+    cli.use(createVersionPlugin());
+    await cli.parse(['-v']);
     expect(output.join('')).toBe('v1.0.0\n');
   });
 
@@ -65,8 +63,7 @@ describe('version plugin', () => {
       errorHandler: () => {},
     });
     cli.use(createVersionPlugin());
-    cli.parse(['version']);
-    await sleep();
+    await cli.parse(['version']);
     expect(output.join('')).toBe('v1.0.0\n');
   });
 
@@ -78,15 +75,14 @@ describe('version plugin', () => {
       errorHandler: () => {},
     });
     cli.use(createVersionPlugin({ flag: false }));
-    cli.parse(['version']);
-    await sleep();
+    await cli.parse(['version']);
     expect(output.join('')).toBe('v1.0.0\n');
     output.length = 0;
-    cli.parse(['--version']);
+    await cli.parse(['--version']);
     expect(output.join('')).toBe('');
   });
 
-  it('should print v prefix if not present', () => {
+  it('should print v prefix if not present', async () => {
     const cli = createWizard({
       name: 'cli',
       description: () => 'cli',
@@ -94,11 +90,11 @@ describe('version plugin', () => {
       errorHandler: () => {},
     });
     cli.use(createVersionPlugin());
-    cli.parse(['--version']);
+    await cli.parse(['--version']);
     expect(output.join('')).toBe('v2.3.4\n');
   });
 
-  it('should not double v prefix', () => {
+  it('should not double v prefix', async () => {
     const cli = createWizard({
       name: 'cli',
       description: () => 'cli',
@@ -106,11 +102,11 @@ describe('version plugin', () => {
       errorHandler: () => {},
     });
     cli.use(createVersionPlugin());
-    cli.parse(['--version']);
+    await cli.parse(['--version']);
     expect(output.join('')).toBe('v3.0.0\n');
   });
 
-  it('should print nothing if version is empty', () => {
+  it('should print nothing if version is empty', async () => {
     const cli = createWizard({
       name: 'cli',
       description: () => 'cli',
@@ -118,11 +114,11 @@ describe('version plugin', () => {
       errorHandler: () => {},
     });
     cli.use(createVersionPlugin());
-    cli.parse(['--version']);
+    await cli.parse(['--version']);
     expect(output.join('')).toBe('\n');
   });
 
-  it('should support i18n (zh)', () => {
+  it('should support i18n (zh)', async () => {
     process.env.HPS_WIZARD_LOCALE = 'zh';
     const cli = createWizard({
       name: 'cli',
@@ -133,12 +129,12 @@ describe('version plugin', () => {
       },
     });
     cli.use(createVersionPlugin());
-    cli.parse(['--version']);
+    await cli.parse(['--version']);
     expect(output.join('')).toBe('v1.0.0\n');
     delete process.env.HPS_WIZARD_LOCALE;
   });
 
-  it('should not print version for unrelated flags', () => {
+  it('should not print version for unrelated flags', async () => {
     const cli = createWizard({
       name: 'cli',
       description: () => 'cli',
@@ -146,11 +142,11 @@ describe('version plugin', () => {
       errorHandler: () => {},
     });
     cli.use(createVersionPlugin());
-    cli.parse(['--help']);
+    await cli.parse(['--help']);
     expect(output.join('')).toBe('');
   });
 
-  it('should support hiddenPrefix', () => {
+  it('should support hiddenPrefix', async () => {
     const cli = createWizard({
       name: 'cli',
       description: () => 'cli',
@@ -158,7 +154,7 @@ describe('version plugin', () => {
       errorHandler: () => {},
     });
     cli.use(createVersionPlugin({ hiddenPrefix: true }));
-    cli.parse(['--version']);
+    await cli.parse(['--version']);
     expect(output.join('')).toBe('1.0.0\n');
   });
 });
