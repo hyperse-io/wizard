@@ -9,6 +9,7 @@ import { CommandProcessNotFoundError } from '../errors/CommandProcessNotFoundErr
 import { EventEmitter } from '../events/EventEmitter.js';
 import { createBuiltinFlags } from '../helpers/helper-create-builtin-flags.js';
 import { createBuiltinInterceptor } from '../helpers/helper-create-builtin-interceptor.js';
+import { createEnvInterceptor } from '../helpers/helper-create-env-interceptor.js';
 import { globalFlagsWithI18n } from '../helpers/helper-global-flags-i18n.js';
 import { mergeLocaleMessages } from '../helpers/helper-locale-message-merge.js';
 import { resolveCommand } from '../helpers/helper-resolve-command.js';
@@ -51,6 +52,7 @@ import type {
   FlagsWithBuiltin,
 } from '../types/type-flag.js';
 import type {
+  I18n,
   LocaleMessageResolverExtraOptions,
   LocaleMessagesObject,
   SupportedLocales,
@@ -113,6 +115,7 @@ export class Wizard<
       options.localeMessages
     );
     this.setupRootCommand();
+    this.interceptor(createEnvInterceptor());
     this.interceptor(createBuiltinInterceptor(this));
   }
 
@@ -639,7 +642,7 @@ export class Wizard<
    *
    * @returns The i18n instance.
    */
-  public get i18n() {
+  public get i18n(): I18n {
     const t = useLocale(this.#locale, this.#localeMessages, this.#logger);
     return {
       t,

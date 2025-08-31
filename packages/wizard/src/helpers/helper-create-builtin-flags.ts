@@ -44,5 +44,14 @@ export const createBuiltinFlags = (
       type: (level: LogLevel) => formatLogLevel(level, locale),
       description: 'core.flags.logLevel',
     },
+    env: {
+      type: String,
+      description: 'core.flags.env',
+      default: 'APP_ENV',
+    },
+    envPath: {
+      type: String,
+      description: 'core.flags.envPath',
+    },
   };
 };

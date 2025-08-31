@@ -29,7 +29,7 @@
 
 ## 📖 Documentation
 
-Please see [Wizard Documentation](https://wizard.hyperse.io)
+Please see [Wizard Documentation](https://hyperse-io.github.io/wizard/)
 
 ## 🚀 Core Package
 

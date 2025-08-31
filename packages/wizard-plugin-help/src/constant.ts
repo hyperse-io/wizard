@@ -6,4 +6,9 @@ export const INDENT = '    ';
 /**
  * Delimiter for help message.
  */
-export const DELIMITER = '-';
+export const DELIMITER = '';
+
+/**
+ * Line break for help message.
+ */
+export const LINE_BREAK = '\n\n';

@@ -19,7 +19,7 @@ export type Flags = Record<string, FlagOptions>;
 export type FlagsWithI18n = Record<string, FlagOptions<string>>;
 
 export type FlagsWithBuiltin = Flags &
-  Partial<Record<'noColor' | 'logLevel', FlagOptions>>;
+  Partial<Record<'noColor' | 'logLevel' | 'env' | 'envPath', FlagOptions>>;
 
 /**
  * @description

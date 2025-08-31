@@ -38,7 +38,7 @@ export const renderSubcommands = <Name extends CommandName>(
       }
       return [
         INDENT,
-        chalk.cyan(
+        chalk.blue(
           [...parentCommandNames, formatCommandName(subcommandName)].join(' ')
         ),
         chalk.yellow(DELIMITER),
@@ -49,9 +49,9 @@ export const renderSubcommands = <Name extends CommandName>(
 
   const subcommandsMessage: string[] = [];
   const subcommandsTitle = t('plugins.helpPlugin.message.subcommand');
-  subcommandsMessage.push(chalk.bold(subcommandsTitle));
+  subcommandsMessage.push(subcommandsTitle);
 
   subcommandsMessage.push(table(subcommandNameToDescription));
 
-  return subcommandsMessage.join('\n\n');
+  return subcommandsMessage.join('\n');
 };

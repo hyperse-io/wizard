@@ -14,9 +14,9 @@ export const renderHelp = <Name extends CommandName>(
 
   const helpMessage: string[] = [];
   const helpTitle = t('plugins.helpPlugin.message.help');
-  helpMessage.push(chalk.bold(helpTitle));
+  helpMessage.push(helpTitle);
 
   helpMessage.push(table([[INDENT, help]]));
 
-  return helpMessage.join('\n\n');
+  return helpMessage.join('\n');
 };

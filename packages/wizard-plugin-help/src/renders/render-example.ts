@@ -14,9 +14,9 @@ export const renderExample = <Name extends CommandName>(
 
   const exampleMessage: string[] = [];
   const exampleTitle = t('plugins.helpPlugin.message.examples');
-  exampleMessage.push(chalk.bold(exampleTitle));
+  exampleMessage.push(exampleTitle);
 
   exampleMessage.push(table([[INDENT, example]]));
 
-  return exampleMessage.join('\n\n');
+  return exampleMessage.join('\n');
 };

@@ -9,10 +9,10 @@ export const renderFlags = (t: I18n['t'], flags: FlagsWithI18n) => {
   }
   const flagsMessage: string[] = [];
   const flagTitle = t('plugins.helpPlugin.message.flags');
-  flagsMessage.push(chalk.bold(flagTitle));
+  flagsMessage.push(flagTitle);
 
   const tableMessage: string[][] = formatFlags(t, flags);
   flagsMessage.push(table(tableMessage));
 
-  return flagsMessage.join('\n\n');
+  return flagsMessage.join('\n');
 };

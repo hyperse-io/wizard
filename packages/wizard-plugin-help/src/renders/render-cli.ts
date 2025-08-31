@@ -17,15 +17,15 @@ export const renderCli = <Name extends CommandName>(
   const cliMessage: string[] = [];
   const list: string[][] = [];
   const name = t('plugins.helpPlugin.message.name');
-  list.push([chalk.bold(name), wizard.name]);
+  list.push([name, wizard.name]);
 
   const version = t('plugins.helpPlugin.message.version');
-  list.push([chalk.bold(version), chalk.yellow(wizard.version)]);
+  list.push([version, chalk.yellow(wizard.version)]);
 
   cliMessage.push(table(list));
 
   const description = t('plugins.helpPlugin.message.description');
-  cliMessage.push(chalk.bold(description));
+  cliMessage.push(description);
 
   if (lastCommand && lastCommand.name !== Root) {
     cliMessage.push(table([[INDENT, lastCommand.description]]));
@@ -33,5 +33,5 @@ export const renderCli = <Name extends CommandName>(
     cliMessage.push(table([[INDENT, wizard.description]]));
   }
 
-  return cliMessage.join('\n\n');
+  return cliMessage.join('\n');
 };

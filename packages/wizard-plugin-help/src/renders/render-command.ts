@@ -33,7 +33,7 @@ export const renderCommand = <Name extends CommandName>(
       }
       return [
         INDENT,
-        chalk.cyan([wizard.name, formatCommandName(subcommandName)].join(' ')),
+        chalk.blue([wizard.name, formatCommandName(subcommandName)].join(' ')),
         chalk.yellow(DELIMITER),
         subcommand.description,
       ];
@@ -42,9 +42,9 @@ export const renderCommand = <Name extends CommandName>(
 
   const subcommandsMessage: string[] = [];
   const subcommandsTitle = t('plugins.helpPlugin.message.commands');
-  subcommandsMessage.push(chalk.bold(subcommandsTitle));
+  subcommandsMessage.push(subcommandsTitle);
 
   subcommandsMessage.push(table(subcommandNameToDescription));
 
-  return subcommandsMessage.join('\n\n');
+  return subcommandsMessage.join('\n');
 };
