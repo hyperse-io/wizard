@@ -45,6 +45,7 @@
   },
   "dependencies": {
     "@hyperse/deep-merge": "^1.0.1",
+    "@hyperse/hyper-env": "^1.0.15",
     "@hyperse/logger": "^1.1.7",
     "@hyperse/logger-plugin-stdout": "^1.0.11",
     "@hyperse/pipeline": "^1.0.6",

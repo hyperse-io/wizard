@@ -19,9 +19,9 @@ export const createBuiltinInterceptor = <
 ): GlobalInterceptorHandler<GlobalFlags> => {
   return async (ctx, next) => {
     const inputFlags = ctx.flags;
-    const logLevel = inputFlags?.logLevel as unknown as LogLevel;
-    const noColor = inputFlags?.noColor as unknown as boolean;
-    if (typeof logLevel !== 'undefined' || typeof logLevel !== 'undefined') {
+    const logLevel = inputFlags?.logLevel as LogLevel;
+    const noColor = inputFlags?.noColor as boolean;
+    if (typeof logLevel !== 'undefined' || typeof noColor !== 'undefined') {
       wizard.setupLogger({
         logLevel: logLevel,
         noColor: noColor,

@@ -1,6 +1,5 @@
 import type { CommandName, CommandWithI18n, I18n } from '@hyperse/wizard';
 import { INDENT } from '../constant.js';
-import { chalk } from '../helpers/helper-chalk.js';
 import { table } from '../helpers/helper-text-table.js';
 
 export const renderHelp = <Name extends CommandName>(

@@ -14,8 +14,8 @@ export type CoreLocaleMessages = {
   flags: {
     noColor: string;
     logLevel: string;
-    env: string;
-    envPath: string;
+    hpsAppEnv: string;
+    hpsEnvPath: string;
   };
 };
 
@@ -41,8 +41,8 @@ export const coreMessages = defineLocaleMessages({
       flags: {
         noColor: 'Disable colored output in terminal',
         logLevel: 'Set log level. options: error, warn, info, debug, verbose',
-        env: 'Process env key, default: APP_ENV',
-        envPath: 'Process env file path',
+        hpsAppEnv: 'Process env key, default: APP_ENV',
+        hpsEnvPath: 'Process env file path',
       },
     },
   },
@@ -64,8 +64,8 @@ export const coreMessages = defineLocaleMessages({
       flags: {
         noColor: '禁用终端日志输出颜色',
         logLevel: '设置日志级别，可选值：error, warn, info, debug, verbose',
-        env: '进程环境变量，默认值：APP_ENV',
-        envPath: '进程环境变量文件路径',
+        hpsAppEnv: '进程环境变量，默认值：APP_ENV',
+        hpsEnvPath: '进程环境变量文件路径',
       },
     },
   },

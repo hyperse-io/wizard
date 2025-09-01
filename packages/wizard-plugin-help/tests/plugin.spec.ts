@@ -119,18 +119,18 @@ describe('createHelpPlugin - CLI help functionality', () => {
     expect(result).toContain('Usage:');
     expect(result).toContain('$ hps_cli');
     expect(result).toContain('Commands:');
-    expect(result).toContain('hps_cli help   -  Show help information');
-    expect(result).toContain('hps_cli build  -  A build command');
+    expect(result).toContain('hps_cli help     Show help information');
+    expect(result).toContain('hps_cli build    A build command');
     expect(result).toContain('Global Flags:');
 
     expect(result).toContain(
-      '-h, --help       [boolean]  -  Show help information                                      (Default: false)'
+      '-h, --help          [boolean]    Show help information                                      (Default: false)'
     );
     expect(result).toContain(
-      '--no-color   <boolean>  -  Disable colored output in terminal'
+      '--no-color      [boolean]    Disable colored output in terminal                         (Default: false)'
     );
     expect(result).toContain(
-      '--log-level  <value>    -  Set log level. options: error, warn, info, debug, verbose'
+      '--log-level     [value]      Set log level. options: error, warn, info, debug, verbose  (Default: Info)'
     );
     expect(result).toContain('🎉🎉🎉Wizard cli is published by hps🎉🎉🎉');
     expect(result).toContain('@2025 wizard-plugin-help');
@@ -149,18 +149,18 @@ describe('createHelpPlugin - CLI help functionality', () => {
     expect(result).toContain('Usage:');
     expect(result).toContain('$ hps_cli');
     expect(result).toContain('Commands:');
-    expect(result).toContain('hps_cli help   -  Show help information');
-    expect(result).toContain('hps_cli build  -  A build command');
+    expect(result).toContain('hps_cli help     Show help information');
+    expect(result).toContain('hps_cli build    A build command');
     expect(result).toContain('Global Flags:');
 
     expect(result).toContain(
-      '-h, --help       [boolean]  -  Show help information                                      (Default: false)'
+      '-h, --help          [boolean]    Show help information                                      (Default: false)'
     );
     expect(result).toContain(
-      '--no-color   <boolean>  -  Disable colored output in terminal'
+      '--no-color      [boolean]    Disable colored output in terminal                         (Default: false)'
     );
     expect(result).toContain(
-      '--log-level  <value>    -  Set log level. options: error, warn, info, debug, verbose'
+      '--log-level     [value]      Set log level. options: error, warn, info, debug, verbose  (Default: Info)'
     );
     expect(result).toContain('🎉🎉🎉Wizard cli is published by hps🎉🎉🎉');
     expect(result).toContain('@2025 wizard-plugin-help');
@@ -181,13 +181,13 @@ describe('createHelpPlugin - CLI help functionality', () => {
     expect(result).toContain('Global Flags:');
 
     expect(result).toContain(
-      '-h, --help       [boolean]  -  Show help information                                      (Default: false)'
+      '-h, --help          [boolean]    Show help information                                      (Default: false)'
     );
     expect(result).toContain(
-      '--no-color   <boolean>  -  Disable colored output in terminal'
+      '--no-color      [boolean]    Disable colored output in terminal                         (Default: false)'
     );
     expect(result).toContain(
-      '--log-level  <value>    -  Set log level. options: error, warn, info, debug, verbose'
+      '--log-level     [value]      Set log level. options: error, warn, info, debug, verbose  (Default: Info)'
     );
     expect(result).toContain('🎉🎉🎉Wizard cli is published by hps🎉🎉🎉');
     expect(result).toContain('@2025 wizard-plugin-help');
@@ -208,23 +208,23 @@ describe('createHelpPlugin - CLI help functionality', () => {
     expect(result).toContain('Examples:');
     expect(result).toContain('A build command example');
     expect(result).toContain('Subcommand:');
-    expect(result).toContain('hps_cli build evolve  -  evolve description');
-    expect(result).toContain('hps_cli build deploy  -  deploy description');
+    expect(result).toContain('hps_cli build evolve    evolve description');
+    expect(result).toContain('hps_cli build deploy    deploy description');
     expect(result).toContain('Global Flags:');
 
     expect(result).toContain(
-      '-h, --help       [boolean]  -  Show help information                                      (Default: false)'
+      '-h, --help          [boolean]    Show help information                                      (Default: false)'
     );
     expect(result).toContain(
-      '--no-color   <boolean>  -  Disable colored output in terminal'
+      '--no-color      [boolean]    Disable colored output in terminal                         (Default: false)'
     );
     expect(result).toContain(
-      '--log-level  <value>    -  Set log level. options: error, warn, info, debug, verbose'
+      '--log-level     [value]      Set log level. options: error, warn, info, debug, verbose  (Default: Info)'
     );
 
     expect(result).toContain('Flags:');
     expect(result).toContain(
-      '-t, --build-type  [string]  -  build command type  (Default: build)'
+      '-t, --build-type  [string]    build command type  (Default: build)'
     );
 
     expect(result).toContain('🎉🎉🎉Wizard cli is published by hps🎉🎉🎉');
@@ -244,23 +244,23 @@ describe('createHelpPlugin - CLI help functionality', () => {
     expect(result).toContain('Examples:');
     expect(result).toContain('A build command example');
     expect(result).toContain('Subcommand:');
-    expect(result).toContain('hps_cli build evolve  -  evolve description');
-    expect(result).toContain('hps_cli build deploy  -  deploy description');
+    expect(result).toContain('hps_cli build evolve    evolve description');
+    expect(result).toContain('hps_cli build deploy    deploy description');
     expect(result).toContain('Global Flags:');
 
     expect(result).toContain(
-      '-h, --help       [boolean]  -  Show help information                                      (Default: false)'
+      '-h, --help          [boolean]    Show help information                                      (Default: false)'
     );
     expect(result).toContain(
-      '--no-color   <boolean>  -  Disable colored output in terminal'
+      '--no-color      [boolean]    Disable colored output in terminal                         (Default: false)'
     );
     expect(result).toContain(
-      '--log-level  <value>    -  Set log level. options: error, warn, info, debug, verbose'
+      '--log-level     [value]      Set log level. options: error, warn, info, debug, verbose  (Default: Info)'
     );
 
     expect(result).toContain('Flags:');
     expect(result).toContain(
-      '-t, --build-type  [string]  -  build command type  (Default: build)'
+      '-t, --build-type  [string]    build command type  (Default: build)'
     );
 
     expect(result).toContain('🎉🎉🎉Wizard cli is published by hps🎉🎉🎉');
@@ -283,22 +283,22 @@ describe('createHelpPlugin - CLI help functionality', () => {
     expect(result).toContain('Examples:');
     expect(result).toContain('A build command example');
     expect(result).toContain('Subcommand:');
-    expect(result).toContain('hps_cli build evolve  -  evolve description');
-    expect(result).toContain('hps_cli build deploy  -  deploy description');
+    expect(result).toContain('hps_cli build evolve    evolve description');
+    expect(result).toContain('hps_cli build deploy    deploy description');
     expect(result).toContain('Global Flags:');
 
     expect(result).toContain(
-      '-h, --help       [boolean]  -  Show help information                                      (Default: false)'
+      '-h, --help          [boolean]    Show help information                                      (Default: false)'
     );
     expect(result).toContain(
-      '--no-color   <boolean>  -  Disable colored output in terminal'
+      '--no-color      [boolean]    Disable colored output in terminal                         (Default: false)'
     );
     expect(result).toContain(
-      '--log-level  <value>    -  Set log level. options: error, warn, info, debug, verbose'
+      '--log-level     [value]      Set log level. options: error, warn, info, debug, verbose  (Default: Info)'
     );
     expect(result).toContain('Flags:');
     expect(result).toContain(
-      '-t, --build-type  [string]  -  build command type  (Default: build)'
+      '-t, --build-type  [string]    build command type  (Default: build)'
     );
 
     expect(result).toContain('🎉🎉🎉Wizard cli is published by hps🎉🎉🎉');
@@ -323,15 +323,20 @@ describe('createHelpPlugin - CLI help functionality', () => {
     expect(result).toContain('Global Flags:');
 
     expect(result).toContain(
-      '-h, --help       [boolean]  -  Show help information                                      (Default: false)'
+      '-h, --help          [boolean]    Show help information                                      (Default: false)'
     );
     expect(result).toContain(
-      '--no-color   <boolean>  -  Disable colored output in terminal'
+      '--no-color      [boolean]    Disable colored output in terminal                         (Default: false)'
     );
     expect(result).toContain(
-      '--log-level  <value>    -  Set log level. options: error, warn, info, debug, verbose'
+      '--log-level     [value]      Set log level. options: error, warn, info, debug, verbose  (Default: Info)'
     );
-
+    expect(result).toContain(
+      '--hps-app-env   [string]     Process env key, default: APP_ENV                          (Default: APP_ENV)'
+    );
+    expect(result).toContain(
+      '--hps-env-path  <string>     Process env file path'
+    );
     expect(result).toContain('🎉🎉🎉Wizard cli is published by hps🎉🎉🎉');
     expect(result).toContain('@2025 wizard-plugin-help');
   });

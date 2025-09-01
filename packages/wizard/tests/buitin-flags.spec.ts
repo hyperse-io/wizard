@@ -56,18 +56,18 @@ describe('builtin flags', () => {
         definePlugin({
           name: () => 'buildPlugin',
           setup: (wizard) => {
-            const cli = wizard.flag('help', {
-              type: Boolean,
-              alias: 'h',
-              description: () => 'help',
-              default: false,
-            });
-
-            cli.interceptor((ctx, next) => {
-              //flags typing level、noColor、help
-              helpInterceptorHandler(ctx);
-              next();
-            });
+            const cli = wizard
+              .flag('help', {
+                type: Boolean,
+                alias: 'h',
+                description: () => 'help',
+                default: false,
+              })
+              .interceptor((ctx, next) => {
+                //flags typing level、noColor、help
+                helpInterceptorHandler(ctx);
+                next();
+              });
             return cli;
           },
         })

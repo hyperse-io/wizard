@@ -66,7 +66,7 @@ class CommandBuilderImpl<
     this.command.setSubCommands(subCommands || []);
   }
 
-  use<SubCommandBuilders extends CommandBuilder<any, any, any, any>[]>(
+  use<SubCommandBuilders extends CommandBuilder<any, any, any, any, any>[]>(
     ...subCommands: SubCommandBuilders
   ): ReturnTypeForUseFunction<
     Name,

@@ -1,5 +1,5 @@
 import type { Logger } from '@hyperse/logger';
-import type { Flags, FlagsWithBuiltin } from './type-flag.js';
+import type { Flags, FlagsWithBuiltin, ParseFlags } from './type-flag.js';
 import type { I18n, SupportedLocales } from './type-locale-messages.js';
 import type { PipelineNextFunction } from './type-wizard-pipeline.js';
 
@@ -11,7 +11,7 @@ export type GlobalFlagHandlerContext<GlobalFlags extends Flags> = {
   /**
    * The parsed flags for the command.
    */
-  flags: GlobalFlags;
+  flags: ParseFlags<GlobalFlags>;
   /**
    * The unknown flags for the command.
    */

@@ -35,16 +35,19 @@ describe('createErrorPlugin', () => {
 
     const plugin = createErrorPlugin({ exitProcess: false });
 
-    cli.use(plugin).use(
-      definePlugin({
-        name: () => 'test plugin',
-        setup: (cli) => {
-          return cli.register('test ', {
-            description: () => 'test',
-          });
-        },
-      })
-    );
+    cli
+      .use(plugin)
+      .use(
+        definePlugin({
+          name: () => 'test plugin',
+          setup: (cli) => {
+            return cli.register('test ', {
+              description: () => 'test',
+            });
+          },
+        })
+      )
+      .on('', () => {});
 
     await cli.parse(['test']);
 
