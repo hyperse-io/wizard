@@ -33,7 +33,7 @@ export type GetCommandNameToContext<Builder> =
  * @example
  * { "foo": CommandContext, "bar": CommandContext }
  */
-export type CommandNameToContext = Record<string, CommandContext>;
+export type CommandNameToContext = Record<any, CommandContext>;
 
 /**
  * @description
