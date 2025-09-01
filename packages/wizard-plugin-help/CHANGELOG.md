@@ -1,5 +1,32 @@
 # @hyperse/wizard-plugin-help
 
+## 1.0.1
+
+### Patch Changes
+
+- [#6](https://github.com/hyperse-io/wizard/pull/6) [`b884d02`](https://github.com/hyperse-io/wizard/commit/b884d02cebe63a2dbeace4a44c25bc8bfcfb7c03) Thanks [@tclxshunquan-wang](https://github.com/tclxshunquan-wang)! - ### Core Framework Improvements 🔧
+  - feat: enhance command processing with improved error handling
+  - refactor: optimize type definitions for better developer experience
+  - perf: improve performance of command execution and validation
+
+  ### Plugin Enhancements 🔌
+  - feat: add new configuration options to all plugins for better customization
+  - refactor: improve plugin message formatting and internationalization
+  - fix: resolve plugin loading issues and enhance error reporting
+
+  ### Developer Experience 🛠️
+  - docs: update API documentation with better examples and usage patterns
+  - test: enhance test coverage for critical functionality
+  - chore: improve build process and development workflow
+
+  ### Bug Fixes 🐞
+  - fix: resolve type safety issues in command definitions
+  - fix: improve error handling in plugin system
+  - fix: address internationalization inconsistencies
+
+- Updated dependencies [[`b884d02`](https://github.com/hyperse-io/wizard/commit/b884d02cebe63a2dbeace4a44c25bc8bfcfb7c03)]:
+  - @hyperse/wizard@1.0.1
+
 ## 1.0.0
 
 ### Major Changes
