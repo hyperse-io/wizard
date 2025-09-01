@@ -1,6 +1,5 @@
 import { LogLevel } from '@hyperse/logger';
 import { CommandInvalidFlagsValues } from '../errors/CommandInvalidFlagsValues.js';
-import type { FlagsWithBuiltin } from '../types/type-flag.js';
 import type { SupportedLocales } from '../types/type-locale-messages.js';
 
 const formatLogLevel = (level: LogLevel, locale: SupportedLocales) => {
@@ -32,17 +31,26 @@ const formatLogLevel = (level: LogLevel, locale: SupportedLocales) => {
  * @param locale The locale.
  * @returns The builtin flags.
  */
-export const createBuiltinFlags = (
-  locale: SupportedLocales
-): FlagsWithBuiltin => {
+export const createBuiltinFlags = (locale: SupportedLocales) => {
   return {
     noColor: {
       type: Boolean,
       description: 'core.flags.noColor',
+      default: false,
     },
     logLevel: {
       type: (level: LogLevel) => formatLogLevel(level, locale),
       description: 'core.flags.logLevel',
+      default: formatLogLevel(LogLevel.Info, locale),
+    },
+    hpsAppEnv: {
+      type: String,
+      description: 'core.flags.hpsAppEnv',
+      default: 'APP_ENV',
+    },
+    hpsEnvPath: {
+      type: String,
+      description: 'core.flags.hpsEnvPath',
     },
   };
 };

@@ -1,24 +1,11 @@
 # @hyperse/wizard
 
-<p align="left">
-  <a aria-label="Build" href="https://github.com/hyperse-io/wizard/actions?query=workflow%3ACI">
-    <img alt="build" src="https://img.shields.io/github/actions/workflow/status/hyperse-io/wizard/ci-integrity.yml?branch=main&label=ci&logo=github&style=flat-quare&labelColor=000000" />
-  </a>
-  <a aria-label="stable version" href="https://www.npmjs.com/package/@hyperse/wizard">
-    <img alt="stable version" src="https://img.shields.io/npm/v/%40hyperse%2Fwizard?branch=main&label=version&logo=npm&style=flat-quare&labelColor=000000" />
-  </a>
-  <a aria-label="Top language" href="https://github.com/hyperse-io/wizard/search?l=typescript">
-    <img alt="GitHub top language" src="https://img.shields.io/github/languages/top/hyperse-io/wizard?style=flat-square&labelColor=000&color=blue">
-  </a>
-  <a aria-label="License" href="https://github.com/hyperse-io/wizard/blob/main/LICENSE.md">
-    <img alt="License" src="https://img.shields.io/npm/l/%40hyperse%2Flogger?style=flat-square&labelColor=000">
-  </a>
-  <a aria-label="Node.js version" href="https://nodejs.org/">
-    <img alt="Node.js version" src="https://img.shields.io/node/v/%40hyperse%2Fwizard?style=flat-square&labelColor=000">
-  </a>
-</p>
-
 A modern, type-safe CLI framework core library that provides powerful command-line tool building capabilities.
+
+[![Build](https://img.shields.io/github/actions/workflow/status/hyperse-io/wizard/ci-integrity.yml?branch=main&label=ci&logo=github&style=flat-square&labelColor=000000)](https://github.com/hyperse-io/wizard/actions?query=workflow%3ACI)
+[![Version](https://img.shields.io/npm/v/%40hyperse%2Fwizard?branch=main&label=version&logo=npm&style=flat-square&labelColor=000000)](https://www.npmjs.com/package/@hyperse/wizard)
+[![Top Language](https://img.shields.io/github/languages/top/hyperse-io/wizard?style=flat-square&labelColor=000&color=blue)](https://github.com/hyperse-io/wizard/search?l=typescript)
+[![License](https://img.shields.io/github/license/hyperse-io/wizard?style=flat-quare&labelColor=000000)](https://github.com/hyperse-io/wizard/blob/main/LICENSE.md)
 
 ## ✨ Features
 
@@ -31,15 +18,18 @@ A modern, type-safe CLI framework core library that provides powerful command-li
 - 🎨 **Theme Support** - Support for colored output and theme customization
 - ⚡ **High Performance** - Pipeline-based architecture for efficient command execution
 
-## 📦 Installation
+## Installation
 
-Install via npm:
+```bash
+# npm
+npm install --save-dev @hyperse/wizard
 
-    npm install @hyperse/wizard
+# yarn
+yarn add --dev @hyperse/wizard
 
-Or using yarn:
-
-    yarn add @hyperse/wizard
+# pnpm
+pnpm add --save-dev @hyperse/wizard
+```
 
 ## 📚 API Reference
 

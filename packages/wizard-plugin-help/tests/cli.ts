@@ -3,7 +3,7 @@ import { createWizard, defineCommand, definePlugin } from '@hyperse/wizard';
 import { createHelpPlugin } from '../src/create-help-plugin.js';
 import { buildPluginMessages, helpCliMessages } from './i18n/message.js';
 
-process.env.HPS_WIZARD_LOCALE = 'zh';
+process.env.HPS_WIZARD_LOCALE = 'en';
 
 declare module '@hyperse/wizard' {
   export interface CliLocaleMessages
@@ -103,5 +103,5 @@ const cli = createWizard({
     alias: 'V',
     description: 'plugins.versionPlugin.description',
   });
-cli.parse(['build', '-h', '--noColor=true']);
+cli.parse(['build', '-h', '--noColor=false']);
 // cli.parse(['-h']);

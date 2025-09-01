@@ -25,7 +25,7 @@ export const createVersionPlugin = (options: VersionPluginOptions = {}) => {
     setup: (wizard) => {
       const { flag = true, hiddenPrefix = false } = options;
       const gracefullyVersion = gracefulVersion(wizard.version, hiddenPrefix);
-      let cli = wizard.register(
+      const cli = wizard.register(
         defineCommand('version', {
           description: 'plugins.versionPlugin.command.description',
         }).process(() => {
@@ -35,7 +35,7 @@ export const createVersionPlugin = (options: VersionPluginOptions = {}) => {
       );
 
       if (flag) {
-        cli = cli
+        cli
           .flag('version', {
             type: Boolean,
             description: 'plugins.versionPlugin.flags.version',

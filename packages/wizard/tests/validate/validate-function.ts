@@ -8,7 +8,11 @@ import { parseFlags } from '../../src/helpers/helper-parse-flags.js';
 import { resolveCommand } from '../../src/helpers/helper-resolve-command.js';
 import { searchCommandChain } from '../../src/helpers/helper-search-command-chain.js';
 import { validateCommandChain } from '../../src/helpers/helper-validate-command.js';
-import { type CommandName, defineCommand } from '../../src/index.js';
+import {
+  type CommandName,
+  defineCommand,
+  type FlagsWithBuiltin,
+} from '../../src/index.js';
 import type { SupportedLocales } from '../../src/types/type-locale-messages.js';
 
 export function validateFn(argv: string[], locale: SupportedLocales = 'zh') {
@@ -75,7 +79,7 @@ export function validateFn(argv: string[], locale: SupportedLocales = 'zh') {
     locale,
     commandMap,
     simpleDeepClone({ argv }),
-    {}
+    {} as FlagsWithBuiltin
   );
 
   const parsed = parseFlags(

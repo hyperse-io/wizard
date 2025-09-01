@@ -1,20 +1,11 @@
 ![Wizard](./website/public/wizard-bg.png)
 
-<p align="center">A modern, type-safe CLI framework built with TypeScript that provides powerful command-line tool.</p>
-<p align="center">
-  <a aria-label="Build" href="https://github.com/hyperse-io/wizard/actions?query=workflow%3ACI">
-    <img alt="build" src="https://img.shields.io/github/actions/workflow/status/hyperse-io/wizard/ci-integrity.yml?branch=main&label=ci&logo=github&style=flat-quare&labelColor=000000" />
-  </a>
-  <a aria-label="stable version" href="https://www.npmjs.com/package/@hyperse/wizard">
-    <img alt="stable version" src="https://img.shields.io/npm/v/%40hyperse%2Fwizard?branch=main&label=version&logo=npm&style=flat-quare&labelColor=000000" />
-  </a>
-  <a aria-label="Top language" href="https://github.com/hyperse-io/wizard/search?l=typescript">
-    <img alt="GitHub top language" src="https://img.shields.io/github/languages/top/hyperse-io/wizard?style=flat-square&labelColor=000&color=blue">
-  </a>
-  <a aria-label="Licence" href="https://github.com/hyperse-io/wizard/blob/main/LICENSE.md">
-    <img alt="Licence" src="https://img.shields.io/github/license/hyperse-io/wizard?style=flat-quare&labelColor=000000" />
-  </a>
-</p>
+A modern, type-safe CLI framework built with TypeScript that provides powerful command-line tool.
+
+[![Build](https://img.shields.io/github/actions/workflow/status/hyperse-io/wizard/ci-integrity.yml?branch=main&label=ci&logo=github&style=flat-square&labelColor=000000)](https://github.com/hyperse-io/wizard/actions?query=workflow%3ACI)
+[![Version](https://img.shields.io/npm/v/%40hyperse%2Fwizard?branch=main&label=version&logo=npm&style=flat-square&labelColor=000000)](https://www.npmjs.com/package/@hyperse/wizard)
+[![Top Language](https://img.shields.io/github/languages/top/hyperse-io/wizard?style=flat-square&labelColor=000&color=blue)](https://github.com/hyperse-io/wizard/search?l=typescript)
+[![License](https://img.shields.io/github/license/hyperse-io/wizard?style=flat-quare&labelColor=000000)](https://github.com/hyperse-io/wizard/blob/main/LICENSE.md)
 
 ## ✨ Features
 
@@ -29,7 +20,7 @@
 
 ## 📖 Documentation
 
-Please see [Wizard Documentation](https://wizard.hyperse.io)
+Please see [Wizard Documentation](https://hyperse-io.github.io/wizard/)
 
 ## 🚀 Core Package
 

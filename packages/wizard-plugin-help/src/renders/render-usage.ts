@@ -17,7 +17,7 @@ export const renderUsage = <Name extends CommandName>(
 ) => {
   const usageMessage: string[] = [];
   const usage = t('plugins.helpPlugin.message.usage');
-  usageMessage.push(chalk.bold(usage));
+  usageMessage.push(usage);
 
   const cliName = wizard.name;
   const commandName =
@@ -25,8 +25,8 @@ export const renderUsage = <Name extends CommandName>(
   const showFlags = Object.keys(command.flags || {}).length > 0;
   const flagsString = showFlags ? ' [flags]' : '';
   usageMessage.push(
-    table([[INDENT, chalk.magenta(`$ ${cliName}${commandName}${flagsString}`)]])
+    table([[INDENT, chalk.blue(`$ ${cliName}${commandName}${flagsString}`)]])
   );
 
-  return usageMessage.join('\n\n');
+  return usageMessage.join('\n');
 };

@@ -103,13 +103,26 @@ const deployCmd = defineCommand<
       description: 'plugins.deploy.flags.ossType',
       default: 'aliyun',
     },
+    ignore: {
+      alias: 'i',
+      description: 'plugins.deploy.flags.ignore',
+      // Array type
+      // To accept multiple values of a flag, wrap the type with an array:
+      type: [String],
+      default: [],
+    },
+    manyNumbers: {
+      type: [Number],
+      // Use a function to return an object or array
+      default: () => [1, 2],
+    },
   })
   .process((ctx) => {
     //do something
   });
 
 // execute command
-// node ./dist/cli.js deploy --fileType=ts --ossType=tencent
+// node ./dist/cli.js deploy --fileType=ts --ossType=tencent --ignore=a --ignore=b --manyNumbers=1 --manyNumbers=2 --manyNumbers=3
 ```
 
 ## Advanced Usage

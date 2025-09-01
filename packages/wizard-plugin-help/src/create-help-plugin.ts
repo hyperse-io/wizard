@@ -4,6 +4,7 @@ import {
   definePlugin,
   localeMessageValue,
 } from '@hyperse/wizard';
+import { LINE_BREAK } from './constant.js';
 import { assertNoColor } from './helpers/helper-assert-nocolor.js';
 import { setupChalk } from './helpers/helper-chalk.js';
 import { mergeMessages } from './helpers/helper-merge-messages.js';
@@ -122,7 +123,7 @@ export const createHelpPlugin = (options: HelpPluginOptions = {}) => {
           if (showFooter) {
             message.push(localeMessageValue(t, 'plugins.helpPlugin.footer'));
           }
-          const helpMessage = message.filter(Boolean).join('\n\n');
+          const helpMessage = message.filter(Boolean).join(LINE_BREAK);
           printHelp(`\n${helpMessage}\n\n`);
         })
       );
@@ -161,7 +162,7 @@ export const createHelpPlugin = (options: HelpPluginOptions = {}) => {
                   localeMessageValue(t, 'plugins.helpPlugin.footer')
                 );
               }
-              const helpMessage = message.filter(Boolean).join('\n\n');
+              const helpMessage = message.filter(Boolean).join(LINE_BREAK);
               printHelp(`\n${helpMessage}\n\n`);
             } else {
               await next();

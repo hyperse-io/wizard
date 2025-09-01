@@ -1,4 +1,4 @@
-import { type DeepPartial, simpleDeepClone } from '@hyperse/deep-merge';
+import { simpleDeepClone } from '@hyperse/deep-merge';
 import type { LogLevel } from '@hyperse/logger';
 import { createLogger, type Logger } from '@hyperse/logger';
 import { createStdoutPlugin } from '@hyperse/logger-plugin-stdout';
@@ -9,6 +9,7 @@ import { CommandProcessNotFoundError } from '../errors/CommandProcessNotFoundErr
 import { EventEmitter } from '../events/EventEmitter.js';
 import { createBuiltinFlags } from '../helpers/helper-create-builtin-flags.js';
 import { createBuiltinInterceptor } from '../helpers/helper-create-builtin-interceptor.js';
+import { createEnvInterceptor } from '../helpers/helper-create-env-interceptor.js';
 import { globalFlagsWithI18n } from '../helpers/helper-global-flags-i18n.js';
 import { mergeLocaleMessages } from '../helpers/helper-locale-message-merge.js';
 import { resolveCommand } from '../helpers/helper-resolve-command.js';
@@ -49,8 +50,10 @@ import type {
   FlagOptions,
   Flags,
   FlagsWithBuiltin,
+  ParseFlags,
 } from '../types/type-flag.js';
 import type {
+  I18n,
   LocaleMessageResolverExtraOptions,
   LocaleMessagesObject,
   SupportedLocales,
@@ -91,7 +94,7 @@ export class Wizard<
   #commandChain: Command<CommandName>[] = [];
   #commandMap: Map<CommandName, Command<CommandName>> = new Map();
   #interceptors: GlobalInterceptorHandler<GlobalFlags>[] = [];
-  #globalFlags: Flags;
+  #globalFlags: FlagsWithBuiltin;
 
   constructor(
     private options: Exclude<WizardOptions, 'logLevel' | 'noColor'> &
@@ -99,7 +102,7 @@ export class Wizard<
   ) {
     super();
     this.#locale = options.locale ?? resolveLocale();
-    this.#globalFlags = createBuiltinFlags(this.#locale) as Flags;
+    this.#globalFlags = createBuiltinFlags(this.#locale) as FlagsWithBuiltin;
     this.setupLogger({
       noColor: options.noColor,
       logLevel: options.logLevel,
@@ -113,6 +116,7 @@ export class Wizard<
       options.localeMessages
     );
     this.setupRootCommand();
+    this.interceptor(createEnvInterceptor());
     this.interceptor(createBuiltinInterceptor(this));
   }
 
@@ -195,7 +199,10 @@ export class Wizard<
         await interceptor(
           {
             unknownFlags: deepCtx.unknownFlags,
-            flags: pickFlags(deepCtx.flags, this.#globalFlags) as GlobalFlags,
+            flags: pickFlags(
+              deepCtx.flags,
+              this.#globalFlags
+            ) as ParseFlags<GlobalFlags>,
             logger: this.#logger,
             locale: this.#locale,
             i18n: this.i18n,
@@ -285,7 +292,9 @@ export class Wizard<
       ...commandBasicInfo,
       ctx: ctx.ctx,
       unknownFlags: ctx.unknownFlags,
-      flags: pickFlags(ctx.flags, inputCommandFlags),
+      flags: pickFlags(ctx.flags, inputCommandFlags) as ParseFlags<
+        typeof ctx.flags & FlagsWithBuiltin
+      >,
     });
 
     const commandNameChain = searchCommandNameChain(commandPipeline);
@@ -500,15 +509,19 @@ export class Wizard<
    * @param plugin The plugin.
    * @returns The wizard instance.
    */
-  public use<PluginCommandMapping extends CommandNameToContext>(
+  public use<
+    PluginCommandMapping extends CommandNameToContext,
+    PluginGlobalFlags extends Flags = GlobalFlags,
+  >(
     plugin: Plugin<
       NameToContext,
       MergeCommandNameToContext<NameToContext, PluginCommandMapping>,
-      GlobalFlags
+      GlobalFlags,
+      PluginGlobalFlags
     >
   ): Wizard<
     MergeCommandNameToContext<NameToContext, PluginCommandMapping>,
-    GlobalFlags
+    PluginGlobalFlags
   > {
     this.#localeMessages = mergeLocaleMessages(
       'plugins',
@@ -525,7 +538,7 @@ export class Wizard<
       logger: this.#logger,
     }) as unknown as Wizard<
       MergeCommandNameToContext<NameToContext, PluginCommandMapping>,
-      GlobalFlags
+      PluginGlobalFlags
     >;
   }
 
@@ -555,13 +568,13 @@ export class Wizard<
   >(
     name: Name,
     options: NewFlagOptions
-  ): Wizard<NameToContext, DeepPartial<NewGlobalFlags> & GlobalFlags> {
+  ): Wizard<NameToContext, NewGlobalFlags & GlobalFlags> {
     this.#globalFlags[name] = {
       ...options,
     };
     return this as unknown as Wizard<
       NameToContext,
-      DeepPartial<NewGlobalFlags> & GlobalFlags
+      NewGlobalFlags & GlobalFlags
     >;
   }
 
@@ -639,7 +652,7 @@ export class Wizard<
    *
    * @returns The i18n instance.
    */
-  public get i18n() {
+  public get i18n(): I18n {
     const t = useLocale(this.#locale, this.#localeMessages, this.#logger);
     return {
       t,

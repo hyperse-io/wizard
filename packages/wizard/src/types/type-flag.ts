@@ -1,3 +1,5 @@
+import type { typeFlag } from 'type-flag';
+import type { createBuiltinFlags } from '../helpers/helper-create-builtin-flags.js';
 import type { LocaleMessageResolver } from './type-locale-messages.js';
 
 export type TypeFunction<ReturnType = any> = (value: any) => ReturnType;
@@ -18,8 +20,7 @@ export type Flags = Record<string, FlagOptions>;
 
 export type FlagsWithI18n = Record<string, FlagOptions<string>>;
 
-export type FlagsWithBuiltin = Flags &
-  Partial<Record<'noColor' | 'logLevel', FlagOptions>>;
+export type FlagsWithBuiltin = Flags & ReturnType<typeof createBuiltinFlags>;
 
 /**
  * @description
@@ -156,3 +157,12 @@ export type InferFlagType<Flag extends FlagTypeOrSchema> = Flag extends
 export type FlagTypeOrSchema<ExtraOptions = Record<string, unknown>> =
   | FlagType
   | (FlagSchema & ExtraOptions);
+
+/**
+ * @description
+ * Parses the flags from the given arguments.
+ */
+
+export type ParseFlags<DefinedFlags extends Flags = Flags> = ReturnType<
+  typeof typeFlag<DefinedFlags>
+>['flags'];

@@ -1,5 +1,3 @@
-import type { FlagOptions } from '@hyperse/wizard';
-
 /**
  * @description
  * Assert no color.
@@ -10,7 +8,7 @@ import type { FlagOptions } from '@hyperse/wizard';
  */
 export const assertNoColor = (
   noColor: boolean,
-  newNoColor?: FlagOptions
+  newNoColor?: boolean
 ): boolean => {
   if (newNoColor === undefined) {
     return noColor;

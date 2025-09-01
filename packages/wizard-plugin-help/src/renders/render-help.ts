@@ -1,6 +1,5 @@
 import type { CommandName, CommandWithI18n, I18n } from '@hyperse/wizard';
 import { INDENT } from '../constant.js';
-import { chalk } from '../helpers/helper-chalk.js';
 import { table } from '../helpers/helper-text-table.js';
 
 export const renderHelp = <Name extends CommandName>(
@@ -14,9 +13,9 @@ export const renderHelp = <Name extends CommandName>(
 
   const helpMessage: string[] = [];
   const helpTitle = t('plugins.helpPlugin.message.help');
-  helpMessage.push(chalk.bold(helpTitle));
+  helpMessage.push(helpTitle);
 
   helpMessage.push(table([[INDENT, help]]));
 
-  return helpMessage.join('\n\n');
+  return helpMessage.join('\n');
 };

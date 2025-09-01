@@ -1,5 +1,10 @@
 import type { Logger } from '@hyperse/logger';
-import type { Flags, FlagsWithBuiltin, FlagsWithI18n } from './type-flag.js';
+import type {
+  Flags,
+  FlagsWithBuiltin,
+  FlagsWithI18n,
+  ParseFlags,
+} from './type-flag.js';
 import type {
   I18n,
   LocaleMessageResolver,
@@ -82,7 +87,7 @@ export interface ProcessContext<
   /**
    * The parsed flags for the command.
    */
-  flags: CommandFlags & FlagsWithBuiltin;
+  flags: ParseFlags<CommandFlags & FlagsWithBuiltin>;
   /**
    * The unknown flags for the command.
    */
