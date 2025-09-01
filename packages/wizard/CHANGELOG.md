@@ -1,5 +1,11 @@
 # @hyperse/wizard
 
+## 1.0.2
+
+### Patch Changes
+
+- [#9](https://github.com/hyperse-io/wizard/pull/9) [`2cab765`](https://github.com/hyperse-io/wizard/commit/2cab765cb78f5fbbd6bb1d3f04ea4063aebc3da8) Thanks [@tclxshunquan-wang](https://github.com/tclxshunquan-wang)! - fix: 🐛 Broaden CommandNameToContext to accept any property keys (string | number | symbol); type-only, no runtime changes
+
 ## 1.0.1
 
 ### Patch Changes
