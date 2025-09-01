@@ -2,4 +2,4 @@
 "@hyperse/wizard": patch
 ---
 
-fix: 🐛 update CommandNameToContext type to allow any string keys
+fix: 🐛 Broaden CommandNameToContext to accept any property keys (string | number | symbol); type-only, no runtime changes
