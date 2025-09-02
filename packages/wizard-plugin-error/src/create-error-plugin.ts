@@ -30,21 +30,19 @@ export const createErrorPlugin = (options?: ErrorPluginOptions) => {
           const finalCommandKeys = commandKeys.filter((key) => key !== Root);
           const hasCommands = finalCommandKeys.length > 0;
 
-          const closestCommandName = didyoumean(
-            err?.variables?.cmdName as string,
-            finalCommandKeys
-          );
-          if (
-            err instanceof CommandNotFoundError &&
-            hasCommands &&
-            closestCommandName
-          ) {
-            await pluginCtx.logger.error(
-              t('plugins.errorPlugin.messages.commandNotFound', {
-                cmdName: err.variables.cmdName,
-                closestCommandName,
-              })
+          if (err instanceof CommandNotFoundError && hasCommands) {
+            const closestCommandName = didyoumean(
+              err?.variables?.cmdName as string,
+              finalCommandKeys
             );
+            if (closestCommandName) {
+              await pluginCtx.logger.error(
+                t('plugins.errorPlugin.messages.commandNotFound', {
+                  cmdName: err.variables.cmdName,
+                  closestCommandName,
+                })
+              );
+            }
           } else {
             await pluginCtx.logger.error(err);
           }

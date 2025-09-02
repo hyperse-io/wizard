@@ -25,3 +25,9 @@ export const DefaultLogLevel = LogLevel.Info;
  * @default false
  */
 export const DefaultNoColor = false;
+
+/**
+ * The regex to check if the message is a wizard plain message.
+ */
+// eslint-disable-next-line no-useless-escape
+export const PlainMessageRegex = /[!\/\<\|\{]/;

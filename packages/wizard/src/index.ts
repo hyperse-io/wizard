@@ -8,4 +8,5 @@ export * from './errors/index.js';
 export * from './helpers/index.js';
 export * from './i18n/index.js';
 export * from './types/index.js';
-export type { Logger, LogLevel } from '@hyperse/logger';
+export type { Logger } from '@hyperse/logger';
+export { LogLevel } from '@hyperse/logger';
