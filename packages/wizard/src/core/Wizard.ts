@@ -9,10 +9,10 @@ import { CommandProcessNotFoundError } from '../errors/CommandProcessNotFoundErr
 import { EventEmitter } from '../events/EventEmitter.js';
 import { createBuiltinFlags } from '../helpers/helper-create-builtin-flags.js';
 import { createBuiltinInterceptor } from '../helpers/helper-create-builtin-interceptor.js';
-import { createEnvInterceptor } from '../helpers/helper-create-env-interceptor.js';
 import { globalFlagsWithI18n } from '../helpers/helper-global-flags-i18n.js';
 import { mergeLocaleMessages } from '../helpers/helper-locale-message-merge.js';
 import { resolveCommand } from '../helpers/helper-resolve-command.js';
+import { setupProcessEnv } from '../helpers/helper-setup-process-env.js';
 import {
   commandChainWithI18n,
   commandMapWithI18n,
@@ -95,6 +95,7 @@ export class Wizard<
   #commandMap: Map<CommandName, Command<CommandName>> = new Map();
   #interceptors: GlobalInterceptorHandler<GlobalFlags>[] = [];
   #globalFlags: FlagsWithBuiltin;
+  #pendingPlugins: Plugin<any, any, any, any>[] = [];
 
   constructor(
     private options: Exclude<WizardOptions, 'logLevel' | 'noColor'> &
@@ -116,7 +117,6 @@ export class Wizard<
       options.localeMessages
     );
     this.setupRootCommand();
-    this.interceptor(createEnvInterceptor());
     this.interceptor(createBuiltinInterceptor(this));
   }
 
@@ -165,6 +165,34 @@ export class Wizard<
     this.#cliPipeline = new Pipeline();
     this.#commandChain = [];
     this.#commandMap.clear();
+  }
+
+  /**
+   * @description
+   * Initialize any plugins enqueued via use() but not yet set up.
+   * Runs once per parse() call before building pipelines.
+   */
+  private initializePendingPlugins() {
+    if (!this.#pendingPlugins || this.#pendingPlugins.length === 0) {
+      return;
+    }
+    const plugins = simpleDeepClone(this.#pendingPlugins);
+    for (const plugin of plugins) {
+      this.#localeMessages = mergeLocaleMessages(
+        'plugins',
+        this.#localeMessages,
+        plugin.localeMessages
+      );
+      const resolvedName = plugin.name
+        ? localeMessageValue(this.i18n.t, plugin.name)
+        : undefined;
+      plugin.setup(this, {
+        name: resolvedName,
+        logLevel: this.options.logLevel,
+        noColor: this.options.noColor,
+        logger: this.#logger,
+      });
+    }
   }
 
   /**
@@ -421,6 +449,8 @@ export class Wizard<
    */
   public async parse(optionsOrArgv: string[] | ParseOptions = resolveArgv()) {
     const argvOptions = resolveOptionsOrArgv(optionsOrArgv);
+    setupProcessEnv(argvOptions, this.#locale);
+    this.initializePendingPlugins();
     this.resetPipeline();
     this.setupInterceptorPipeline();
     const pipelineContext = await this.preparePipelineContext(argvOptions);
@@ -523,20 +553,8 @@ export class Wizard<
     MergeCommandNameToContext<NameToContext, PluginCommandMapping>,
     PluginGlobalFlags
   > {
-    this.#localeMessages = mergeLocaleMessages(
-      'plugins',
-      this.#localeMessages,
-      plugin.localeMessages
-    );
-
-    return plugin.setup(this, {
-      name: plugin.name
-        ? localeMessageValue(this.i18n.t, plugin.name)
-        : undefined,
-      logLevel: this.options.logLevel,
-      noColor: this.options.noColor,
-      logger: this.#logger,
-    }) as unknown as Wizard<
+    this.#pendingPlugins.push(plugin as unknown as Plugin<any, any, any, any>);
+    return this as unknown as Wizard<
       MergeCommandNameToContext<NameToContext, PluginCommandMapping>,
       PluginGlobalFlags
     >;
