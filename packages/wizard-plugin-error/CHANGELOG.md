@@ -1,5 +1,19 @@
 # @hyperse/wizard-plugin-error
 
+## 1.0.3
+
+### Patch Changes
+
+- [#11](https://github.com/hyperse-io/wizard/pull/11) [`370634b`](https://github.com/hyperse-io/wizard/commit/370634b2c6a50cc75ba6636a3aa1af5871b9a12f) Thanks [@tclxshunquan-wang](https://github.com/tclxshunquan-wang)! - chore: 🔄 update wizard package dependencies and improve flag handling
+  - Bump @hyperse/translator version to ^1.3.0.
+  - Add PlainMessageRegex constant for message validation.
+  - Refactor log level handling in helper functions to use string keys.
+  - Enhance locale message formatting for log level options.
+  - Add tests for built-in flags functionality in the wizard package.
+
+- Updated dependencies [[`370634b`](https://github.com/hyperse-io/wizard/commit/370634b2c6a50cc75ba6636a3aa1af5871b9a12f)]:
+  - @hyperse/wizard@1.0.3
+
 ## 1.0.2
 
 ### Patch Changes
