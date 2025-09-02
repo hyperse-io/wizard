@@ -47,7 +47,9 @@ describe('createErrorPlugin', () => {
           },
         })
       )
-      .on('', () => {});
+      .on('test ', (data) => {
+        console.log(data);
+      });
 
     await cli.parse(['test']);
 

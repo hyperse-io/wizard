@@ -1,0 +1,75 @@
+---
+title: env
+description: Environment variables support
+icon: GlobeIcon
+---
+
+# Env
+
+### What it does
+
+Wizard integrates environment loading via `setupProcessEnv`, powered by `@hyperse/hyper-env`. On every `wizard.parse(...)` call, it resolves built-in flags and dynamically loads environment variables into `process.env` before any command pipeline runs.
+
+- **When it runs**: inside `Wizard.parse` right after argv resolution and before pipeline setup.
+- **Source**: `@hyperse/hyper-env/setup-env` with quiet dotenv behavior (no console noise on missing files).
+
+### Flags
+
+Two built-in flags control how env files are loaded:
+
+- **--hpsAppEnv key**: logical environment key (e.g., `dev`, `test`, `prod`, or any custom string). Hyper Env will use this key to select the corresponding `.env` variant (implementation depends on your project’s env file layout).
+- **--hpsEnvPath path**: explicit path to a `.env` file. When provided, this takes priority over the key and is used directly.
+
+If neither is provided, the loader falls back to Hyper Env’s defaults (typically `.env` from the current working directory).
+
+### Programmatic usage
+
+`setupProcessEnv` is called automatically by `Wizard.parse`, so you generally don’t need to import or call it yourself.
+
+```ts
+import { Wizard } from '@hyperse/wizard';
+
+const wizard = new Wizard({
+  name: 'my-cli',
+  description: 'Demo',
+  version: '1.0.0',
+  logLevel: 'info',
+  noColor: false,
+});
+
+// Automatically loads envs before running the pipeline
+// my-cli run --hpsAppEnv dev
+
+// Access anywhere after parse
+console.log(process.env.MY_ENV_VAR);
+```
+
+## Notes
+
+- `--hpsEnvPath` can point directly to a specific `.env` file if you prefer explicit control.
+- `--hpsAppEnv` is helpful when you follow a convention like `.env.dev`, `.env.test`, `.env.prod`.
+
+### CLI usage examples
+
+Load by environment key:
+
+```bash
+my-cli run --hpsAppEnv dev --run
+```
+
+Load from a specific file path:
+
+```bash
+my-cli run --hpsEnvPath ./config/.env.staging --run
+```
+
+After either command, your handlers can read `process.env` normally:
+
+```ts
+const token = process.env.API_TOKEN;
+```
+
+### Error handling and logging
+
+- Loading runs with `quiet: true`, so missing files won’t print warnings by default.
+- If your command logic requires specific variables, validate them in your handlers and surface actionable errors.

@@ -13,7 +13,11 @@ import type {
   CommandNameToContext,
   ReturnTypeForUseFunction,
 } from '../types/type-command-builder.js';
-import type { Flags } from '../types/type-flag.js';
+import type {
+  Flags,
+  FlagsWithBuiltin,
+  ParseFlags,
+} from '../types/type-flag.js';
 import { createCommand } from './Command.js';
 
 /**
@@ -27,20 +31,22 @@ import { createCommand } from './Command.js';
  * @template CommandFlags - The type of the command flags.
  */
 class CommandBuilderImpl<
-  Name extends CommandName = string,
-  Context extends CommandContext = CommandContext,
-  SubCommandContext extends object = object,
+  Name extends CommandName,
+  Context extends CommandContext,
+  SubCommandContext extends object,
+  CommandFlags extends Flags,
   NameToContext extends CommandNameToContext = {
-    [K in Name]: Context;
+    [K in Name]: Context & {
+      flags: ParseFlags<CommandFlags & FlagsWithBuiltin>;
+    };
   },
-  CommandFlags extends Flags = Flags,
 > implements
     CommandBuilder<
       Name,
       Context,
       SubCommandContext,
-      NameToContext,
-      CommandFlags
+      CommandFlags,
+      NameToContext
     >
 {
   private name: Name;
@@ -100,8 +106,8 @@ class CommandBuilderImpl<
     Name,
     Context,
     SubCommandContext,
-    NameToContext,
-    CommandFlags
+    CommandFlags,
+    NameToContext
   > {
     this.command.setResolveSubContext(fn);
     return this;
@@ -113,8 +119,8 @@ class CommandBuilderImpl<
     Name,
     Context,
     SubCommandContext,
-    NameToContext,
-    CommandFlags
+    CommandFlags,
+    NameToContext
   > {
     this.command.setProcess(fn);
     return this;
@@ -126,16 +132,16 @@ class CommandBuilderImpl<
     Name,
     Context,
     SubCommandContext,
-    NameToContext,
-    SetupFlags
+    SetupFlags,
+    NameToContext
   > {
     this.command.setFlags(flags as unknown as CommandFlags);
     return this as unknown as CommandBuilder<
       Name,
       Context,
       SubCommandContext,
-      NameToContext,
-      SetupFlags
+      SetupFlags,
+      NameToContext
     >;
   }
 
@@ -165,10 +171,12 @@ export const createCommandBuilder = <
   Name extends CommandName = string,
   Context extends CommandContext = CommandContext,
   SubCommandContext extends object = object,
-  NameToContext extends CommandNameToContext = {
-    [K in Name]: Context;
-  },
   CommandFlags extends Flags = Flags,
+  NameToContext extends CommandNameToContext = {
+    [K in Name]: Context & {
+      flags: ParseFlags<CommandFlags & FlagsWithBuiltin>;
+    };
+  },
 >(
   name: Name,
   options: CommandBuilderOptions
@@ -177,7 +185,7 @@ export const createCommandBuilder = <
     Name,
     Context,
     SubCommandContext,
-    NameToContext,
-    CommandFlags
+    CommandFlags,
+    NameToContext
   >(name, options);
 };

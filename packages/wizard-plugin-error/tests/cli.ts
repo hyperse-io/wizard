@@ -22,18 +22,23 @@ const cli = createWizard({
   localeMessages: errorCliMessages,
 });
 
-cli.use(plugin).use(
-  definePlugin({
-    name: () => 'test plugin',
-    setup: (cli) => {
-      return cli.register('test', {
-        description: () => 'test',
-        process: () => {
-          console.log('execute test');
-        },
-      });
-    },
-  })
-);
+cli
+  .use(plugin)
+  .use(
+    definePlugin({
+      name: () => 'test plugin',
+      setup: (cli) => {
+        return cli.register('test', {
+          description: () => 'test',
+          process: () => {
+            console.log('execute test');
+          },
+        });
+      },
+    })
+  )
+  .on('test', () => {
+    console.log('test');
+  });
 
 cli.parse(['testa']);
