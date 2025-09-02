@@ -8,7 +8,8 @@ import type {
   ProcessContext,
   ResolveSubContextCtx,
 } from './type-command.js';
-import type { Flags } from './type-flag.js';
+import type { Flags, ParseFlags } from './type-flag.js';
+import type { FlagsWithBuiltin } from './type-flag.js';
 
 /**
  * @description
@@ -23,7 +24,7 @@ export type CommandBuilderOptions = CommandOptions;
  * @returns {NameToContext} The mapping from command names to their contexts.
  */
 export type GetCommandNameToContext<Builder> =
-  Builder extends CommandBuilder<any, any, any, infer NameToContext, any>
+  Builder extends CommandBuilder<any, any, any, any, infer NameToContext>
     ? NameToContext
     : never;
 
@@ -33,7 +34,7 @@ export type GetCommandNameToContext<Builder> =
  * @example
  * { "foo": CommandContext, "bar": CommandContext }
  */
-export type CommandNameToContext = Record<any, CommandContext>;
+export type CommandNameToContext = object;
 
 /**
  * @description
@@ -42,13 +43,20 @@ export type CommandNameToContext = Record<any, CommandContext>;
  * @template Target - The second CommandNameToContext map.
  * @returns {CommandNameToContext} The merged CommandNameToContext map.
  */
-export type MergeCommandNameToContext<Original, Target> = {
-  [Key in keyof Original | keyof Target]: Key extends keyof Original
-    ? Original[Key]
-    : Key extends keyof Target
-      ? Target[Key]
-      : never;
+type LiteralKey<K> = string extends K
+  ? never
+  : number extends K
+    ? never
+    : symbol extends K
+      ? never
+      : K;
+
+type PickLiteralKeys<T> = {
+  [K in keyof T as LiteralKey<K>]: T[K];
 };
+
+export type MergeCommandNameToContext<Original, Target> =
+  PickLiteralKeys<Original> & PickLiteralKeys<Target>;
 
 /**
  * @description
@@ -123,20 +131,54 @@ export type ReturnTypeForUseFunction<
   Name,
   Context,
   SubCommandContext & MergeSelfContexts<Plugins>,
+  CommandFlags,
   NameToContext &
     MergeCommandMap<{
       [K in keyof Plugins]: Plugins[K] extends CommandBuilder<
         any,
         any,
         any,
-        infer InnerNameToContext,
-        any
+        any,
+        infer InnerNameToContext
       >
         ? PrefixPluginMap<InnerNameToContext, Name>
         : {};
-    }>,
-  CommandFlags
+    }>
 >;
+
+/**
+ * @description
+ * Helper type to compute the current command's entry in NameToContext map
+ * with the accurate parsed flags (including built-in flags).
+ */
+// Intentionally unused helper kept for future composition; prefix with _ to appease linter.
+type _SelfNameToContextEntry<
+  Name extends CommandName,
+  Context extends CommandContext,
+  CommandFlags extends Flags,
+> = {
+  [K in Name]: Context & {
+    flags: ParseFlags<CommandFlags & FlagsWithBuiltin>;
+  };
+};
+
+/**
+ * @description
+ * Replace current command's mapping in NameToContext with recomputed flags type
+ * while preserving other entries.
+ */
+export type RecomputeSelfInMap<
+  NameToContext extends CommandNameToContext,
+  Name extends CommandName,
+  Context extends CommandContext,
+  CommandFlags extends Flags,
+> = {
+  [K in keyof NameToContext as K extends Name ? never : K]: NameToContext[K];
+} & {
+  [K in Name]: Context & {
+    flags: ParseFlags<CommandFlags & FlagsWithBuiltin>;
+  };
+};
 
 /**
  * @description
@@ -152,10 +194,12 @@ export interface CommandBuilder<
   Name extends CommandName = string,
   Context extends CommandContext = CommandContext,
   SubCommandContext extends object = object,
-  NameToContext extends CommandNameToContext = {
-    [K in Name]: Context;
-  },
   CommandFlags extends Flags = Flags,
+  NameToContext extends CommandNameToContext = {
+    [K in Name]: Context & {
+      flags: ParseFlags<CommandFlags & FlagsWithBuiltin>;
+    };
+  },
 > {
   /**
    * @description
@@ -186,7 +230,13 @@ export interface CommandBuilder<
    */
   flags<T extends Flags>(
     flags: T
-  ): CommandBuilder<Name, Context, SubCommandContext, NameToContext, T>;
+  ): CommandBuilder<
+    Name,
+    Context,
+    SubCommandContext,
+    T,
+    RecomputeSelfInMap<NameToContext, Name, Context, T>
+  >;
 
   /**
    * @description
@@ -205,8 +255,8 @@ export interface CommandBuilder<
     Name,
     Context,
     SubCommandContext,
-    NameToContext,
-    CommandFlags
+    CommandFlags,
+    NameToContext
   >;
 
   /**
@@ -223,8 +273,8 @@ export interface CommandBuilder<
     Name,
     Context,
     SubCommandContext,
-    NameToContext,
-    CommandFlags
+    CommandFlags,
+    NameToContext
   >;
 
   /**

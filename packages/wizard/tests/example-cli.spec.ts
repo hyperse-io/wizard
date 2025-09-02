@@ -10,6 +10,7 @@ describe('cli', () => {
   const buildEvolveMiniEvent = vi.fn();
   const buildEvent = vi.fn();
   const buildEvolveEvent = vi.fn();
+  const deployEvent = vi.fn();
   const errorEvent = vi.fn((e) => {
     console.log(e);
   });
@@ -227,6 +228,22 @@ describe('cli', () => {
     const description = miniHandler.mock.lastCall?.[0]?.description;
     expect(description).toBeDefined();
     expect(description).toBe('mini description');
+
+    const buildEvolveMiniEventResult = buildEvolveMiniEvent.mock.lastCall?.[0];
+    expect(buildEvolveMiniEventResult).toBeDefined();
+    expect(buildEvolveMiniEventResult['name']).toBe('mini');
+    expect(buildEvolveMiniEventResult['description']).toBe('mini description');
+    expect(buildEvolveMiniEventResult['flags']).toMatchObject({
+      noColor: false,
+      logLevel: undefined,
+      hpsAppEnv: 'APP_ENV',
+      hpsEnvPath: undefined,
+      version: '1.0.0',
+    });
+    expect(buildEvolveMiniEventResult['unknownFlags']).toMatchObject({});
+    expect(buildEvolveMiniEventResult['ctx']).toMatchObject({
+      miniConfig: { miniKey: 'mini' },
+    });
   });
 
   it('test command deploy', async () => {
@@ -251,6 +268,7 @@ describe('cli', () => {
       .on('build', buildEvent)
       .on('build.evolve', buildEvolveEvent)
       .on('build.evolve.mini', buildEvolveMiniEvent)
+      .on('deploy', deployEvent)
       .on('error', errorEvent);
 
     // cmd: build evolve mini
@@ -274,6 +292,23 @@ describe('cli', () => {
     const description = deployHandler.mock.lastCall?.[0]?.description;
     expect(description).toBeDefined();
     expect(description).toBe('deploy description');
+
+    const deployEventResult = deployEvent.mock.lastCall?.[0];
+    expect(deployEventResult).toBeDefined();
+    expect(deployEventResult['name']).toBe('deploy');
+    expect(deployEventResult['description']).toBe('deploy description');
+    expect(deployEventResult['flags']).toMatchObject({
+      noColor: false,
+      logLevel: undefined,
+      hpsAppEnv: 'APP_ENV',
+      hpsEnvPath: undefined,
+      fileType: 'js',
+      ossType: 'azure',
+    });
+    expect(deployEventResult['unknownFlags']).toMatchObject({
+      h: [true],
+      compiler: ['vite'],
+    });
   });
 
   it('test command customPlugin', async () => {

@@ -173,9 +173,7 @@ export class Wizard<
    * Runs once per parse() call before building pipelines.
    */
   private initializePendingPlugins() {
-    if (!this.#pendingPlugins || this.#pendingPlugins.length === 0) {
-      return;
-    }
+    if (!this.#pendingPlugins?.length) return;
     const plugins = simpleDeepClone(this.#pendingPlugins);
     for (const plugin of plugins) {
       this.#localeMessages = mergeLocaleMessages(
@@ -316,19 +314,25 @@ export class Wizard<
       });
     }
 
-    await process({
+    const flags = pickFlags(ctx.flags, inputCommandFlags) as ParseFlags<
+      typeof ctx.flags & FlagsWithBuiltin
+    >;
+    const processOptions = {
       ...commandBasicInfo,
       ctx: ctx.ctx,
       unknownFlags: ctx.unknownFlags,
-      flags: pickFlags(ctx.flags, inputCommandFlags) as ParseFlags<
-        typeof ctx.flags & FlagsWithBuiltin
-      >,
-    });
+      flags: flags,
+    };
+
+    await process(processOptions);
 
     const commandNameChain = searchCommandNameChain(commandPipeline);
+    const eventName = commandNameChain.join(
+      '.'
+    ) as keyof WizardEventContext<NameToContext>;
     this.emit(
-      commandNameChain.join('.'),
-      commandBasicInfo as unknown as WizardEventContext<NameToContext>[keyof WizardEventContext<NameToContext>]
+      eventName,
+      processOptions as unknown as WizardEventContext<NameToContext>[typeof eventName]
     );
     await next();
   }
@@ -605,7 +609,7 @@ export class Wizard<
    */
   public errorHandler(handler: (err: any) => void | Promise<void>) {
     this.#errorHandlers.push(handler);
-    return this;
+    return this as unknown as Wizard<NameToContext, GlobalFlags>;
   }
 
   /**

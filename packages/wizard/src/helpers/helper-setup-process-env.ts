@@ -26,5 +26,8 @@ export const setupProcessEnv = (
   setupEnv({
     envKey: hpsAppEnv,
     envFilePath: hpsEnvPath || '',
+    dotenvOptions: {
+      quiet: true,
+    },
   });
 };

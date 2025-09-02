@@ -22,7 +22,7 @@ export const createErrorPlugin = (options?: ErrorPluginOptions) => {
     name: 'plugins.errorPlugin.name',
     localeMessages: errorMessages,
     setup: (wizard, pluginCtx) => {
-      return wizard.errorHandler(async (err: any) => {
+      const cli = wizard.errorHandler(async (err: any) => {
         try {
           const { t } = wizard.i18n;
           const commandMap = wizard.commandMap;
@@ -57,6 +57,7 @@ export const createErrorPlugin = (options?: ErrorPluginOptions) => {
           }
         }
       });
+      return cli;
     },
   });
 };

@@ -16,15 +16,22 @@ import type {
  */
 export type RootType = typeof Root;
 
-/**
- * @description
- * The event context for the wizard.
- *
- * @template NameToContext - The type of the command name to context.
- * @returns {WizardEventContext} The event context.
- */
 export type WizardEventContext<NameToContext extends CommandNameToContext> = {
-  [K in keyof NameToContext]: { ctx: NameToContext[K] } & {
+  [K in keyof NameToContext]: {
+    /**
+     * The context of the command.
+     */
+    ctx: Omit<NameToContext[K], 'flags'>;
+    /**
+     * The parsed flags for the command.
+     */
+    flags: NameToContext[K] extends { flags: infer F } ? F : never;
+    /**
+     * The unknown flags for the command.
+     */
+    unknownFlags?: {
+      [flagName: string]: (string | boolean)[];
+    };
     /**
      * Logger instance for outputting logs within the handler.
      */
