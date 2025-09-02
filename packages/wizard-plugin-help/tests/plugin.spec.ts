@@ -130,7 +130,7 @@ describe('createHelpPlugin - CLI help functionality', () => {
       '--no-color      [boolean]    Disable colored output in terminal                         (Default: false)'
     );
     expect(result).toContain(
-      '--log-level     [value]      Set log level. options: error, warn, info, debug, verbose  (Default: Info)'
+      '--log-level     <value>      Set log level. options: Error, Warn, Info, Debug, Verbose'
     );
     expect(result).toContain('🎉🎉🎉Wizard cli is published by hps🎉🎉🎉');
     expect(result).toContain('@2025 wizard-plugin-help');
@@ -160,7 +160,7 @@ describe('createHelpPlugin - CLI help functionality', () => {
       '--no-color      [boolean]    Disable colored output in terminal                         (Default: false)'
     );
     expect(result).toContain(
-      '--log-level     [value]      Set log level. options: error, warn, info, debug, verbose  (Default: Info)'
+      '--log-level     <value>      Set log level. options: Error, Warn, Info, Debug, Verbose'
     );
     expect(result).toContain('🎉🎉🎉Wizard cli is published by hps🎉🎉🎉');
     expect(result).toContain('@2025 wizard-plugin-help');
@@ -187,7 +187,7 @@ describe('createHelpPlugin - CLI help functionality', () => {
       '--no-color      [boolean]    Disable colored output in terminal                         (Default: false)'
     );
     expect(result).toContain(
-      '--log-level     [value]      Set log level. options: error, warn, info, debug, verbose  (Default: Info)'
+      '--log-level     <value>      Set log level. options: Error, Warn, Info, Debug, Verbose'
     );
     expect(result).toContain('🎉🎉🎉Wizard cli is published by hps🎉🎉🎉');
     expect(result).toContain('@2025 wizard-plugin-help');
@@ -219,7 +219,7 @@ describe('createHelpPlugin - CLI help functionality', () => {
       '--no-color      [boolean]    Disable colored output in terminal                         (Default: false)'
     );
     expect(result).toContain(
-      '--log-level     [value]      Set log level. options: error, warn, info, debug, verbose  (Default: Info)'
+      '--log-level     <value>      Set log level. options: Error, Warn, Info, Debug, Verbose'
     );
 
     expect(result).toContain('Flags:');
@@ -255,7 +255,7 @@ describe('createHelpPlugin - CLI help functionality', () => {
       '--no-color      [boolean]    Disable colored output in terminal                         (Default: false)'
     );
     expect(result).toContain(
-      '--log-level     [value]      Set log level. options: error, warn, info, debug, verbose  (Default: Info)'
+      '--log-level     <value>      Set log level. options: Error, Warn, Info, Debug, Verbose'
     );
 
     expect(result).toContain('Flags:');
@@ -294,7 +294,7 @@ describe('createHelpPlugin - CLI help functionality', () => {
       '--no-color      [boolean]    Disable colored output in terminal                         (Default: false)'
     );
     expect(result).toContain(
-      '--log-level     [value]      Set log level. options: error, warn, info, debug, verbose  (Default: Info)'
+      '--log-level     <value>      Set log level. options: Error, Warn, Info, Debug, Verbose'
     );
     expect(result).toContain('Flags:');
     expect(result).toContain(
@@ -329,7 +329,7 @@ describe('createHelpPlugin - CLI help functionality', () => {
       '--no-color      [boolean]    Disable colored output in terminal                         (Default: false)'
     );
     expect(result).toContain(
-      '--log-level     [value]      Set log level. options: error, warn, info, debug, verbose  (Default: Info)'
+      '--log-level     <value>      Set log level. options: Error, Warn, Info, Debug, Verbose'
     );
     expect(result).toContain(
       '--hps-app-env   [string]     Process env key, default: APP_ENV                          (Default: APP_ENV)'

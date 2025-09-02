@@ -1,13 +1,13 @@
 import { LogLevel } from '@hyperse/logger';
 import { CommandInvalidFlagsValues } from '../errors/CommandInvalidFlagsValues.js';
 import type { SupportedLocales } from '../types/type-locale-messages.js';
+import { toPascalCase } from './helper-string.js';
 
-const formatLogLevel = (level: LogLevel, locale: SupportedLocales) => {
-  const levelStr = level.toString();
-  const firstChar = levelStr.charAt(0);
-  const pascalCase = firstChar.toUpperCase() + levelStr.slice(1);
-  const logLevel = LogLevel[pascalCase as keyof typeof LogLevel];
-  if (typeof logLevel === 'undefined') {
+const formatLogLevel = (
+  level: keyof typeof LogLevel,
+  locale: SupportedLocales
+) => {
+  if (typeof LogLevel[toPascalCase(level)] === 'undefined') {
     throw new CommandInvalidFlagsValues(locale, {
       flagName: 'logLevel',
       flagValue: level,
@@ -16,7 +16,7 @@ const formatLogLevel = (level: LogLevel, locale: SupportedLocales) => {
         .join(', '),
     });
   }
-  return logLevel;
+  return level;
 };
 
 /**
@@ -39,9 +39,8 @@ export const createBuiltinFlags = (locale: SupportedLocales) => {
       default: false,
     },
     logLevel: {
-      type: (level: LogLevel) => formatLogLevel(level, locale),
+      type: (level: keyof typeof LogLevel) => formatLogLevel(level, locale),
       description: 'core.flags.logLevel',
-      default: formatLogLevel(LogLevel.Info, locale),
     },
     hpsAppEnv: {
       type: String,

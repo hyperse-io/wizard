@@ -39,11 +39,11 @@ export const buildPluginMessages = defineLocaleMessages({
       },
     },
     migratePlugin: {
-      description: 'migrate 命令描述',
+      description: 'migrate description',
       example: 'migrate --migrateName migrateName',
-      help: 'migrate 帮助信息',
+      help: 'migrate help',
       flags: {
-        migrateName: 'migrateName 描述',
+        migrateName: 'migrateName description',
       },
     },
   },

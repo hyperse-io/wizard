@@ -10,7 +10,8 @@ import type { SupportedLocales } from './types/type-locale-messages.js';
  * @returns The input locale messages object with its type preserved.
  */
 export const defineLocaleMessages = <
-  Messages extends Record<SupportedLocales, any>,
+  T,
+  Messages extends Partial<Record<SupportedLocales, T>> & { en: T },
 >(
   messages: Messages
 ): Messages => {

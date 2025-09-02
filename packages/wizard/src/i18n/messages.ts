@@ -36,11 +36,11 @@ export const coreMessages = defineLocaleMessages({
         invalidName:
           'Invalid command name "{cmdName}" command names cannot contain spaces or multiple consecutive spaces.',
         invalidFlagsValue:
-          'Invalid value "{flagValue}" for flag "{flagName}", the flag supported values are: {flagValues}',
+          'Invalid value "{flagValue}" for flag "{flagName}". Supported values are: {flagValues}',
       },
       flags: {
         noColor: 'Disable colored output in terminal',
-        logLevel: 'Set log level. options: error, warn, info, debug, verbose',
+        logLevel: 'Set log level. options: Error, Warn, Info, Debug, Verbose',
         hpsAppEnv: 'Process env key, default: APP_ENV',
         hpsEnvPath: 'Process env file path',
       },
@@ -63,7 +63,7 @@ export const coreMessages = defineLocaleMessages({
       },
       flags: {
         noColor: '禁用终端日志输出颜色',
-        logLevel: '设置日志级别，可选值：error, warn, info, debug, verbose',
+        logLevel: '设置日志级别，可选值：Error, Warn, Info, Debug, Verbose',
         hpsAppEnv: '进程环境变量，默认值：APP_ENV',
         hpsEnvPath: '进程环境变量文件路径',
       },

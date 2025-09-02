@@ -1,11 +1,33 @@
 import type { Logger } from '@hyperse/logger';
 import { createTranslator } from '@hyperse/translator';
+import { PlainMessageRegex } from '../constants.js';
 import type {
   I18n,
   LocaleMessagesObject,
   SupportedLocales,
 } from '../types/type-locale-messages.js';
 import { coreMessages } from './messages.js';
+
+const createFallbackTranslator = (
+  messages: LocaleMessagesObject,
+  logger?: Logger
+) => {
+  return createTranslator<LocaleMessagesObject, SupportedLocales>({
+    messages: messages,
+    locale: 'en',
+    namespace: 'en',
+    onError: () => {},
+    getMessageFallback: ({ error, key, namespace }) => {
+      if (error && logger) {
+        logger.debug(error.message);
+      }
+      return `${namespace}.${key}`;
+    },
+    plainMessageCheck(message) {
+      return PlainMessageRegex.test(message);
+    },
+  });
+};
 
 /**
  * @description
@@ -25,6 +47,7 @@ export const useLocale = (
   messages: LocaleMessagesObject = coreMessages,
   logger?: Logger
 ): I18n['t'] => {
+  const fallbackTranslator = createFallbackTranslator(messages, logger);
   return createTranslator<LocaleMessagesObject, SupportedLocales>({
     locale: locale,
     messages: messages,
@@ -34,9 +57,15 @@ export const useLocale = (
     },
     getMessageFallback: ({ error, key, namespace }) => {
       if (error && logger) {
-        logger.warn(error.message);
+        logger.debug(error.message);
       }
-      return `${namespace}.${key}`;
+      if (namespace === 'en') {
+        return `${namespace}.${key}`;
+      }
+      return fallbackTranslator(key);
+    },
+    plainMessageCheck(message) {
+      return PlainMessageRegex.test(message);
     },
   });
 };

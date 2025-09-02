@@ -85,7 +85,7 @@ describe('builtin flags', () => {
       ctx: undefined,
       flags: {
         projectCwd: 'user/project/foo',
-        logLevel: LogLevel.Debug,
+        logLevel: 'debug',
         noColor: true,
       },
       name: 'build',
@@ -99,7 +99,7 @@ describe('builtin flags', () => {
     expect(helpInterceptorHandler.mock.lastCall?.[0]).toMatchObject({
       locale: 'en',
       flags: {
-        logLevel: LogLevel.Debug,
+        logLevel: 'debug',
         noColor: true,
         help: false,
       },
@@ -110,7 +110,7 @@ describe('builtin flags', () => {
     expect(globalInterceptorHandler.mock.lastCall?.[0]).toMatchObject({
       locale: 'en',
       flags: {
-        logLevel: LogLevel.Debug,
+        logLevel: 'debug',
         noColor: true,
       },
     });
@@ -197,11 +197,58 @@ describe('builtin flags', () => {
 
     //logLevel: error
     printer.mockReset();
-    await cli.parse(['-h', '--logLevel', 'error']);
+    await cli.parse(['-h', '--logLevel', 'Error']);
     logResult = printer.mock.calls.map((call) => call[0]).join('');
     expect(logResult).toContain('help error log');
     expect(logResult).not.toContain('help warn log');
     expect(logResult).not.toContain('help info log');
+    expect(logResult).not.toContain('help debug log');
+    expect(logResult).not.toContain('help verbose log');
+  });
+
+  it('test command build with default logLevel', async () => {
+    const cli = createWizard({
+      name: 'wWizard',
+      description: () => 'wWizard description',
+      version: () => '1.0.0',
+      locale: 'en',
+    }).use(
+      definePlugin({
+        name: () => 'buildPlugin',
+        setup: (wizard) => {
+          return wizard
+            .flag('help', {
+              type: Boolean,
+              alias: 'h',
+              description: () => 'help',
+              default: false,
+            })
+            .interceptor((ctx, next) => {
+              //flags typing level、noColor、help
+              if (ctx.flags.help) {
+                ctx.logger.error('help error log');
+                ctx.logger.warn('help warn log');
+                ctx.logger.info('help info log');
+                ctx.logger.debug('help debug log');
+                ctx.logger.verbose('help verbose log');
+              }
+              next();
+            });
+        },
+      })
+    );
+
+    const printer = vi.fn();
+    process.stdout.write = printer;
+
+    printer.mockReset();
+    //logLevel: info
+    await cli.parse(['-h']);
+    expect(printer).toHaveBeenCalled();
+    const logResult = printer.mock.calls.map((call) => call[0]).join('');
+    expect(logResult).toContain('help error log');
+    expect(logResult).toContain('help warn log');
+    expect(logResult).toContain('help info log');
     expect(logResult).not.toContain('help debug log');
     expect(logResult).not.toContain('help verbose log');
   });

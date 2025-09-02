@@ -15,4 +15,5 @@ export * from './helper-resolve-locale.js';
 export * from './helper-resolve-options-or-argv.js';
 export * from './helper-search-command-chain.js';
 export * from './helper-search-command-name-chain.js';
+export * from './helper-string.js';
 export * from './helper-validate-command.js';
