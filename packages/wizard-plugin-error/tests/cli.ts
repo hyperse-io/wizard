@@ -22,7 +22,7 @@ const cli = createWizard({
   localeMessages: errorCliMessages,
 });
 
-const a = cli
+cli
   .use(plugin)
   .use(
     definePlugin({
@@ -37,7 +37,7 @@ const a = cli
       },
     })
   )
-  .on('test', (ctx) => {
+  .on('test', () => {
     console.log('test');
   });
 

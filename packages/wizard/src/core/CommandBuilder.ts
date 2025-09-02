@@ -171,10 +171,12 @@ export const createCommandBuilder = <
   Name extends CommandName = string,
   Context extends CommandContext = CommandContext,
   SubCommandContext extends object = object,
-  NameToContext extends CommandNameToContext = {
-    [K in Name]: Context;
-  },
   CommandFlags extends Flags = Flags,
+  NameToContext extends CommandNameToContext = {
+    [K in Name]: Context & {
+      flags: ParseFlags<CommandFlags & FlagsWithBuiltin>;
+    };
+  },
 >(
   name: Name,
   options: CommandBuilderOptions
