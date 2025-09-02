@@ -42,6 +42,9 @@ export const createErrorPlugin = (options?: ErrorPluginOptions) => {
                   closestCommandName,
                 })
               );
+            } else {
+              // No close match; still report the original error.
+              await pluginCtx.logger.error(err);
             }
           } else {
             await pluginCtx.logger.error(err);

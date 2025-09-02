@@ -36,7 +36,7 @@ export const coreMessages = defineLocaleMessages({
         invalidName:
           'Invalid command name "{cmdName}" command names cannot contain spaces or multiple consecutive spaces.',
         invalidFlagsValue:
-          'Invalid value "{flagValue}" for flag "{flagName}", the flag supported values: {flagValues}',
+          'Invalid value "{flagValue}" for flag "{flagName}". Supported values are: {flagValues}',
       },
       flags: {
         noColor: 'Disable colored output in terminal',
