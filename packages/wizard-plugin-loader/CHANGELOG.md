@@ -1,5 +1,12 @@
 # @hyperse/wizard-plugin-loader
 
+## 1.0.3
+
+### Patch Changes
+
+- Updated dependencies [[`370634b`](https://github.com/hyperse-io/wizard/commit/370634b2c6a50cc75ba6636a3aa1af5871b9a12f)]:
+  - @hyperse/wizard@1.0.3
+
 ## 1.0.2
 
 ### Patch Changes
