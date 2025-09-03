@@ -5,7 +5,6 @@ import { definePlugin } from '../src/index.js';
 
 describe('builtin flags', () => {
   const buildHandler = vi.fn();
-  const globalInterceptorHandler = vi.fn();
   const helpInterceptorHandler = vi.fn();
   const originalPrinter = process.stdout.write;
 
@@ -71,12 +70,7 @@ describe('builtin flags', () => {
             return cli;
           },
         })
-      )
-      .interceptor(async (ctx, next) => {
-        //flags typing level、noColor
-        globalInterceptorHandler(ctx);
-        await next();
-      });
+      );
     // cmd: build
     await cli.parse(['build', '--logLevel', 'debug', '--noColor']);
     expect(buildHandler).toHaveBeenCalled();
@@ -102,16 +96,6 @@ describe('builtin flags', () => {
         logLevel: 'debug',
         noColor: true,
         help: false,
-      },
-    });
-
-    //global interceptor
-    expect(globalInterceptorHandler).toHaveBeenCalled();
-    expect(globalInterceptorHandler.mock.lastCall?.[0]).toMatchObject({
-      locale: 'en',
-      flags: {
-        logLevel: 'debug',
-        noColor: true,
       },
     });
   });

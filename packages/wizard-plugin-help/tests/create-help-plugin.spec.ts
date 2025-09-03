@@ -143,13 +143,19 @@ describe('createHelpPlugin', () => {
         version: () => '1.0.0',
       });
 
-      cli.use(createHelpPlugin());
-      cli.flag('verbose', {
-        type: Boolean,
-        default: false,
-        description: () => 'Enable verbose output',
-        alias: 'v',
-      });
+      cli.use(createHelpPlugin()).use(
+        definePlugin({
+          name: () => 'test plugin',
+          setup: (wizard) => {
+            return wizard.flag('verbose', {
+              type: Boolean,
+              default: false,
+              description: () => 'Enable verbose output',
+              alias: 'v',
+            });
+          },
+        })
+      );
 
       await cli.parse(['--help']);
 
@@ -166,19 +172,27 @@ describe('createHelpPlugin', () => {
         version: () => '1.0.0',
       });
 
-      cli.use(createHelpPlugin());
-      cli.flag('verbose', {
-        type: Boolean,
-        default: false,
-        description: () => 'Enable verbose output',
-        alias: 'v',
-      });
-      cli.flag('debug', {
-        type: Boolean,
-        default: false,
-        description: () => 'Enable debug mode',
-        alias: 'd',
-      });
+      cli.use(createHelpPlugin()).use(
+        definePlugin({
+          name: () => 'test plugin',
+          setup: (wizard) => {
+            wizard
+              .flag('verbose', {
+                type: Boolean,
+                default: false,
+                description: () => 'Enable verbose output',
+                alias: 'v',
+              })
+              .flag('debug', {
+                type: Boolean,
+                default: false,
+                description: () => 'Enable debug mode',
+                alias: 'd',
+              });
+            return wizard;
+          },
+        })
+      );
 
       await cli.parse(['--help']);
 
@@ -232,51 +246,58 @@ describe('createHelpPlugin', () => {
         })
       );
 
-      cli.use(
-        definePlugin({
-          name: () => 'test plugin',
-          setup: (wizard) => {
-            return wizard.register(
-              defineCommand('build', {
-                description: () => 'Build command',
-                example: () =>
-                  'build --projectCwd ./project --type --timeout 1000',
-              })
-                .flags({
-                  projectCwd: {
-                    type: String,
-                    default: 'projectCwd',
-                    description: () => 'Project CWD',
-                  },
-                  type: {
-                    type: Boolean,
-                    default: true,
-                    description: () => 'Type flag',
-                  },
-                  timeout: {
-                    type: Number,
-                    description: () => 'Timeout value',
-                  },
+      cli
+        .use(
+          definePlugin({
+            name: () => 'test plugin',
+            setup: (wizard) => {
+              return wizard.register(
+                defineCommand('build', {
+                  description: () => 'Build command',
+                  example: () =>
+                    'build --projectCwd ./project --type --timeout 1000',
                 })
-                .use(evolve, migrate)
-            );
-          },
-        })
-      );
-
-      cli.flag('version1', {
-        type: Boolean,
-        default: true,
-        alias: 'a',
-        description: () => 'Version 1 flag',
-      });
-
-      cli.flag('version2', {
-        type: Number,
-        default: 1,
-        alias: 'b',
-        description: () => 'Version 2 flag',
-      });
+                  .flags({
+                    projectCwd: {
+                      type: String,
+                      default: 'projectCwd',
+                      description: () => 'Project CWD',
+                    },
+                    type: {
+                      type: Boolean,
+                      default: true,
+                      description: () => 'Type flag',
+                    },
+                    timeout: {
+                      type: Number,
+                      description: () => 'Timeout value',
+                    },
+                  })
+                  .use(evolve, migrate)
+              );
+            },
+          })
+        )
+        .use(
+          definePlugin({
+            name: () => 'test plugin',
+            setup: (wizard) => {
+              return wizard
+                .flag('version1', {
+                  type: Boolean,
+                  default: true,
+                  alias: 'a',
+                  description: () => 'Version 1 flag',
+                })
+                .flag('version2', {
+                  type: Number,
+                  default: 1,
+                  alias: 'b',
+                  description: () => 'Version 2 flag',
+                });
+            },
+          })
+        );
 
       await cli.parse(['--help']);
 

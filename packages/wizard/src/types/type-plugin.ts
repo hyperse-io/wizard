@@ -27,9 +27,23 @@ export type PluginContext = {
 };
 
 export type PluginSetupWizard<
-  NameToContext extends CommandNameToContext,
-  GlobalFlags extends Flags,
-> = Omit<Wizard<NameToContext, GlobalFlags>, 'use' | 'on' | 'parse'>;
+  NameToContext extends CommandNameToContext = {},
+  GlobalFlags extends Flags = FlagsWithBuiltin,
+> = Pick<
+  Wizard<NameToContext, GlobalFlags>,
+  | 'commandChain'
+  | 'commandMap'
+  | 'description'
+  | 'errorHandler'
+  | 'flag'
+  | 'globalFlags'
+  | 'i18n'
+  | 'interceptor'
+  | 'locale'
+  | 'name'
+  | 'register'
+  | 'version'
+>;
 
 /**
  * @description
@@ -64,5 +78,5 @@ export interface Plugin<
   setup: (
     cli: PluginSetupWizard<NameToContext, GlobalFlags>,
     ctx: PluginContext
-  ) => Wizard<Result, ExtendedGlobalFlags>;
+  ) => PluginSetupWizard<Result, ExtendedGlobalFlags>;
 }

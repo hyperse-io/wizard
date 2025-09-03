@@ -1,5 +1,3 @@
-import type { EventEmitter } from '../events/EventEmitter.js';
-
 /**
  * @description
  * The event map type.

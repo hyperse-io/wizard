@@ -85,7 +85,10 @@ import { createCommandBuilder } from './CommandBuilder.js';
 export type WizardWithUse<
   NameToContext extends CommandNameToContext = {},
   GlobalFlags extends Flags = FlagsWithBuiltin,
-> = Pick<Wizard<NameToContext, GlobalFlags>, 'use' | 'on' | 'parse'>;
+> = Pick<
+  Wizard<NameToContext, GlobalFlags>,
+  'use' | 'on' | 'parse' | 'name' | 'description' | 'version'
+>;
 
 /**
  * @description
@@ -529,7 +532,7 @@ export class Wizard<
     CommandBuilder extends CommandBuilderType<any, any, any, any, any>,
   >(
     builder: CommandBuilder
-  ): Wizard<
+  ): PluginSetupWizard<
     MergeCommandNameToContext<
       NameToContext,
       GetCommandNameToContext<CommandBuilder>
@@ -552,7 +555,9 @@ export class Wizard<
     options: CommandBuilderOptions & {
       process?: CommandProcessFunction<ProcessContext<Name, {}, {}>>;
     }
-  ): Wizard<MergeCommandNameToContext<NameToContext, NewNameToContext>>;
+  ): PluginSetupWizard<
+    MergeCommandNameToContext<NameToContext, NewNameToContext>
+  >;
 
   public register(
     builderOrName: any,
@@ -612,7 +617,9 @@ export class Wizard<
    * @param interceptor The interceptor.
    * @returns The wizard instance.
    */
-  public interceptor(interceptor: GlobalInterceptorHandler<GlobalFlags>) {
+  public interceptor(
+    interceptor: GlobalInterceptorHandler<GlobalFlags>
+  ): PluginSetupWizard<NameToContext, GlobalFlags> {
     this.#interceptors.push(interceptor);
     return this;
   }
@@ -631,11 +638,11 @@ export class Wizard<
   >(
     name: Name,
     options: NewFlagOptions
-  ): Wizard<NameToContext, NewGlobalFlags & GlobalFlags> {
+  ): PluginSetupWizard<NameToContext, NewGlobalFlags & GlobalFlags> {
     this.#globalFlags[name] = {
       ...options,
     };
-    return this as unknown as Wizard<
+    return this as unknown as PluginSetupWizard<
       NameToContext,
       NewGlobalFlags & GlobalFlags
     >;
@@ -648,9 +655,11 @@ export class Wizard<
    * @param handler The error handler.
    * @returns The wizard instance.
    */
-  public errorHandler(handler: (err: any) => void | Promise<void>) {
+  public errorHandler(
+    handler: (err: any) => void | Promise<void>
+  ): PluginSetupWizard<NameToContext, GlobalFlags> {
     this.#errorHandlers.push(handler);
-    return this as unknown as Wizard<NameToContext, GlobalFlags>;
+    return this;
   }
 
   /**

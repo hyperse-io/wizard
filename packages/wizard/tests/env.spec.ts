@@ -11,7 +11,6 @@ function writeEnvFile(name: string, text: string) {
 
 describe('Environment variable loading in Wizard CLI', () => {
   const buildHandler = vi.fn();
-  const globalInterceptorHandler = vi.fn();
   const helpInterceptorHandler = vi.fn();
   const originalPrinter = process.stdout.write;
 
@@ -83,13 +82,7 @@ describe('Environment variable loading in Wizard CLI', () => {
             return cli;
           },
         })
-      )
-      .interceptor(async (ctx, next) => {
-        //flags typing level、noColor
-        globalInterceptorHandler(ctx);
-        await next();
-      });
-
+      );
     writeEnvFile('.env', 'NEXT_PUBLIC_FOO=dev');
     await cli.parse(['build']);
     expect(process.env.NEXT_PUBLIC_FOO).toBe('dev');
@@ -144,12 +137,7 @@ describe('Environment variable loading in Wizard CLI', () => {
             return cli;
           },
         })
-      )
-      .interceptor(async (ctx, next) => {
-        // Global interceptor for flags: typing, level, noColor
-        globalInterceptorHandler(ctx);
-        await next();
-      });
+      );
 
     writeEnvFile('.env.stage3', 'NEXT_PUBLIC_FOO3=stage3');
     process.env.APP_ENV_3 = 'stage3';

@@ -1,8 +1,8 @@
-import type { I18n, Wizard } from '@hyperse/wizard';
+import type { I18n, PluginSetupWizard } from '@hyperse/wizard';
 import { formatFlags } from '../helpers/helper-format-flags.js';
 import { table } from '../helpers/helper-text-table.js';
 
-export const renderGlobal = (t: I18n['t'], wizard: Wizard) => {
+export const renderGlobal = (t: I18n['t'], wizard: PluginSetupWizard) => {
   const globalFlags = wizard.globalFlags;
   const globalMessage: string[] = [];
 
