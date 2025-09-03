@@ -1,5 +1,16 @@
 # @hyperse/wizard-website
 
+## 0.0.6
+
+### Patch Changes
+
+- Updated dependencies [[`e57b630`](https://github.com/hyperse-io/wizard/commit/e57b630eb8aaff52e994adb2f990cf634a6afde0), [`cace114`](https://github.com/hyperse-io/wizard/commit/cace114783731b6f5e2ec6c2994ea9df6935dc6c)]:
+  - @hyperse/wizard@1.0.4
+  - @hyperse/wizard-plugin-version@1.0.4
+  - @hyperse/wizard-plugin-loader@1.0.4
+  - @hyperse/wizard-plugin-error@1.0.4
+  - @hyperse/wizard-plugin-help@1.0.4
+
 ## 0.0.5
 
 ### Patch Changes
