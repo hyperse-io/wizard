@@ -262,7 +262,9 @@ describe('cli', () => {
       .use(
         definePlugin({
           name: () => 'deploy plugin',
-          setup: (wizard) => wizard.register(deployCmd),
+          setup: (wizard) => {
+            return wizard.register(deployCmd);
+          },
         })
       )
       .on('build', buildEvent)

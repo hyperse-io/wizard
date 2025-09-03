@@ -20,6 +20,77 @@ Wizard provides internationalization support across three levels: `core`, `cli`,
   can achieve excellent type support.
 </Callout>
 
+## Automatic Fallback Mechanism
+
+Wizard provides a robust fallback mechanism for internationalization:
+
+- **Language Fallback**: When a message is not found in the current locale, Wizard automatically falls back to English (`en`) messages
+- **English as Default**: You only need to define English messages by default - other languages will automatically fall back to English if not configured
+- **Message Validation**: The translator uses `plainMessageCheck` to filter special characters using the `PlainMessageRegex` pattern `/[!\/\<\|\{]/`
+
+This ensures that your application always has fallback text available, even when translations are incomplete.
+
+### How Fallback Works
+
+Wizard implements a three-tier fallback system:
+
+```ts
+// Fallback Priority:
+// 1. Primary Locale (e.g., 'zh')
+// 2. English Fallback ('en')
+// 3. Key Fallback (e.g., 'zh.command.[messageKey]')
+```
+
+### Implementation Details
+
+The fallback mechanism is implemented in the `useLocale` function:
+
+```ts
+export const useLocale = (
+  locale: SupportedLocales,
+  messages: LocaleMessagesObject = coreMessages,
+  logger?: Logger
+): I18n['t'] => {
+  // Create fallback translator for English
+  const fallbackTranslator = createFallbackTranslator(messages, logger);
+
+  return createTranslator({
+    locale: locale,
+    messages: messages,
+    namespace: locale,
+    getMessageFallback: ({ error, key, namespace }) => {
+      if (namespace === 'en') {
+        return `${namespace}.${key}`;
+      }
+      // Fall back to English translator
+      return fallbackTranslator(key);
+    },
+    // ... other options
+  });
+};
+```
+
+### Message Validation
+
+Wizard automatically validates messages using the `plainMessageCheck` function to ensure consistency and prevent formatting issues.
+
+#### Validation Rules
+
+The `PlainMessageRegex` pattern `/[!\/\<\|\{]/` filters out special characters that could cause issues:
+
+- `!` - Exclamation marks
+- `/` - Forward slashes
+- `<` - Less than symbols
+- `|` - Pipe characters
+- `{` - Opening braces
+
+#### Why Validation Matters
+
+- **Consistency**: Ensures all messages follow the same format
+- **Reliability**: Prevents runtime errors from malformed messages
+- **Maintainability**: Makes message management easier for teams
+- **User Experience**: Provides consistent output across different locales
+
 ## core namespace
 
 The built-in internationalization messages are as follows:
@@ -97,6 +168,22 @@ export const helpCliMessages = defineLocaleMessages({
   },
 });
 ```
+
+<Callout>
+  **Fallback Support**: You can define only English messages and other languages will automatically fall back to English:
+  
+  ```ts
+  export const minimalMessages = defineLocaleMessages({
+    en: {
+      helpCli: {
+        description: 'CLI description',
+        version: 'CLI v1.0.0',
+      },
+    },
+    // zh is not defined - will automatically fall back to English
+  });
+  ```
+</Callout>
 
 ### Type Merging
 

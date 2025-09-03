@@ -9,6 +9,7 @@ import type {
 import { coreMessages } from './messages.js';
 
 const createFallbackTranslator = (
+  locale: SupportedLocales,
   messages: LocaleMessagesObject,
   logger?: Logger
 ) => {
@@ -17,11 +18,11 @@ const createFallbackTranslator = (
     locale: 'en',
     namespace: 'en',
     onError: () => {},
-    getMessageFallback: ({ error, key, namespace }) => {
+    getMessageFallback: ({ error, key }) => {
       if (error && logger) {
         logger.debug(error.message);
       }
-      return `${namespace}.${key}`;
+      return `${locale}.${key}`;
     },
     plainMessageCheck(message) {
       return PlainMessageRegex.test(message);
@@ -47,7 +48,7 @@ export const useLocale = (
   messages: LocaleMessagesObject = coreMessages,
   logger?: Logger
 ): I18n['t'] => {
-  const fallbackTranslator = createFallbackTranslator(messages, logger);
+  const fallbackTranslator = createFallbackTranslator(locale, messages, logger);
   return createTranslator<LocaleMessagesObject, SupportedLocales>({
     locale: locale,
     messages: messages,

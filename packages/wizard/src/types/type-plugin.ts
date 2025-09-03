@@ -26,6 +26,11 @@ export type PluginContext = {
   noColor: boolean;
 };
 
+export type PluginSetupWizard<
+  NameToContext extends CommandNameToContext,
+  GlobalFlags extends Flags,
+> = Omit<Wizard<NameToContext, GlobalFlags>, 'use' | 'on' | 'parse'>;
+
 /**
  * @description
  * Plugin type definition. Describes the structure of a plugin, including optional locale messages (localeMessages)
@@ -57,7 +62,7 @@ export interface Plugin<
    * It receives the current Wizard instance and the plugin context, and should return a (possibly extended) Wizard instance.
    */
   setup: (
-    cli: Wizard<NameToContext, GlobalFlags>,
+    cli: PluginSetupWizard<NameToContext, GlobalFlags>,
     ctx: PluginContext
   ) => Wizard<Result, ExtendedGlobalFlags>;
 }
