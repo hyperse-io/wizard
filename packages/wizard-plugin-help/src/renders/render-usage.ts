@@ -3,8 +3,8 @@ import {
   type CommandWithI18n,
   formatCommandName,
   type I18n,
+  type PluginSetupWizard,
   Root,
-  type Wizard,
 } from '@hyperse/wizard';
 import { INDENT } from '../constant.js';
 import { chalk } from '../helpers/helper-chalk.js';
@@ -12,7 +12,7 @@ import { table } from '../helpers/helper-text-table.js';
 
 export const renderUsage = <Name extends CommandName>(
   t: I18n['t'],
-  wizard: Wizard,
+  wizard: PluginSetupWizard,
   command: CommandWithI18n<Name>
 ) => {
   const usageMessage: string[] = [];

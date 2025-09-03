@@ -1,5 +1,5 @@
 import { rmSync } from 'node:fs';
-import { createWizard } from '@hyperse/wizard';
+import { createWizard, definePlugin } from '@hyperse/wizard';
 import { createLoaderPlugin } from '../src/create-loader-plugin.js';
 import { createFixtureFiles } from './utils/test-utils.js';
 
@@ -51,17 +51,24 @@ describe('Loader Plugin Integration', () => {
       cwd: fixtureCwd,
     });
 
-    cli.use(loaderPlugin);
+    cli.use(loaderPlugin).use(
+      definePlugin({
+        name: () => 'test plugin',
+        setup: (wizard) => {
+          return wizard.interceptor(async (_, next) => {
+            const commandMap = wizard.commandMap;
+            expect(commandMap).toBeDefined();
+            expect(commandMap.get('version')).toBeDefined();
+            expect(commandMap.get('help')).toBeDefined();
+            await next();
+          });
+        },
+      })
+    );
     await cli.parse(['version']);
-
-    const commandMap = cli.commandMap;
-    expect(commandMap).toBeDefined();
 
     const mockResult = print.mock.calls;
     console.log = originalConsoleLog;
-
-    expect(commandMap.get('version')).toBeDefined();
-    expect(commandMap.get('help')).toBeDefined();
     expect(mockResult?.[0]?.[0]).toContain('execute version command');
   });
 });

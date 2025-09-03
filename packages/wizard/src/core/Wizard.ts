@@ -46,6 +46,7 @@ import type {
   MergeCommandNameToContext,
 } from '../types/type-command-builder.js';
 import type { CommandBuilderOptions } from '../types/type-command-builder.js';
+import type { EventListener } from '../types/type-event.js';
 import type {
   FlagOptions,
   Flags,
@@ -58,7 +59,7 @@ import type {
   LocaleMessagesObject,
   SupportedLocales,
 } from '../types/type-locale-messages.js';
-import type { Plugin } from '../types/type-plugin.js';
+import type { Plugin, PluginSetupWizard } from '../types/type-plugin.js';
 import type {
   WizardEventContext,
   WizardOptions,
@@ -66,6 +67,28 @@ import type {
 import type { GlobalInterceptorHandler } from '../types/type-wizard-global-flags.js';
 import type { CliPipelineContext } from '../types/type-wizard-pipeline.js';
 import { createCommandBuilder } from './CommandBuilder.js';
+
+/**
+ * @description
+ * The WizardWithUse type describes a Wizard instance that only exposes the core methods: use, on, and parse.
+ * This type is mainly used for plugin systems and as the return type of the createWizard factory function,
+ * ensuring that only the essential plugin registration, event listening, and command parsing interfaces are available.
+ *
+ * @template NameToContext - The mapping type from command names to their context, defining the supported commands and their context types.
+ * @template GlobalFlags - The type of global flags supported by the CLI, defaulting to the built-in flags.
+ *
+ * @example
+ * // Used for type constraints on the return value of plugin setup
+ * const cli: WizardWithUse = createWizard({ ... });
+ * cli.use(myPlugin).on('build', handler).parse();
+ */
+export type WizardWithUse<
+  NameToContext extends CommandNameToContext = {},
+  GlobalFlags extends Flags = FlagsWithBuiltin,
+> = Pick<
+  Wizard<NameToContext, GlobalFlags>,
+  'use' | 'on' | 'parse' | 'name' | 'description' | 'version'
+>;
 
 /**
  * @description
@@ -84,7 +107,7 @@ import { createCommandBuilder } from './CommandBuilder.js';
 export class Wizard<
   NameToContext extends CommandNameToContext = {},
   GlobalFlags extends Flags = FlagsWithBuiltin,
-> extends EventEmitter<WizardEventContext<NameToContext>> {
+> {
   #logger: Logger;
   #locale: SupportedLocales = 'en';
   #localeMessages: LocaleMessagesObject;
@@ -96,12 +119,13 @@ export class Wizard<
   #interceptors: GlobalInterceptorHandler<GlobalFlags>[] = [];
   #globalFlags: FlagsWithBuiltin;
   #pendingPlugins: Plugin<any, any, any, any>[] = [];
+  #eventEmitter: EventEmitter<WizardEventContext<NameToContext>> =
+    new EventEmitter<WizardEventContext<NameToContext>>();
 
   constructor(
     private options: Exclude<WizardOptions, 'logLevel' | 'noColor'> &
       Required<Pick<WizardOptions, 'logLevel' | 'noColor'>>
   ) {
-    super();
     this.#locale = options.locale ?? resolveLocale();
     this.#globalFlags = createBuiltinFlags(this.#locale) as FlagsWithBuiltin;
     this.setupLogger({
@@ -118,6 +142,26 @@ export class Wizard<
     );
     this.setupRootCommand();
     this.interceptor(createBuiltinInterceptor(this));
+  }
+
+  /**
+   * @description
+   * Registers a listener for an event.
+   *
+   * @param event The event name.
+   * @param listener The listener function.
+   * @returns The wizard instance.
+   */
+  public on<K extends keyof WizardEventContext<NameToContext> | 'error'>(
+    event: K,
+    listener: EventListener<
+      K extends keyof WizardEventContext<NameToContext>
+        ? WizardEventContext<NameToContext>[K]
+        : any
+    >
+  ): WizardWithUse<NameToContext, GlobalFlags> {
+    this.#eventEmitter.on(event, listener);
+    return this as unknown as WizardWithUse<NameToContext, GlobalFlags>;
   }
 
   /**
@@ -184,7 +228,7 @@ export class Wizard<
       const resolvedName = plugin.name
         ? localeMessageValue(this.i18n.t, plugin.name)
         : undefined;
-      plugin.setup(this, {
+      plugin.setup(this as PluginSetupWizard<NameToContext, GlobalFlags>, {
         name: resolvedName,
         logLevel: this.options.logLevel,
         noColor: this.options.noColor,
@@ -330,7 +374,7 @@ export class Wizard<
     const eventName = commandNameChain.join(
       '.'
     ) as keyof WizardEventContext<NameToContext>;
-    this.emit(
+    this.#eventEmitter.emit(
       eventName,
       processOptions as unknown as WizardEventContext<NameToContext>[typeof eventName]
     );
@@ -488,7 +532,7 @@ export class Wizard<
     CommandBuilder extends CommandBuilderType<any, any, any, any, any>,
   >(
     builder: CommandBuilder
-  ): Wizard<
+  ): PluginSetupWizard<
     MergeCommandNameToContext<
       NameToContext,
       GetCommandNameToContext<CommandBuilder>
@@ -511,7 +555,9 @@ export class Wizard<
     options: CommandBuilderOptions & {
       process?: CommandProcessFunction<ProcessContext<Name, {}, {}>>;
     }
-  ): Wizard<MergeCommandNameToContext<NameToContext, NewNameToContext>>;
+  ): PluginSetupWizard<
+    MergeCommandNameToContext<NameToContext, NewNameToContext>
+  >;
 
   public register(
     builderOrName: any,
@@ -553,12 +599,12 @@ export class Wizard<
       GlobalFlags,
       PluginGlobalFlags
     >
-  ): Wizard<
+  ): WizardWithUse<
     MergeCommandNameToContext<NameToContext, PluginCommandMapping>,
     PluginGlobalFlags
   > {
     this.#pendingPlugins.push(plugin as unknown as Plugin<any, any, any, any>);
-    return this as unknown as Wizard<
+    return this as unknown as WizardWithUse<
       MergeCommandNameToContext<NameToContext, PluginCommandMapping>,
       PluginGlobalFlags
     >;
@@ -571,7 +617,9 @@ export class Wizard<
    * @param interceptor The interceptor.
    * @returns The wizard instance.
    */
-  public interceptor(interceptor: GlobalInterceptorHandler<GlobalFlags>) {
+  public interceptor(
+    interceptor: GlobalInterceptorHandler<GlobalFlags>
+  ): PluginSetupWizard<NameToContext, GlobalFlags> {
     this.#interceptors.push(interceptor);
     return this;
   }
@@ -590,11 +638,11 @@ export class Wizard<
   >(
     name: Name,
     options: NewFlagOptions
-  ): Wizard<NameToContext, NewGlobalFlags & GlobalFlags> {
+  ): PluginSetupWizard<NameToContext, NewGlobalFlags & GlobalFlags> {
     this.#globalFlags[name] = {
       ...options,
     };
-    return this as unknown as Wizard<
+    return this as unknown as PluginSetupWizard<
       NameToContext,
       NewGlobalFlags & GlobalFlags
     >;
@@ -607,9 +655,11 @@ export class Wizard<
    * @param handler The error handler.
    * @returns The wizard instance.
    */
-  public errorHandler(handler: (err: any) => void | Promise<void>) {
+  public errorHandler(
+    handler: (err: any) => void | Promise<void>
+  ): PluginSetupWizard<NameToContext, GlobalFlags> {
     this.#errorHandlers.push(handler);
-    return this as unknown as Wizard<NameToContext, GlobalFlags>;
+    return this;
   }
 
   /**

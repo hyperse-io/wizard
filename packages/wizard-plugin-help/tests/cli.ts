@@ -96,12 +96,6 @@ const cli = createWizard({
         );
       },
     })
-  )
-  .flag('version', {
-    type: Boolean,
-    default: false,
-    alias: 'V',
-    description: 'plugins.versionPlugin.description',
-  });
+  );
 cli.parse(['build', '-h', '--noColor=false', '--logLevel=debug']);
 // cli.parse(['-h']);

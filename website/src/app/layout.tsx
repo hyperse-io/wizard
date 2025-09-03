@@ -2,7 +2,7 @@ import type { FC, ReactNode } from 'react';
 import type { Metadata } from 'next';
 import { Banner, Head } from 'nextra/components';
 import { getPageMap } from 'nextra/page-map';
-import { Footer, Layout, Link, Navbar } from 'nextra-theme-docs';
+import { Footer, Layout, Navbar } from 'nextra-theme-docs';
 import cn from 'clsx';
 import { Logo } from '@/components/Icons/Logo';
 import '@/styles/globals.css';

@@ -50,6 +50,7 @@ export const createLoaderPlugin = async (options: LoaderPluginOptions) => {
     localeMessages: loaderMessages,
     setup: (wizard, ctx) => {
       let cli = wizard;
+
       for (const plugin of cliPlugins) {
         cli = plugin.setup(cli, ctx);
       }

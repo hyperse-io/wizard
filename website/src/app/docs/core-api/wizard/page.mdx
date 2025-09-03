@@ -30,7 +30,131 @@ export { WizardOptions as default } from '@hyperse/wizard'`,
   })}
 />
 
-### Wizard Properties
+## Public API - WizardWithUse
+
+**Important**: The `createWizard` function returns a `WizardWithUse` instance, not a full `Wizard` instance. This means external users can only access the six core properties: `use`, `on`, `parse`, `name`, `description`, and `version`.
+
+### Core Properties
+
+The `WizardWithUse` type exposes only the essential public interface:
+
+#### `use(plugin)` - Plugin Registration
+
+Registers a plugin with the wizard instance. This is the primary way to extend functionality.
+
+```ts twoslash
+import { createWizard } from '@hyperse/wizard';
+
+const wizard = createWizard({ name: 'my-cli' });
+wizard.use(myPlugin); // ✅ Available
+```
+
+#### `on(event, listener)` - Event Listening
+
+Registers event listeners for various wizard lifecycle events.
+
+```ts twoslash
+import { createWizard } from '@hyperse/wizard';
+
+const wizard = createWizard({ name: 'my-cli' });
+wizard.on('build', () => console.log('Building...')); // ✅ Available
+```
+
+#### `parse(options?)` - Command Execution
+
+Parses command line arguments and executes the appropriate command.
+
+```ts twoslash
+import { createWizard } from '@hyperse/wizard';
+
+const wizard = createWizard({ name: 'my-cli' });
+wizard.parse(); // ✅ Available
+```
+
+#### `name` - Wizard Name
+
+Gets the name of the wizard instance.
+
+```ts twoslash
+import { createWizard } from '@hyperse/wizard';
+
+const wizard = createWizard({ name: 'my-cli' });
+console.log(wizard.name); // ✅ Available - outputs: 'my-cli'
+```
+
+#### `description` - Wizard Description
+
+Gets the description of the wizard instance.
+
+```ts twoslash
+import { createWizard } from '@hyperse/wizard';
+
+const wizard = createWizard({
+  name: 'my-cli',
+  description: 'A powerful CLI tool',
+});
+console.log(wizard.description); // ✅ Available - outputs: 'A powerful CLI tool'
+```
+
+#### `version` - Wizard Version
+
+Gets the version of the wizard instance.
+
+```ts twoslash
+import { createWizard } from '@hyperse/wizard';
+
+const wizard = createWizard({
+  name: 'my-cli',
+  version: '1.0.0',
+});
+console.log(wizard.version); // ✅ Available - outputs: '1.0.0'
+```
+
+### Type Safety
+
+The `WizardWithUse` type ensures type safety by:
+
+1. **Restricting Access**: Only the six core properties are accessible from outside
+2. **Plugin Integration**: The `use` method properly types plugin integrations
+3. **Event Handling**: The `on` method provides type-safe event handling
+4. **Method Chaining**: All methods return `WizardWithUse` for fluent chaining
+5. **Read-only Properties**: `name`, `description`, and `version` are read-only for external access
+
+```ts twoslash
+import { createWizard } from '@hyperse/wizard';
+
+const wizard = createWizard({
+  name: 'my-cli',
+  description: 'A powerful CLI tool',
+  version: '1.0.0',
+});
+
+// ✅ Allowed - Core methods and properties
+wizard.use(myPlugin).on('build', handler).parse();
+console.log(wizard.name, wizard.description, wizard.version);
+
+// ❌ Not available - Internal methods
+// wizard.register(command);     // Type error
+// wizard.flag('debug', {});     // Type error
+// wizard.interceptor(handler);  // Type error
+```
+
+### WizardWithUse Type Definition
+
+<TSDoc
+  definition={generateDefinition({
+    code: `
+export { WizardWithUse as default } from '@hyperse/wizard'`,
+  })}
+/>
+
+### Internal Wizard Class
+
+The full `Wizard` class contains additional internal methods that are not exposed to external users. This design ensures:
+
+- **Clean Public API**: Only essential methods are exposed
+- **Plugin Safety**: Plugins can't accidentally call internal methods
+- **Maintainability**: Internal implementation can change without breaking external code
 
 <TSDoc
   definition={generateDefinition({

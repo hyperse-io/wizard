@@ -1,6 +1,6 @@
 import { type DeepPartial, mergeOptions } from '@hyperse/deep-merge';
 import { DefaultLogLevel, DefaultNoColor } from './constants.js';
-import { Wizard } from './core/Wizard.js';
+import { Wizard, type WizardWithUse } from './core/Wizard.js';
 import type { WizardOptions } from './types/type-wizard.js';
 
 /**
@@ -10,7 +10,7 @@ import type { WizardOptions } from './types/type-wizard.js';
  * @param options The options for the wizard.
  * @returns The wizard instance.
  */
-export const createWizard = (options: WizardOptions) => {
+export const createWizard = (options: WizardOptions): WizardWithUse => {
   const defaultOptions: DeepPartial<WizardOptions> = {
     noColor: DefaultNoColor,
     logLevel: DefaultLogLevel,
