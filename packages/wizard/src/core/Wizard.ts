@@ -1,4 +1,4 @@
-import { simpleDeepClone } from '@hyperse/deep-merge';
+import { mergeOptions, simpleDeepClone } from '@hyperse/deep-merge';
 import type { LogLevel } from '@hyperse/logger';
 import { createLogger, type Logger } from '@hyperse/logger';
 import { createStdoutPlugin } from '@hyperse/logger-plugin-stdout';
@@ -116,6 +116,10 @@ export class Wizard<
   #commandBuilder: CommandBuilderType<CommandName>;
   #commandChain: Command<CommandName>[] = [];
   #commandMap: Map<CommandName, Command<CommandName>> = new Map();
+  #allCommandContext: NameToContext = {} as NameToContext;
+  #commandContextLoader: (
+    flags: ParseFlags<GlobalFlags>
+  ) => Promise<NameToContext>;
   #interceptors: GlobalInterceptorHandler<GlobalFlags>[] = [];
   #globalFlags: FlagsWithBuiltin;
   #pendingPlugins: Plugin<any, any, any, any>[] = [];
@@ -186,6 +190,18 @@ export class Wizard<
         })
       )
       .build();
+  }
+
+  /**
+   * @description
+   * Sets up the context loader.
+   *
+   * @param contextLoader The context loader.
+   */
+  public setupContextLoader(
+    contextLoader: (flags: ParseFlags<GlobalFlags>) => Promise<NameToContext>
+  ) {
+    this.#commandContextLoader = contextLoader;
   }
 
   /**
@@ -269,10 +285,7 @@ export class Wizard<
         await interceptor(
           {
             unknownFlags: deepCtx.unknownFlags,
-            flags: pickFlags(
-              deepCtx.flags,
-              this.#globalFlags
-            ) as ParseFlags<GlobalFlags>,
+            flags: pickFlags<GlobalFlags>(deepCtx.flags, this.#globalFlags),
             logger: this.#logger,
             locale: this.#locale,
             i18n: this.i18n,
@@ -358,22 +371,28 @@ export class Wizard<
       });
     }
 
-    const flags = pickFlags(ctx.flags, inputCommandFlags) as ParseFlags<
-      typeof ctx.flags & FlagsWithBuiltin
-    >;
+    const commandNameChain = searchCommandNameChain(commandPipeline);
+    const eventName = commandNameChain.join(
+      '.'
+    ) as keyof WizardEventContext<NameToContext>;
+
+    const flags = pickFlags<typeof ctx.flags & FlagsWithBuiltin>(
+      ctx.flags,
+      inputCommandFlags
+    );
+
+    // merge global ctx and resolve ctx
+    const resolveCtx = ctx.ctx ?? {};
+    const globalCtx = this.#allCommandContext[eventName] ?? {};
     const processOptions = {
       ...commandBasicInfo,
-      ctx: ctx.ctx,
+      ctx: mergeOptions(globalCtx, resolveCtx),
       unknownFlags: ctx.unknownFlags,
       flags: flags,
     };
 
     await process(processOptions);
 
-    const commandNameChain = searchCommandNameChain(commandPipeline);
-    const eventName = commandNameChain.join(
-      '.'
-    ) as keyof WizardEventContext<NameToContext>;
     this.#eventEmitter.emit(
       eventName,
       processOptions as unknown as WizardEventContext<NameToContext>[typeof eventName]
@@ -505,6 +524,9 @@ export class Wizard<
     if (!pipelineContext) {
       return;
     }
+    this.#allCommandContext = await this.#commandContextLoader(
+      pickFlags<GlobalFlags>(pipelineContext.flags, this.#globalFlags)
+    );
     this.#cliPipeline.use(async (_, next, error) => {
       if (error) {
         await this.handleError(error);
@@ -772,5 +794,25 @@ export class Wizard<
    */
   public get globalFlags() {
     return globalFlagsWithI18n(this.i18n.t, simpleDeepClone(this.#globalFlags));
+  }
+
+  /**
+   * @description
+   * Get the command context with the command path.
+   *
+   * @example
+   * ```ts
+   * const commandContext = wizard.getCommandContext('build.evolve');
+   * ```
+   * @returns The command context with the command path.
+   */
+  public getCommandContext<NamePath extends keyof NameToContext>(
+    cmdPath: NamePath
+  ): NameToContext[NamePath] | undefined;
+  public getCommandContext<ResultContext extends object>(
+    cmdPath: string
+  ): ResultContext;
+  public getCommandContext(cmdPath: string): any {
+    return this.#allCommandContext[cmdPath as keyof NameToContext];
   }
 }

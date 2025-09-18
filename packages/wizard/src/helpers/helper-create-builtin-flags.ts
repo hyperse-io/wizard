@@ -51,5 +51,11 @@ export const createBuiltinFlags = (locale: SupportedLocales) => {
       type: String,
       description: 'core.flags.hpsEnvPath',
     },
+    projectCwd: {
+      type: String,
+      alias: 'p',
+      description: 'core.flags.projectCwd',
+      default: process.cwd(),
+    },
   };
 };
