@@ -1,5 +1,6 @@
 import {
   createWizard,
+  defineCommand,
   type DefineMessageType,
   definePlugin,
 } from '@hyperse/wizard';
@@ -75,23 +76,52 @@ describe('createErrorPlugin', () => {
       exitProcess: false,
     });
 
-    cli.use(plugin).use(
-      definePlugin({
-        name: () => 'test plugin',
-        setup: (cli) => {
-          return cli.register('test', {
-            description: () => 'test',
-          });
-        },
-      })
-    );
+    cli
+      .use(plugin)
+      .use(
+        definePlugin({
+          name: () => 'test plugin',
+          setup: (cli) => {
+            return cli.register('test', {
+              description: () => 'test',
+            });
+          },
+        })
+      )
+      .use(
+        definePlugin({
+          name: () => 'build plugin',
+          setup: (cli) => {
+            return cli.register(
+              defineCommand('build', {
+                description: () => 'build',
+              }).use(
+                defineCommand('evolve', {
+                  description: () => 'evolve',
+                }).use(
+                  defineCommand('mini', {
+                    description: () => 'mini',
+                  })
+                )
+              )
+            );
+          },
+        })
+      );
 
     await cli.parse(['testA']);
-
     expect(printer).toHaveBeenCalled();
     const result = printer.mock.calls[0][0];
-    console.log(result);
     expect(result).toContain('[ ERROR ]');
     expect(result).toContain('Command "testA" not found. Did you mean "test"?');
+
+    printer.mockClear();
+    await cli.parse(['build', 'evolve', 'mini2']);
+    expect(printer).toHaveBeenCalled();
+    const result1 = printer.mock.calls[0][0];
+    expect(result1).toContain('[ ERROR ]');
+    expect(result1).toContain(
+      'Command "build evolve mini2" not found. Did you mean "build evolve mini"?'
+    );
   });
 });

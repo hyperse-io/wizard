@@ -44,7 +44,6 @@ export type PluginSetupWizard<
   | 'name'
   | 'register'
   | 'version'
-  | 'getCommandContext'
 >;
 
 /**

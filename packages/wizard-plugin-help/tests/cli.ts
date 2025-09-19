@@ -96,6 +96,41 @@ const cli = createWizard({
         );
       },
     })
+  )
+  .use(
+    definePlugin({
+      name: () => 'test plugin2',
+      localeMessages: buildPluginMessages,
+      setup: (cli) => {
+        return cli.register(
+          defineCommand('pack', {
+            description: 'plugins.buildPlugin.description',
+            example: 'plugins.buildPlugin.example',
+            help: 'plugins.buildPlugin.help',
+          })
+            .flags({
+              projectCwd: {
+                type: String,
+                default: 'projectCwd',
+                alias: 'p',
+                description: 'plugins.buildPlugin.flags.projectCwd',
+              },
+              type: {
+                type: Boolean,
+                alias: 't',
+                required: true,
+                default: true,
+                description: 'plugins.buildPlugin.flags.type',
+              },
+              timeout: {
+                type: Number,
+                description: 'plugins.buildPlugin.flags.timeout',
+              },
+            })
+            .use(evolve, migrate)
+        );
+      },
+    })
   );
-cli.parse(['build', '-h', '--noColor=false', '--logLevel=debug']);
+cli.parse(['build', 'evolve', '-h', '--noColor=false', '--logLevel=debug']);
 // cli.parse(['-h']);

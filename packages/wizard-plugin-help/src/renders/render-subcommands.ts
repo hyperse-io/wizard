@@ -10,15 +10,15 @@ import { DELIMITER, INDENT } from '../constant.js';
 import { chalk } from '../helpers/helper-chalk.js';
 import { table } from '../helpers/helper-text-table.js';
 
-export const renderSubcommands = <Name extends CommandName>(
-  t: I18n['t'],
-  command: CommandWithI18n<Name>,
-  wizard: PluginSetupWizard
-) => {
-  if (command.name === Root) {
+export const renderSubcommands = (t: I18n['t'], wizard: PluginSetupWizard) => {
+  const commandChain = wizard.commandChain;
+  const lastCommand = commandChain[commandChain.length - 1];
+
+  if (lastCommand.name === Root) {
     return;
   }
-  const subcommands = command.rawCommand.subCommands || [];
+
+  const subcommands = lastCommand.rawCommand.subCommands || [];
   if (!subcommands.length) {
     return;
   }
@@ -28,18 +28,19 @@ export const renderSubcommands = <Name extends CommandName>(
     .map((command) => formatCommandName(command.name));
   const parentCommandNames = [wizard.name, ...commandChainNames];
 
-  const subcommandNames = subcommands.map((subcommand) => subcommand.name);
   const commandMap = wizard.commandMap;
-  const subcommandNameToDescription = subcommandNames
-    .map((subcommandName) => {
-      const subcommand = commandMap.get(subcommandName);
+  const subcommandNameToDescription = subcommands
+    .map((commandItem) => {
+      const subcommand = commandMap.get(
+        [commandChainNames, formatCommandName(commandItem.name)].join('.')
+      );
       if (!subcommand) {
         return [];
       }
       return [
         INDENT,
         chalk.blue(
-          [...parentCommandNames, formatCommandName(subcommandName)].join(' ')
+          [...parentCommandNames, formatCommandName(commandItem.name)].join(' ')
         ),
         chalk.yellow(DELIMITER),
         subcommand.description,

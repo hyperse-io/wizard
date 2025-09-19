@@ -61,6 +61,7 @@ import type {
 } from '../types/type-locale-messages.js';
 import type { Plugin, PluginSetupWizard } from '../types/type-plugin.js';
 import type {
+  WizardCommandContextLoaderResult,
   WizardEventContext,
   WizardOptions,
 } from '../types/type-wizard.js';
@@ -115,11 +116,16 @@ export class Wizard<
   #cliPipeline: Pipeline<CliPipelineContext>;
   #commandBuilder: CommandBuilderType<CommandName>;
   #commandChain: Command<CommandName>[] = [];
-  #commandMap: Map<CommandName, Command<CommandName>> = new Map();
-  #allCommandContext: NameToContext = {} as NameToContext;
-  #commandContextLoader: (
-    flags: ParseFlags<GlobalFlags>
-  ) => Promise<NameToContext>;
+  #commandMap: Map<string, Command<CommandName>> = new Map();
+  #commandContextLoader:
+    | ((
+        globalFlags: ParseFlags<GlobalFlags>
+      ) =>
+        | WizardCommandContextLoaderResult<NameToContext>
+        | Promise<WizardCommandContextLoaderResult<NameToContext>>)
+    | undefined;
+  #commandContextLoaderResult: WizardCommandContextLoaderResult<NameToContext> =
+    {};
   #interceptors: GlobalInterceptorHandler<GlobalFlags>[] = [];
   #globalFlags: FlagsWithBuiltin;
   #pendingPlugins: Plugin<any, any, any, any>[] = [];
@@ -199,7 +205,11 @@ export class Wizard<
    * @param contextLoader The context loader.
    */
   public setupContextLoader(
-    contextLoader: (flags: ParseFlags<GlobalFlags>) => Promise<NameToContext>
+    contextLoader: (
+      globalFlags: ParseFlags<GlobalFlags>
+    ) =>
+      | WizardCommandContextLoaderResult<NameToContext>
+      | Promise<WizardCommandContextLoaderResult<NameToContext>>
   ) {
     this.#commandContextLoader = contextLoader;
   }
@@ -303,7 +313,7 @@ export class Wizard<
    * @param parsedFlags The parsed flags.
    */
   private setupCommandPipeline(
-    calledCommandName: CommandName,
+    calledCommandName: string,
     commandChain: Command<CommandName>[]
   ) {
     for (const command of commandChain) {
@@ -331,7 +341,7 @@ export class Wizard<
    * @returns The result.
    */
   private async executeResolveOrHandler<Name extends CommandName>(
-    calledCommandName: CommandName,
+    calledCommandName: string,
     commandPipeline: Command<Name>[],
     command: Command<Name>,
     ctx: CliPipelineContext,
@@ -347,7 +357,10 @@ export class Wizard<
     // check has subCommand
     const subCommands = command.subCommands || [];
 
-    if (calledCommandName !== name && subCommands.length > 0) {
+    if (
+      calledCommandName !== formatCommandName(name) &&
+      subCommands.length > 0
+    ) {
       // check has subCommand
       const resolveSubContext = command.resolveSubContext || (() => {});
       let subContext: CommandContext;
@@ -383,10 +396,21 @@ export class Wizard<
 
     // merge global ctx and resolve ctx
     const resolveCtx = ctx.ctx ?? {};
-    const globalCtx = this.#allCommandContext[eventName] ?? {};
+
+    const commandCtxLoader = this.#commandContextLoaderResult[eventName];
+    let commandCtxWithLoader = {};
+    if (typeof commandCtxLoader === 'function') {
+      commandCtxWithLoader = await commandCtxLoader({
+        flags:
+          flags as WizardEventContext<NameToContext>[typeof eventName]['flags'],
+      });
+    } else {
+      commandCtxWithLoader = commandCtxLoader ?? {};
+    }
+
     const processOptions = {
       ...commandBasicInfo,
-      ctx: mergeOptions(globalCtx, resolveCtx),
+      ctx: mergeOptions(commandCtxWithLoader, resolveCtx),
       unknownFlags: ctx.unknownFlags,
       flags: flags,
     };
@@ -448,7 +472,7 @@ export class Wizard<
       this.#commandMap = simpleDeepClone(commandMap);
       const allCommandNames = Array.from(commandMap.keys());
 
-      if (allCommandNames.every((name) => name === Root)) {
+      if (allCommandNames.every((name) => name === formatCommandName(Root))) {
         this.#logger.warn(this.i18n.t('core.command.notProvider'));
       }
 
@@ -460,7 +484,7 @@ export class Wizard<
         }
       }
 
-      const [calledCommand, calledCommandName] = resolveCommand(
+      const [calledCommand, calledCommandNameChain] = resolveCommand(
         this.#locale,
         commandMap,
         simpleDeepClone(argvOptions),
@@ -478,17 +502,20 @@ export class Wizard<
       );
 
       // If no command is called, return the parsed flags
-      if (!calledCommandName) {
+      if (!calledCommandNameChain) {
         return parsedFlags;
       }
 
       //get command pipeline, eg: build.evolve.mini
-      const commandChain = searchCommandChain(calledCommandName, commandMap);
+      const commandChain = searchCommandChain(
+        calledCommandNameChain,
+        commandMap
+      );
 
       this.#commandChain = commandChain;
 
       // Root command does not need to be validated
-      if (calledCommandName === Root) {
+      if (calledCommandNameChain === formatCommandName(Root)) {
         return parsedFlags;
       }
 
@@ -499,7 +526,15 @@ export class Wizard<
         parsedFlags,
         commandChain
       );
-      this.setupCommandPipeline(calledCommandName, commandChain);
+      const calledCommandName = calledCommandNameChain.split('.').pop();
+      this.setupCommandPipeline(calledCommandName!, commandChain);
+
+      // load command context
+      if (this.#commandContextLoader) {
+        this.#commandContextLoaderResult = await this.#commandContextLoader(
+          pickFlags<GlobalFlags>(parsedFlags.flags, this.#globalFlags)
+        );
+      }
       return parsedFlags;
     } catch (error) {
       await this.handleError(error);
@@ -524,9 +559,6 @@ export class Wizard<
     if (!pipelineContext) {
       return;
     }
-    this.#allCommandContext = await this.#commandContextLoader(
-      pickFlags<GlobalFlags>(pipelineContext.flags, this.#globalFlags)
-    );
     this.#cliPipeline.use(async (_, next, error) => {
       if (error) {
         await this.handleError(error);
@@ -794,25 +826,5 @@ export class Wizard<
    */
   public get globalFlags() {
     return globalFlagsWithI18n(this.i18n.t, simpleDeepClone(this.#globalFlags));
-  }
-
-  /**
-   * @description
-   * Get the command context with the command path.
-   *
-   * @example
-   * ```ts
-   * const commandContext = wizard.getCommandContext('build.evolve');
-   * ```
-   * @returns The command context with the command path.
-   */
-  public getCommandContext<NamePath extends keyof NameToContext>(
-    cmdPath: NamePath
-  ): NameToContext[NamePath] | undefined;
-  public getCommandContext<ResultContext extends object>(
-    cmdPath: string
-  ): ResultContext;
-  public getCommandContext(cmdPath: string): any {
-    return this.#allCommandContext[cmdPath as keyof NameToContext];
   }
 }

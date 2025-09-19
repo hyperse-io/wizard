@@ -27,7 +27,7 @@ export const renderCommand = <Name extends CommandName>(
   const commandMap = wizard.commandMap;
   const subcommandNameToDescription = subcommandNames
     .map((subcommandName) => {
-      const subcommand = commandMap.get(subcommandName);
+      const subcommand = commandMap.get(formatCommandName(subcommandName));
       if (!subcommand) {
         return [];
       }
