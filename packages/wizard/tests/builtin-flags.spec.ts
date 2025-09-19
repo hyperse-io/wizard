@@ -76,7 +76,7 @@ describe('builtin flags', () => {
     expect(buildHandler).toHaveBeenCalled();
     expect(buildHandler.mock.lastCall?.[0]).toMatchObject({
       locale: 'en',
-      ctx: undefined,
+      ctx: {},
       flags: {
         projectCwd: 'user/project/foo',
         logLevel: 'debug',

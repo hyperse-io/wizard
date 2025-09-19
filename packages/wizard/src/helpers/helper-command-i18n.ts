@@ -9,6 +9,7 @@ import type {
   I18n,
   LocaleMessageResolverExtraOptions,
 } from '../types/type-locale-messages.js';
+import { formatCommandName } from './helper-format-command-name.js';
 import { localeMessageValue } from './helper-locale-message-value.js';
 
 export const i18nCommand = <Name extends CommandName>(
@@ -50,17 +51,14 @@ export const i18nCommand = <Name extends CommandName>(
  */
 export const commandMapWithI18n = (
   t: I18n['t'],
-  commandMap: Map<CommandName, Command<CommandName>>,
+  commandMap: Map<string, Command<CommandName>>,
   extraOptions?: LocaleMessageResolverExtraOptions,
   excludeRoot: boolean = false
-): Map<CommandName, CommandWithI18n<CommandName>> => {
-  const i18nCommandMap: Map<
-    CommandName,
-    CommandWithI18n<CommandName>
-  > = new Map();
+): Map<string, CommandWithI18n<CommandName>> => {
+  const i18nCommandMap: Map<string, CommandWithI18n<CommandName>> = new Map();
 
   for (const [name, command] of commandMap.entries()) {
-    if (excludeRoot && name === Root) {
+    if (excludeRoot && name === formatCommandName(Root)) {
       continue;
     }
     i18nCommandMap.set(name, i18nCommand(t, command, extraOptions));

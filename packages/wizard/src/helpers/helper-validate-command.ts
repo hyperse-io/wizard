@@ -81,7 +81,7 @@ export const validateCommandChain = <Name extends CommandName>(
  * @param name The command name to validate.
  * @returns True if the command name is valid, false otherwise.
  */
-export const validateCommandName = <Name extends CommandName>(name: Name) =>
-  name === Root
+export const validateCommandName = (name: string) =>
+  name === formatCommandName(Root)
     ? true
     : !(name.startsWith(' ') || name.endsWith(' ')) && !/\s{2,}/.test(name);

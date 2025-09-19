@@ -118,7 +118,7 @@ export const createHelpPlugin = (options: HelpPluginOptions = {}) => {
           message.push(renderHelp(t, lastCommand));
           message.push(renderExample(t, lastCommand));
           message.push(renderCommand(t, lastCommand, wizard));
-          message.push(renderSubcommands(t, lastCommand, wizard));
+          message.push(renderSubcommands(t, wizard));
           message.push(renderGlobal(t, wizard));
           if (showFooter) {
             message.push(localeMessageValue(t, 'plugins.helpPlugin.footer'));
@@ -154,7 +154,7 @@ export const createHelpPlugin = (options: HelpPluginOptions = {}) => {
               message.push(renderHelp(t, lastCommand));
               message.push(renderExample(t, lastCommand));
               message.push(renderCommand(t, lastCommand, wizard));
-              message.push(renderSubcommands(t, lastCommand, wizard));
+              message.push(renderSubcommands(t, wizard));
               message.push(renderGlobal(t, wizard));
               message.push(renderFlags(t, lastCommand.flags));
               if (showFooter) {

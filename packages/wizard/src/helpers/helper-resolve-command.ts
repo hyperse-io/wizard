@@ -9,35 +9,36 @@ import { formatCommandName } from './helper-format-command-name.js';
 
 export function resolveCommand(
   locale: SupportedLocales,
-  commandMap: Map<CommandName, Command<CommandName>>,
+  commandMap: Map<string, Command<CommandName>>,
   argvOptions: ParseOptions,
   globalFlags: FlagsWithBuiltin
-): [Command<CommandName> | undefined, CommandName | undefined] {
+): [Command<CommandName> | undefined, string | undefined] {
   const { argv } = argvOptions;
-  let calledCommandName: CommandName | undefined;
+  let calledCommandName: string[] = [];
   for (const [name, command] of commandMap.entries()) {
+    const cmdName = name.split('.').pop();
     const mergedFlags = { ...globalFlags, ...(command.flags ?? {}) };
     const parsed = typeFlag(mergedFlags, [...(argv ?? [])]);
     const { _: args } = parsed;
-    if (name === Root) {
+    if (!cmdName || cmdName === formatCommandName(Root)) {
       continue;
     }
 
-    const lastArg = args.pop();
-    calledCommandName = lastArg;
-    if (lastArg && lastArg === name) {
+    const argsStr = args.join('.');
+    calledCommandName = [...args];
+    if (args && argsStr === name) {
       return [command, name];
     }
   }
 
-  if (calledCommandName) {
+  if (calledCommandName.length > 0) {
     throw new CommandNotFoundError(locale, {
-      cmdName: formatCommandName(calledCommandName),
+      cmdName: calledCommandName.join(' '),
     });
   }
 
-  if (commandMap.has(Root)) {
-    return [commandMap.get(Root)!, Root];
+  if (commandMap.has(formatCommandName(Root))) {
+    return [commandMap.get(formatCommandName(Root))!, formatCommandName(Root)];
   }
 
   return [undefined, undefined];

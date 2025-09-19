@@ -47,6 +47,19 @@ export type WizardEventContext<NameToContext extends CommandNameToContext> = {
   } & CommandBasicInfoWithI18n;
 };
 
+export type WizardCommandContextLoaderResult<
+  NameToContext extends CommandNameToContext,
+> = {
+  [K in keyof WizardEventContext<NameToContext>]?:
+    | ((
+        ctx: Pick<WizardEventContext<NameToContext>[K], 'flags'>
+      ) => Omit<NameToContext[K], 'flags'>)
+    | ((
+        ctx: Pick<WizardEventContext<NameToContext>[K], 'flags'>
+      ) => Promise<Omit<NameToContext[K], 'flags'>>)
+    | Omit<NameToContext[K], 'flags'>;
+};
+
 /**
  * @description
  * Options for configuring a wizard instance.

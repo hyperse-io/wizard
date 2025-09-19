@@ -139,7 +139,7 @@ describe('cli', () => {
     expect(buildHandler).toHaveBeenCalled();
     expect(buildHandler.mock.lastCall?.[0]).toMatchObject({
       locale: 'en',
-      ctx: undefined,
+      ctx: {},
       flags: { projectCwd: 'user/project/foo' },
       name: 'build',
     });
@@ -164,7 +164,20 @@ describe('cli', () => {
       .use(
         definePlugin({
           name: () => 'deploy plugin',
-          setup: (wizard) => wizard.register(deployCmd),
+          setup: (wizard) => {
+            wizard.setupContextLoader(() => {
+              return {
+                'build.evolve': (ctx) => {
+                  return {
+                    root1: {
+                      root11: ctx.flags.compiler,
+                    },
+                  };
+                },
+              };
+            });
+            return wizard.register(deployCmd);
+          },
         })
       )
       .on('build', buildEvent)
@@ -287,7 +300,7 @@ describe('cli', () => {
     expect(deployHandler).toHaveBeenCalled();
     expect(deployHandler.mock.lastCall?.[0]).toMatchObject({
       locale: 'en',
-      ctx: undefined,
+      ctx: {},
       flags: { fileType: 'js', ossType: 'azure' },
       name: 'deploy',
     });

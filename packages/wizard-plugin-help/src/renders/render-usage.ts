@@ -20,12 +20,21 @@ export const renderUsage = <Name extends CommandName>(
   usageMessage.push(usage);
 
   const cliName = wizard.name;
-  const commandName =
-    command.name === Root ? '' : ` ${formatCommandName(command.name)}`;
+  const commandChainNames = wizard.commandChain
+    .filter((command) => command.name !== Root)
+    .map((command) => formatCommandName(command.name));
+
   const showFlags = Object.keys(command.flags || {}).length > 0;
   const flagsString = showFlags ? ' [flags]' : '';
   usageMessage.push(
-    table([[INDENT, chalk.blue(`$ ${cliName}${commandName}${flagsString}`)]])
+    table([
+      [
+        INDENT,
+        chalk.blue(
+          `$ ${[cliName, ...commandChainNames].join(' ')}${flagsString}`
+        ),
+      ],
+    ])
   );
 
   return usageMessage.join('\n');

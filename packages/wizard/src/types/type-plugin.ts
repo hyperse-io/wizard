@@ -35,6 +35,7 @@ export type PluginSetupWizard<
   | 'commandMap'
   | 'description'
   | 'errorHandler'
+  | 'setupContextLoader'
   | 'flag'
   | 'globalFlags'
   | 'i18n'

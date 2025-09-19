@@ -1,5 +1,5 @@
 import didyoumean from 'didyoumean2';
-import { CommandNotFoundError } from '@hyperse/wizard';
+import { CommandNotFoundError, formatCommandName } from '@hyperse/wizard';
 import { definePlugin, Root } from '@hyperse/wizard';
 import { errorMessages } from './i18n/messages.js';
 
@@ -27,7 +27,9 @@ export const createErrorPlugin = (options?: ErrorPluginOptions) => {
           const { t } = wizard.i18n;
           const commandMap = wizard.commandMap;
           const commandKeys = Array.from(commandMap?.keys() ?? []);
-          const finalCommandKeys = commandKeys.filter((key) => key !== Root);
+          const finalCommandKeys = commandKeys.filter(
+            (key) => key !== formatCommandName(Root)
+          );
           const hasCommands = finalCommandKeys.length > 0;
 
           if (err instanceof CommandNotFoundError && hasCommands) {
@@ -39,7 +41,7 @@ export const createErrorPlugin = (options?: ErrorPluginOptions) => {
               await pluginCtx.logger.error(
                 t('plugins.errorPlugin.messages.commandNotFound', {
                   cmdName: err.variables.cmdName,
-                  closestCommandName,
+                  closestCommandName: closestCommandName.replace(/\./g, ' '),
                 })
               );
             } else {

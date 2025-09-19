@@ -1,5 +1,6 @@
+import { Root } from '../constants.js';
 import type { Command, CommandName } from '../types/type-command.js';
-
+import { formatCommandName } from './helper-format-command-name.js';
 /**
  * Search the command chain.
  * Query from the child node to the root node
@@ -9,26 +10,24 @@ import type { Command, CommandName } from '../types/type-command.js';
  * @returns The command pipeline.
  */
 export const searchCommandChain = <Name extends CommandName>(
-  name: Name,
-  commandMap: Map<Name, Command<Name>>
+  name: string,
+  commandMap: Map<string, Command<Name>>
 ): Command<Name>[] => {
   const commandList: Command<Name>[] = [];
-  let command = commandMap.get(name)!;
-  if (!command) {
-    return [];
-  }
-  commandList.push(command);
 
-  while (command?.parentCommand) {
-    const parentCommand: Command<Name> | undefined = command.parentCommand;
-    if (parentCommand) {
-      commandList.push(parentCommand);
-      command = parentCommand;
-    } else {
-      break;
+  const commandNames: string[] = name.split('.');
+  while (commandNames.length > 0) {
+    const command = commandMap.get(commandNames.join('.'));
+    if (command) {
+      commandList.push(command);
     }
+    commandNames.pop();
   }
 
+  const rootCommand = commandMap.get(formatCommandName(Root));
+  if (name !== formatCommandName(Root) && rootCommand) {
+    commandList.push(rootCommand);
+  }
   commandList.reverse();
   return commandList;
 };
