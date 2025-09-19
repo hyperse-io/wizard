@@ -1,5 +1,18 @@
 # @hyperse/wizard-plugin-error
 
+## 1.0.5
+
+### Patch Changes
+
+- [#16](https://github.com/hyperse-io/wizard/pull/16) [`296c5b2`](https://github.com/hyperse-io/wizard/commit/296c5b258c7c274308c5628b3693b089f2937c7c) Thanks [@tclxshunquan-wang](https://github.com/tclxshunquan-wang)! - feat: Enhance Wizard API and command context capabilities
+  - Support invoking commands by string name to simplify integration and usage.
+  - Add a context loader and command context retrieval for consistent command execution.
+  - Improve helpers for command parsing/validation, built-in flag handling, and command tree search.
+  - Update Help and Error plugins to align with the new API; refine usage/commands/subcommands rendering.
+
+- Updated dependencies [[`296c5b2`](https://github.com/hyperse-io/wizard/commit/296c5b258c7c274308c5628b3693b089f2937c7c)]:
+  - @hyperse/wizard@1.0.5
+
 ## 1.0.4
 
 ### Patch Changes
