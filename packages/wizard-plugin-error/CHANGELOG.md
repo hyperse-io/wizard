@@ -1,5 +1,24 @@
 # @hyperse/wizard-plugin-error
 
+## 1.0.4
+
+### Patch Changes
+
+- [#15](https://github.com/hyperse-io/wizard/pull/15) [`cace114`](https://github.com/hyperse-io/wizard/commit/cace114783731b6f5e2ec6c2994ea9df6935dc6c) Thanks [@tclxshunquan-wang](https://github.com/tclxshunquan-wang)! - Improve environment support and CLI UX.
+  - feat
+    - @hyperse/wizard: builtin environment variable support.
+    - @hyperse/wizard-plugin-loader: load and resolve env files (.env, .env.local when present).
+    - @hyperse/wizard-plugin-help: clearer help rendering for commands/usage/subcommands/global options.
+    - @hyperse/wizard-plugin-version: graceful version resolution when package metadata is missing.
+  - fix
+    - @hyperse/wizard: strengthen event and plugin typings.
+    - @hyperse/wizard-plugin-error: align internal typings with core.
+  - docs
+    - Refreshed core API docs and website config related to the new env support.
+
+- Updated dependencies [[`e57b630`](https://github.com/hyperse-io/wizard/commit/e57b630eb8aaff52e994adb2f990cf634a6afde0), [`cace114`](https://github.com/hyperse-io/wizard/commit/cace114783731b6f5e2ec6c2994ea9df6935dc6c)]:
+  - @hyperse/wizard@1.0.4
+
 ## 1.0.3
 
 ### Patch Changes
