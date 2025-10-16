@@ -7,6 +7,14 @@ import {
 import type { ConfigLoaderOptions } from '../types/type-wizard.js';
 import { requireResolve } from './helper-require-resolve.js';
 
+const defaultConfigLoaderOptions = {
+  configFile: `wizard`,
+  loaderOptions: {
+    externals: [/^@hyperse\/.*/],
+  },
+  hiddenLoadSpinner: false,
+};
+
 /**
  * @description
  * Loads the configuration file and returns the merged configuration object.
@@ -21,21 +29,15 @@ export const loadConfigFile = async <ConfigOptions extends object>(
   projectCwd: string,
   configLoaderOptions: DeepPartial<ConfigLoaderOptions> = {}
 ): Promise<DeepPartial<ConfigOptions>> => {
+  let spinner;
   const finalConfigLoaderOptions = mergeOptions<Required<ConfigLoaderOptions>>(
-    {
-      configFile: `wizard`,
-      loaderOptions: {
-        externals: [/^@hyperse\/.*/],
-      },
-      hiddenLoadSpinner: false,
-    },
+    defaultConfigLoaderOptions,
     configLoaderOptions
   );
 
   const { configFile, loaderOptions, hiddenLoadSpinner } =
     finalConfigLoaderOptions;
 
-  let spinner;
   if (!hiddenLoadSpinner) {
     const yoctoSpinner = await import('yocto-spinner');
     spinner = yoctoSpinner
@@ -45,16 +47,29 @@ export const loadConfigFile = async <ConfigOptions extends object>(
       .start();
   }
 
-  let data;
   try {
-    data = await searchConfig<UserConfigExport<DeepPartial<ConfigOptions>>>(
-      configFile,
+    const data = await searchConfig<
+      UserConfigExport<DeepPartial<ConfigOptions>>
+    >(configFile, projectCwd, {
+      ...loaderOptions,
       projectCwd,
-      {
-        ...loaderOptions,
+    });
+
+    let localData;
+    if (typeof data?.config === 'function') {
+      localData = await data?.config({
         projectCwd,
-      }
-    );
+        resolve: requireResolve,
+      });
+    } else {
+      localData = data?.config || {};
+    }
+    if (!hiddenLoadSpinner && spinner) {
+      spinner.success(
+        `The ${configFile} configuration has been loaded successfully!`
+      );
+    }
+    return localData;
   } catch (error) {
     if (!hiddenLoadSpinner && spinner) {
       spinner.error(`Failed to load ${configFile} configuration`);
@@ -63,20 +78,4 @@ export const loadConfigFile = async <ConfigOptions extends object>(
       `Failed to load configuration file: ${error instanceof Error ? error.message : String(error)}`
     );
   }
-
-  let localData = {};
-  if (typeof data?.config === 'function') {
-    localData = await data?.config({
-      projectCwd,
-      resolve: requireResolve,
-    });
-  } else {
-    localData = data?.config || {};
-  }
-  if (!hiddenLoadSpinner && spinner) {
-    spinner.success(
-      `The ${configFile} configuration has been loaded successfully!`
-    );
-  }
-  return localData;
 };
