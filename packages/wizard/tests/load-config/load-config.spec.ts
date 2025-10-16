@@ -7,7 +7,7 @@ import { definePlugin } from '../../src/index.js';
 import wizardConfig from './fixtures/wizard.config.js';
 import wizardAsyncConfig from './fixtures/wizard-async.config.js';
 
-describe('builtin flags', () => {
+describe('load config', () => {
   const buildHandler = vi.fn();
   const evolveHandler = vi.fn();
   const mockHandler = vi.fn();
