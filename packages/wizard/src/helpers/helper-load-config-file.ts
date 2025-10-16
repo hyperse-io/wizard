@@ -23,7 +23,7 @@ export const loadConfigFile = async <ConfigOptions extends object>(
 ): Promise<DeepPartial<ConfigOptions>> => {
   const finalConfigLoaderOptions = mergeOptions<Required<ConfigLoaderOptions>>(
     {
-      configFile: `hps`,
+      configFile: `wizard`,
       loaderOptions: {
         externals: [/^@hyperse\/.*/],
       },
@@ -45,14 +45,25 @@ export const loadConfigFile = async <ConfigOptions extends object>(
       .start();
   }
 
-  const data = await searchConfig<UserConfigExport<DeepPartial<ConfigOptions>>>(
-    configFile,
-    projectCwd,
-    {
-      ...loaderOptions,
+  let data;
+  try {
+    data = await searchConfig<UserConfigExport<DeepPartial<ConfigOptions>>>(
+      configFile,
       projectCwd,
+      {
+        ...loaderOptions,
+        projectCwd,
+      }
+    );
+  } catch (error) {
+    if (!hiddenLoadSpinner && spinner) {
+      spinner.error(`Failed to load ${configFile} configuration`);
     }
-  );
+    throw new Error(
+      `Failed to load configuration file: ${error instanceof Error ? error.message : String(error)}`
+    );
+  }
+
   let localData = {};
   if (typeof data?.config === 'function') {
     localData = await data?.config({

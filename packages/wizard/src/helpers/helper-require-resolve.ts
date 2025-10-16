@@ -15,7 +15,7 @@ export const requireResolve = (metaUrl: string, specifier: string | URL) => {
     // 1. first try to resolve `commonjs`
     return createRequire(metaUrl).resolve(specifier);
   } catch {
-    // 2. first try to resolve `esm`
+    // 2. then try to resolve `esm`
     return resolve(specifier, metaUrl);
   }
 };
