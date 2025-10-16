@@ -213,6 +213,11 @@ export interface Command<
   get subCommands(): Command<Name, any, any, any>[];
 
   /**
+   * Returns config filename for load config.
+   */
+  get configFile(): string;
+
+  /**
    * Returns the process function for this command.
    */
   get process(): CommandProcessFunction<
@@ -267,4 +272,10 @@ export interface Command<
   setProcess(
     fn: CommandProcessFunction<ProcessContext<Name, Context, CommandFlags>>
   ): void;
+
+  /**
+   *Set the configuration file
+   * @param configFile - The config file.
+   */
+  setConfigFile(configFile: string): void;
 }

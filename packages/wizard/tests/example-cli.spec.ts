@@ -165,17 +165,6 @@ describe('cli', () => {
         definePlugin({
           name: () => 'deploy plugin',
           setup: (wizard) => {
-            wizard.setupContextLoader(() => {
-              return {
-                'build.evolve': (ctx) => {
-                  return {
-                    root1: {
-                      root11: ctx.flags.compiler,
-                    },
-                  };
-                },
-              };
-            });
             return wizard.register(deployCmd);
           },
         })

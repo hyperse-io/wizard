@@ -119,13 +119,12 @@ export class Wizard<
   #commandMap: Map<string, Command<CommandName>> = new Map();
   #commandContextLoader:
     | ((
-        globalFlags: ParseFlags<GlobalFlags>
+        globalFlags: ParseFlags<GlobalFlags>,
+        configFile: string
       ) =>
         | WizardCommandContextLoaderResult<NameToContext>
         | Promise<WizardCommandContextLoaderResult<NameToContext>>)
     | undefined;
-  #commandContextLoaderResult: WizardCommandContextLoaderResult<NameToContext> =
-    {};
   #interceptors: GlobalInterceptorHandler<GlobalFlags>[] = [];
   #globalFlags: FlagsWithBuiltin;
   #pendingPlugins: Plugin<any, any, any, any>[] = [];
@@ -206,7 +205,8 @@ export class Wizard<
    */
   public setupContextLoader(
     contextLoader: (
-      globalFlags: ParseFlags<GlobalFlags>
+      globalFlags: ParseFlags<GlobalFlags>,
+      configFile: string
     ) =>
       | WizardCommandContextLoaderResult<NameToContext>
       | Promise<WizardCommandContextLoaderResult<NameToContext>>
@@ -397,15 +397,23 @@ export class Wizard<
     // merge global ctx and resolve ctx
     const resolveCtx = ctx.ctx ?? {};
 
-    const commandCtxLoader = this.#commandContextLoaderResult[eventName];
+    // load command context
+    const configFile = command.configFile;
     let commandCtxWithLoader = {};
-    if (typeof commandCtxLoader === 'function') {
-      commandCtxWithLoader = await commandCtxLoader({
-        flags:
-          flags as WizardEventContext<NameToContext>[typeof eventName]['flags'],
-      });
-    } else {
-      commandCtxWithLoader = commandCtxLoader ?? {};
+    if (configFile && this.#commandContextLoader) {
+      const commandContextLoaderResult = await this.#commandContextLoader(
+        pickFlags<GlobalFlags>(flags, this.#globalFlags),
+        configFile
+      );
+      const commandCtxLoader = commandContextLoaderResult[eventName];
+      if (typeof commandCtxLoader === 'function') {
+        commandCtxWithLoader = await commandCtxLoader({
+          flags:
+            flags as WizardEventContext<NameToContext>[typeof eventName]['flags'],
+        });
+      } else {
+        commandCtxWithLoader = commandCtxLoader ?? {};
+      }
     }
 
     const processOptions = {
@@ -529,12 +537,6 @@ export class Wizard<
       const calledCommandName = calledCommandNameChain.split('.').pop();
       this.setupCommandPipeline(calledCommandName!, commandChain);
 
-      // load command context
-      if (this.#commandContextLoader) {
-        this.#commandContextLoaderResult = await this.#commandContextLoader(
-          pickFlags<GlobalFlags>(parsedFlags.flags, this.#globalFlags)
-        );
-      }
       return parsedFlags;
     } catch (error) {
       await this.handleError(error);
@@ -701,7 +703,6 @@ export class Wizard<
       NewGlobalFlags & GlobalFlags
     >;
   }
-
   /**
    * @description
    * Set the error handler.

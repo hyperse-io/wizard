@@ -41,6 +41,7 @@ class CommandImpl<
   private cmdProcessFn: CommandProcessFunction<
     ProcessContext<Name, Context, CommandFlags>
   >;
+  private cmdConfigFile: string;
 
   constructor(name: Name, options: CommandOptions) {
     this.cmdName = name;
@@ -75,6 +76,10 @@ class CommandImpl<
 
   get subCommands() {
     return this.cmdSubCommands;
+  }
+
+  get configFile() {
+    return this.cmdConfigFile;
   }
 
   get resolveSubContext() {
@@ -114,6 +119,10 @@ class CommandImpl<
     fn: CommandProcessFunction<ProcessContext<Name, Context, CommandFlags>>
   ): void {
     this.cmdProcessFn = fn;
+  }
+
+  setConfigFile(configFile: string): void {
+    this.cmdConfigFile = configFile;
   }
 }
 
