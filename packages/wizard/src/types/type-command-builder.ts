@@ -279,24 +279,6 @@ export interface CommandBuilder<
 
   /**
    * @description
-   * Load the local configuration file
-   *
-   * @remarks `Function`
-   * @param {String} configFile - The config file.
-   * @returns {CommandBuilder} A new CommandBuilder with the config file attached.
-   */
-  loadConfig(
-    configFile: string
-  ): CommandBuilder<
-    Name,
-    Context,
-    SubCommandContext,
-    CommandFlags,
-    NameToContext
-  >;
-
-  /**
-   * @description
    * Extracts the final Command object from the builder, which can be registered or executed.
    *
    * @remarks `Function`

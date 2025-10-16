@@ -87,6 +87,7 @@ const deployCmd = defineCommand<
 >('deploy', {
   //locale message key
   description: 'plugins.deploy.description',
+  loadConfig: true,
 })
   .flags({
     fileType: {

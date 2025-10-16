@@ -1,0 +1,8 @@
+{
+  "name": "config-loader",
+  "sideEffects": [
+    "*.css",
+    "*.less"
+  ],
+  "type": "module"
+}

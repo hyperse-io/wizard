@@ -30,6 +30,7 @@
     "package.json"
   ],
   "scripts": {
+    "serve": "yarn node --import=@hyperse/ts-node/register ./tests/load-config/test-serve.ts",
     "build": "rimraf dist && tsc -p ./tsconfig.build.json",
     "?build-release": "When https://github.com/atlassian/changesets/issues/432 has a solution we can remove this trick",
     "build-release": "yarn build && rimraf ./_release && yarn pack && mkdir ./_release && tar zxvf ./package.tgz --directory ./_release && rm ./package.tgz",
@@ -54,7 +55,8 @@
     "import-meta-resolve": "^4.2.0",
     "is-platform": "^1.0.0",
     "type-fest": "^5.1.0",
-    "type-flag": "^3.0.0"
+    "type-flag": "^3.0.0",
+    "yocto-spinner": "^1.0.0"
   },
   "devDependencies": {
     "@hyperse/eslint-config-hyperse": "^1.4.8",

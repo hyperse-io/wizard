@@ -10,6 +10,7 @@ import { EventEmitter } from '../events/EventEmitter.js';
 import { createBuiltinFlags } from '../helpers/helper-create-builtin-flags.js';
 import { createBuiltinInterceptor } from '../helpers/helper-create-builtin-interceptor.js';
 import { globalFlagsWithI18n } from '../helpers/helper-global-flags-i18n.js';
+import { loadConfigFile } from '../helpers/helper-load-config-file.js';
 import { mergeLocaleMessages } from '../helpers/helper-locale-message-merge.js';
 import { resolveCommand } from '../helpers/helper-resolve-command.js';
 import { setupProcessEnv } from '../helpers/helper-setup-process-env.js';
@@ -51,7 +52,6 @@ import type {
   FlagOptions,
   Flags,
   FlagsWithBuiltin,
-  ParseFlags,
 } from '../types/type-flag.js';
 import type {
   I18n,
@@ -61,6 +61,7 @@ import type {
 } from '../types/type-locale-messages.js';
 import type { Plugin, PluginSetupWizard } from '../types/type-plugin.js';
 import type {
+  ConfigLoaderOptions,
   WizardCommandContextLoaderResult,
   WizardEventContext,
   WizardOptions,
@@ -117,19 +118,12 @@ export class Wizard<
   #commandBuilder: CommandBuilderType<CommandName>;
   #commandChain: Command<CommandName>[] = [];
   #commandMap: Map<string, Command<CommandName>> = new Map();
-  #commandContextLoader:
-    | ((
-        globalFlags: ParseFlags<GlobalFlags>,
-        configFile: string
-      ) =>
-        | WizardCommandContextLoaderResult<NameToContext>
-        | Promise<WizardCommandContextLoaderResult<NameToContext>>)
-    | undefined;
   #interceptors: GlobalInterceptorHandler<GlobalFlags>[] = [];
   #globalFlags: FlagsWithBuiltin;
   #pendingPlugins: Plugin<any, any, any, any>[] = [];
   #eventEmitter: EventEmitter<WizardEventContext<NameToContext>> =
     new EventEmitter<WizardEventContext<NameToContext>>();
+  #configLoaderOptions: ConfigLoaderOptions = {};
 
   constructor(
     private options: Exclude<WizardOptions, 'logLevel' | 'noColor'> &
@@ -149,6 +143,8 @@ export class Wizard<
       coreMessages,
       options.localeMessages
     );
+
+    this.#configLoaderOptions = options.configLoaderOptions ?? {};
     this.setupRootCommand();
     this.interceptor(createBuiltinInterceptor(this));
   }
@@ -195,23 +191,6 @@ export class Wizard<
         })
       )
       .build();
-  }
-
-  /**
-   * @description
-   * Sets up the context loader.
-   *
-   * @param contextLoader The context loader.
-   */
-  public setupContextLoader(
-    contextLoader: (
-      globalFlags: ParseFlags<GlobalFlags>,
-      configFile: string
-    ) =>
-      | WizardCommandContextLoaderResult<NameToContext>
-      | Promise<WizardCommandContextLoaderResult<NameToContext>>
-  ) {
-    this.#commandContextLoader = contextLoader;
   }
 
   /**
@@ -398,13 +377,12 @@ export class Wizard<
     const resolveCtx = ctx.ctx ?? {};
 
     // load command context
-    const configFile = command.configFile;
     let commandCtxWithLoader = {};
-    if (configFile && this.#commandContextLoader) {
-      const commandContextLoaderResult = await this.#commandContextLoader(
-        pickFlags<GlobalFlags>(flags, this.#globalFlags),
-        configFile
-      );
+
+    if (command.loadConfig) {
+      const commandContextLoaderResult = await loadConfigFile<
+        WizardCommandContextLoaderResult<NameToContext>
+      >(flags.projectCwd, this.#configLoaderOptions);
       const commandCtxLoader = commandContextLoaderResult[eventName];
       if (typeof commandCtxLoader === 'function') {
         commandCtxWithLoader = await commandCtxLoader({

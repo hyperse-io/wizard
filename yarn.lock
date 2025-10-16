@@ -3269,6 +3269,7 @@ __metadata:
     type-flag: "npm:^3.0.0"
     typescript: "npm:^5.9.3"
     vitest: "npm:^3.2.4"
+    yocto-spinner: "npm:^1.0.0"
   languageName: unknown
   linkType: soft
 
@@ -18491,6 +18492,22 @@ __metadata:
   version: 1.2.1
   resolution: "yocto-queue@npm:1.2.1"
   checksum: 10c0/5762caa3d0b421f4bdb7a1926b2ae2189fc6e4a14469258f183600028eb16db3e9e0306f46e8ebf5a52ff4b81a881f22637afefbef5399d6ad440824e9b27f9f
+  languageName: node
+  linkType: hard
+
+"yocto-spinner@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "yocto-spinner@npm:1.0.0"
+  dependencies:
+    yoctocolors: "npm:^2.1.1"
+  checksum: 10c0/bc6fa263a5b31522a76da9668cbee0b130787ca2fa95fac1d24c3f62318c310ef1f523bb66d43dc62606526d62f1731abf1420ba63d474758b54c44d32220fd0
+  languageName: node
+  linkType: hard
+
+"yoctocolors@npm:^2.1.1":
+  version: 2.1.2
+  resolution: "yoctocolors@npm:2.1.2"
+  checksum: 10c0/b220f30f53ebc2167330c3adc86a3c7f158bcba0236f6c67e25644c3188e2571a6014ffc1321943bb619460259d3d27eb4c9cc58c2d884c1b195805883ec7066
   languageName: node
   linkType: hard
 

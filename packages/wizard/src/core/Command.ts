@@ -41,13 +41,15 @@ class CommandImpl<
   private cmdProcessFn: CommandProcessFunction<
     ProcessContext<Name, Context, CommandFlags>
   >;
-  private cmdConfigFile?: string;
+  private cmdLoadConfig: boolean = false;
 
   constructor(name: Name, options: CommandOptions) {
+    const { description, example, help, loadConfig = false } = options;
     this.cmdName = name;
-    this.cmdDescription = options.description;
-    this.cmdExample = options.example;
-    this.cmdHelp = options.help;
+    this.cmdDescription = description;
+    this.cmdExample = example;
+    this.cmdHelp = help;
+    this.cmdLoadConfig = loadConfig;
   }
 
   get name() {
@@ -78,8 +80,8 @@ class CommandImpl<
     return this.cmdSubCommands;
   }
 
-  get configFile() {
-    return this.cmdConfigFile;
+  get loadConfig() {
+    return this.cmdLoadConfig;
   }
 
   get resolveSubContext() {
@@ -119,10 +121,6 @@ class CommandImpl<
     fn: CommandProcessFunction<ProcessContext<Name, Context, CommandFlags>>
   ): void {
     this.cmdProcessFn = fn;
-  }
-
-  setConfigFile(configFile: string): void {
-    this.cmdConfigFile = configFile;
   }
 }
 

@@ -40,6 +40,13 @@ export type CommandOptions = {
    * The help message for the command, supports i18n.
    */
   help?: LocaleMessageResolver;
+  /**
+   * Whether to automatically load a configuration file and provide its contents as context to the handler.
+   * If true, the handler will receive the result of the config loader merged into the ctx.
+   *
+   * @default false
+   */
+  loadConfig?: boolean;
 };
 
 export type CommandBasicInfoWithI18n = {
@@ -213,9 +220,9 @@ export interface Command<
   get subCommands(): Command<Name, any, any, any>[];
 
   /**
-   * Returns config filename for load config.
+   * Is it necessary to load the local config file
    */
-  get configFile(): string | undefined;
+  get loadConfig(): boolean;
 
   /**
    * Returns the process function for this command.
@@ -272,10 +279,4 @@ export interface Command<
   setProcess(
     fn: CommandProcessFunction<ProcessContext<Name, Context, CommandFlags>>
   ): void;
-
-  /**
-   *Set the configuration file
-   * @param configFile - The config file.
-   */
-  setConfigFile(configFile: string): void;
 }

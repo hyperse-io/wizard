@@ -4,8 +4,6 @@ import { LogLevel } from '@hyperse/logger';
 import { createWizard } from '../../src/create-wizard.js';
 import { defineCommand } from '../../src/define-command.js';
 import { definePlugin } from '../../src/index.js';
-import wizardConfig from './fixtures/wizard.config.js';
-import wizardAsyncConfig from './fixtures/wizard-async.config.js';
 
 describe('load config', () => {
   const buildHandler = vi.fn();
@@ -23,16 +21,16 @@ describe('load config', () => {
     'build',
     {
       description: () => 'build description',
+      loadConfig: true,
     }
   )
     .use(
       defineCommand<'evolve', object>('evolve', {
         description: () => 'evolve description',
+        loadConfig: true,
+      }).process((ctx) => {
+        evolveHandler(ctx);
       })
-        .loadConfig('wizard')
-        .process((ctx) => {
-          evolveHandler(ctx);
-        })
     )
     .process((ctx) => {
       buildHandler(ctx);
@@ -40,26 +38,25 @@ describe('load config', () => {
 
   const mockCmd = defineCommand<'mock', { root: { root1: string } }>('mock', {
     description: () => 'mock description',
-  })
-    .loadConfig('wizard')
-    .process((ctx) => {
-      mockHandler(ctx);
-    });
+    loadConfig: true,
+  }).process((ctx) => {
+    mockHandler(ctx);
+  });
 
   const buildAsyncCmd = defineCommand<'build', { root: { root1: string } }>(
     'build',
     {
       description: () => 'build description',
+      loadConfig: true,
     }
   )
     .use(
       defineCommand<'evolve', object>('evolve', {
         description: () => 'evolve description',
+        loadConfig: true,
+      }).process((ctx) => {
+        evolveHandler(ctx);
       })
-        .loadConfig('wizard-async')
-        .process((ctx) => {
-          evolveHandler(ctx);
-        })
     )
     .process((ctx) => {
       buildHandler(ctx);
@@ -69,12 +66,11 @@ describe('load config', () => {
     'mock',
     {
       description: () => 'mock description',
+      loadConfig: true,
     }
-  )
-    .loadConfig('wizard-async')
-    .process((ctx) => {
-      mockHandler(ctx);
-    });
+  ).process((ctx) => {
+    mockHandler(ctx);
+  });
 
   const projectCwd = join(dirname(fileURLToPath(import.meta.url)), 'fixtures');
 
@@ -88,26 +84,17 @@ describe('load config', () => {
       errorHandler: (err) => {
         console.log(err);
       },
-    })
-      .use(
-        definePlugin({
-          name: () => 'mockPlugin',
-          setup: (wizard) => {
-            wizard.setupContextLoader((_flags, _configFile) => {
-              return wizardConfig();
-            });
-            return wizard;
-          },
-        })
-      )
-      .use(
-        definePlugin({
-          name: () => 'mockPlugin',
-          setup: (wizard) => {
-            return wizard.register(mockCmd);
-          },
-        })
-      );
+      configLoaderOptions: {
+        configFile: 'wizard',
+      },
+    }).use(
+      definePlugin({
+        name: () => 'mockPlugin',
+        setup: (wizard) => {
+          return wizard.register(mockCmd);
+        },
+      })
+    );
     // cmd: mock
     await cli.parse(['mock', '--projectCwd', projectCwd]);
     expect(mockHandler).toHaveBeenCalled();
@@ -136,26 +123,17 @@ describe('load config', () => {
       errorHandler: (err) => {
         console.log(err);
       },
-    })
-      .use(
-        definePlugin({
-          name: () => 'mockPlugin',
-          setup: (wizard) => {
-            wizard.setupContextLoader((_flags, _configFile) => {
-              return wizardConfig();
-            });
-            return wizard;
-          },
-        })
-      )
-      .use(
-        definePlugin({
-          name: () => 'buildPlugin',
-          setup: (wizard) => {
-            return wizard.register(buildCmd);
-          },
-        })
-      );
+      configLoaderOptions: {
+        configFile: 'wizard',
+      },
+    }).use(
+      definePlugin({
+        name: () => 'buildPlugin',
+        setup: (wizard) => {
+          return wizard.register(buildCmd);
+        },
+      })
+    );
     // cmd: build evolve
     await cli.parse(['build', 'evolve', '--projectCwd', projectCwd]);
     expect(evolveHandler).toHaveBeenCalled();
@@ -187,18 +165,10 @@ describe('load config', () => {
       errorHandler: (err) => {
         console.log(err);
       },
+      configLoaderOptions: {
+        configFile: 'wizard-async',
+      },
     })
-      .use(
-        definePlugin({
-          name: () => 'mockPlugin',
-          setup: (wizard) => {
-            wizard.setupContextLoader((_flags, _configFile) => {
-              return wizardAsyncConfig();
-            });
-            return wizard;
-          },
-        })
-      )
       .use(
         definePlugin({
           name: () => 'buildPlugin',

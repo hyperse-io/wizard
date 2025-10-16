@@ -1,3 +1,4 @@
+import type { LoaderOptions } from '@hyperse/config-loader';
 import type { Logger, LogLevel } from '@hyperse/logger';
 import type { Root } from '../constants.js';
 import type { CommandBasicInfoWithI18n } from './type-command.js';
@@ -62,6 +63,26 @@ export type WizardCommandContextLoaderResult<
 
 /**
  * @description
+ * Options for loading and customizing wizard configuration files.
+ */
+export interface ConfigLoaderOptions {
+  /**
+   * The path to the configuration file.
+   */
+  configFile?: string;
+  /**
+   * Additional options to pass to the loader.
+   */
+  loaderOptions?: LoaderOptions;
+  /**
+   * Whether to hide the loading spinner during configuration loading.
+   * @default false
+   */
+  hiddenLoadSpinner?: boolean;
+}
+
+/**
+ * @description
  * Options for configuring a wizard instance.
  */
 export type WizardOptions = {
@@ -116,6 +137,11 @@ export type WizardOptions = {
    * Custom or override messages for CLI localization.
    */
   localeMessages?: LocaleMessagesCliObject;
+  /**
+   * Options for loading CLI configuration files.
+   * Allows customization of config file name, loader parameters, etc.
+   */
+  configLoaderOptions?: ConfigLoaderOptions;
   /**
    * Global error handler, called when an uncaught exception occurs during CLI execution.
    */

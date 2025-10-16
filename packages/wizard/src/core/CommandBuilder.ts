@@ -113,19 +113,6 @@ class CommandBuilderImpl<
     return this;
   }
 
-  loadConfig(
-    configFile: string
-  ): CommandBuilder<
-    Name,
-    Context,
-    SubCommandContext,
-    CommandFlags,
-    NameToContext
-  > {
-    this.command.setConfigFile(configFile);
-    return this;
-  }
-
   process(
     fn: CommandProcessFunction<ProcessContext<Name, Context, CommandFlags>>
   ): CommandBuilder<
