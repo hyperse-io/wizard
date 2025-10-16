@@ -41,7 +41,7 @@ class CommandImpl<
   private cmdProcessFn: CommandProcessFunction<
     ProcessContext<Name, Context, CommandFlags>
   >;
-  private cmdConfigFile: string;
+  private cmdConfigFile?: string;
 
   constructor(name: Name, options: CommandOptions) {
     this.cmdName = name;

@@ -215,7 +215,7 @@ export interface Command<
   /**
    * Returns config filename for load config.
    */
-  get configFile(): string;
+  get configFile(): string | undefined;
 
   /**
    * Returns the process function for this command.
