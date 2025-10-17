@@ -1,5 +1,13 @@
 # @hyperse/wizard
 
+## 1.0.6
+
+### Patch Changes
+
+- [#18](https://github.com/hyperse-io/wizard/pull/18) [`e133326`](https://github.com/hyperse-io/wizard/commit/e133326686af6b0a55fe593903cdcb207c47abbd) Thanks [@tclxshunquan-wang](https://github.com/tclxshunquan-wang)! - chore: 🔄 update package dependencies across multiple packages for improved stability and performance
+
+- [#18](https://github.com/hyperse-io/wizard/pull/18) [`5ed1d9a`](https://github.com/hyperse-io/wizard/commit/5ed1d9a13beaba05a21d1a807737e92748fa2093) Thanks [@tclxshunquan-wang](https://github.com/tclxshunquan-wang)! - feat: ✨ add configuration loading feature to Wizard API for enhanced command context management
+
 ## 1.0.5
 
 ### Patch Changes
