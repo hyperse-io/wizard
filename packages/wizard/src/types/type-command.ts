@@ -40,6 +40,13 @@ export type CommandOptions = {
    * The help message for the command, supports i18n.
    */
   help?: LocaleMessageResolver;
+  /**
+   * Whether to automatically load a configuration file and provide its contents as context to the handler.
+   * If true, the handler will receive the result of the config loader merged into the ctx.
+   *
+   * @default false
+   */
+  loadConfig?: boolean;
 };
 
 export type CommandBasicInfoWithI18n = {
@@ -211,6 +218,11 @@ export interface Command<
    * Returns the list of sub-commands for this command.
    */
   get subCommands(): Command<Name, any, any, any>[];
+
+  /**
+   * Is it necessary to load the local config file
+   */
+  get loadConfig(): boolean;
 
   /**
    * Returns the process function for this command.

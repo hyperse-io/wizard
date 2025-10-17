@@ -13,6 +13,7 @@ const meta: MetaRecord = {
     type: 'page',
     theme: {
       typesetting: 'article',
+      copyPage: true,
     },
   },
 };
