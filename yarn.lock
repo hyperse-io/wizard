@@ -3118,6 +3118,25 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@hyperse/wizard-plugin-completion@workspace:packages/wizard-plugin-completion":
+  version: 0.0.0-use.local
+  resolution: "@hyperse/wizard-plugin-completion@workspace:packages/wizard-plugin-completion"
+  dependencies:
+    "@hyperse/eslint-config-hyperse": "npm:^1.4.8"
+    "@hyperse/wizard": "workspace:*"
+    "@types/node": "npm:^24.7.2"
+    "@vitest/coverage-istanbul": "npm:^3.2.4"
+    "@vitest/ui": "npm:^3.2.4"
+    "@withfig/autocomplete-types": "npm:^1.31.0"
+    eslint: "npm:^9.37.0"
+    jsdom: "npm:27.0.0"
+    npm-run-all: "npm:4.1.5"
+    rimraf: "npm:^6.0.1"
+    typescript: "npm:^5.9.3"
+    vitest: "npm:^3.2.4"
+  languageName: unknown
+  linkType: soft
+
 "@hyperse/wizard-plugin-error@workspace:*, @hyperse/wizard-plugin-error@workspace:packages/wizard-plugin-error":
   version: 0.0.0-use.local
   resolution: "@hyperse/wizard-plugin-error@workspace:packages/wizard-plugin-error"
@@ -7094,6 +7113,13 @@ __metadata:
     loupe: "npm:^3.1.4"
     tinyrainbow: "npm:^2.0.0"
   checksum: 10c0/024a9b8c8bcc12cf40183c246c244b52ecff861c6deb3477cbf487ac8781ad44c68a9c5fd69f8c1361878e55b97c10d99d511f2597f1f7244b5e5101d028ba64
+  languageName: node
+  linkType: hard
+
+"@withfig/autocomplete-types@npm:^1.31.0":
+  version: 1.31.0
+  resolution: "@withfig/autocomplete-types@npm:1.31.0"
+  checksum: 10c0/946f6ca25205fcfc798d7d22b754ac8e8b61d8aa3c232ed32692d723bee80a82c93d179996fde99cc285419a2062c190c81a5d86e4030da2a8afac493255ba89
   languageName: node
   linkType: hard
 
