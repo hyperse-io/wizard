@@ -1,5 +1,5 @@
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
-import { dirname, join, resolve } from 'path/posix';
+import { dirname, join, resolve } from 'path';
 import { fileURLToPath } from 'url';
 import type { FlagsWithI18n } from '@hyperse/wizard';
 import { type PluginSetupWizard, rootName } from '@hyperse/wizard';
