@@ -1,5 +1,21 @@
 # @hyperse/wizard-plugin-loader
 
+## 1.0.6
+
+### Patch Changes
+
+- [#18](https://github.com/hyperse-io/wizard/pull/18) [`e133326`](https://github.com/hyperse-io/wizard/commit/e133326686af6b0a55fe593903cdcb207c47abbd) Thanks [@tclxshunquan-wang](https://github.com/tclxshunquan-wang)! - chore: 🔄 update package dependencies across multiple packages for improved stability and performance
+
+- Updated dependencies [[`e133326`](https://github.com/hyperse-io/wizard/commit/e133326686af6b0a55fe593903cdcb207c47abbd), [`5ed1d9a`](https://github.com/hyperse-io/wizard/commit/5ed1d9a13beaba05a21d1a807737e92748fa2093)]:
+  - @hyperse/wizard@1.0.6
+
+## 1.0.5
+
+### Patch Changes
+
+- Updated dependencies [[`296c5b2`](https://github.com/hyperse-io/wizard/commit/296c5b258c7c274308c5628b3693b089f2937c7c)]:
+  - @hyperse/wizard@1.0.5
+
 ## 1.0.4
 
 ### Patch Changes
