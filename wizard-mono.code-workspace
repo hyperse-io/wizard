@@ -25,6 +25,10 @@
       "path": "packages/wizard-plugin-loader",
     },
     {
+      "name": "wizard-plugin-completion",
+      "path": "packages/wizard-plugin-completion",
+    },
+    {
       "name": "root",
       "path": ".",
     },
@@ -79,7 +83,8 @@
       "./packages/wizard-plugin-help",
       "./packages/wizard-plugin-error",
       "./packages/wizard-plugin-loader",
-      "./packages/wizard-plugin-version"
+      "./packages/wizard-plugin-version",
+      "./packages/wizard-plugin-completion"
     ],
     "typescript.tsdk": "root/node_modules/typescript/lib"
   },
