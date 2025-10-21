@@ -1,8 +1,16 @@
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { dirname, join, resolve } from 'path';
 import { fileURLToPath } from 'url';
-import type { FlagsWithI18n } from '@hyperse/wizard';
-import { type PluginSetupWizard, rootName } from '@hyperse/wizard';
+import type {
+  CommandName,
+  CommandWithI18n,
+  FlagsWithI18n,
+} from '@hyperse/wizard';
+import {
+  formatCommandName,
+  type PluginSetupWizard,
+  rootName,
+} from '@hyperse/wizard';
 
 /**
  * Convert wizard flags to Fig spec options
@@ -10,7 +18,7 @@ import { type PluginSetupWizard, rootName } from '@hyperse/wizard';
 const convertFlagsToFigOptions = (flags: FlagsWithI18n): Fig.Option[] => {
   return Object.entries(flags).map(([name, flag]) => {
     const option: Fig.Option = {
-      name: flag.alias ? [flag.alias, `--${name}`] : `--${name}`,
+      name: flag.alias ? [`-${flag.alias}`, `--${name}`] : `--${name}`,
       description: flag.description,
     };
 
@@ -40,19 +48,47 @@ const convertFlagsToFigOptions = (flags: FlagsWithI18n): Fig.Option[] => {
 /**
  * Convert a command to Fig subcommand format
  */
-const convertCommandToFigSubcommand = (command: any): Fig.Subcommand => {
+const convertCommandToFigSubcommand = <Name extends CommandName>(
+  commandMap: Map<string, CommandWithI18n<Name>>,
+  command?: CommandWithI18n<Name>,
+  commandName?: string
+): Fig.Subcommand | undefined => {
+  if (!command) {
+    return;
+  }
+
+  const flagsKeys = Object.keys(command.flags || {});
+  const subCommands = command.rawCommand.subCommands;
   return {
     name: String(command.name),
     description:
       typeof command.description === 'string'
         ? command.description
         : 'Command description',
-    options: Object.keys(command.flags || {}).length > 0 ? [] : undefined,
+    options:
+      flagsKeys.length > 0
+        ? flagsKeys.map((key) => {
+            const flag = command.flags[key];
+            const option: Fig.Option = {
+              name: flag.alias ? [`-${flag.alias}`, `--${key}`] : `--${key}`,
+              description: flag.description,
+            };
+            return option;
+          })
+        : undefined,
     subcommands:
-      command.subCommands && command.subCommands.length > 0
-        ? command.subCommands.map((nestedCmd: any) =>
-            convertCommandToFigSubcommand(nestedCmd)
-          )
+      subCommands && subCommands?.length > 0
+        ? (subCommands
+            .map((nestedCmd) => {
+              const nestedCmdName = `${commandName}.${formatCommandName(nestedCmd.name)}`;
+              const cmd = commandMap.get(nestedCmdName);
+              return convertCommandToFigSubcommand(
+                commandMap,
+                cmd,
+                nestedCmdName
+              );
+            })
+            .filter(Boolean) as Fig.Subcommand[])
         : undefined,
   };
 };
@@ -88,9 +124,16 @@ const generateFigSpecString = (
   const rawCommand = rootCmd.rawCommand;
   const subCommands = rawCommand.subCommands;
   if (subCommands && subCommands.length > 0) {
-    spec.subcommands = subCommands.map((subCmd) =>
-      convertCommandToFigSubcommand(subCmd)
-    );
+    spec.subcommands = subCommands
+      .map((subCmd) => {
+        const subCmdName = formatCommandName(subCmd.name);
+        return convertCommandToFigSubcommand(
+          commandMap,
+          commandMap.get(subCmdName),
+          subCmdName
+        );
+      })
+      .filter(Boolean) as Fig.Subcommand[];
   }
 
   return JSON.stringify(spec);
