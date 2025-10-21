@@ -6,7 +6,7 @@
     "incremental": false,
     "moduleResolution": "nodenext",
     "paths": {},
-    "types": ["@types/node"]
+    "types": ["@types/node", "@withfig/autocomplete-types"]
   },
   "include": ["./src/index.ts"],
   "exclude": [

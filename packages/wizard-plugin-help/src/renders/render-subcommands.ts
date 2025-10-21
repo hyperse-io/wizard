@@ -1,6 +1,4 @@
 import {
-  type CommandName,
-  type CommandWithI18n,
   formatCommandName,
   type I18n,
   type PluginSetupWizard,
