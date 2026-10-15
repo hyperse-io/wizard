@@ -1,4 +1,5 @@
 import { rehypeCodeDefaultOptions } from 'fumadocs-core/mdx-plugins';
+import { remarkMdxMermaid } from 'fumadocs-core/mdx-plugins/remark-mdx-mermaid';
 import { remarkNpm } from 'fumadocs-core/mdx-plugins/remark-npm';
 import { remarkSteps } from 'fumadocs-core/mdx-plugins/remark-steps';
 import { defineConfig, defineDocs } from 'fumadocs-mdx/config';
@@ -11,7 +12,14 @@ export const docs = defineDocs({
 
 export default defineConfig({
   mdxOptions: {
-    remarkPlugins: [remarkAutoTypeTable, remarkSteps, remarkNpm],
+    // `remarkMdxMermaid` rewrites ```mermaid fences into `<Mermaid />`, which is
+    // registered in `mdx-components.tsx`.
+    remarkPlugins: [
+      remarkAutoTypeTable,
+      remarkSteps,
+      remarkNpm,
+      remarkMdxMermaid,
+    ],
     rehypeCodeOptions: {
       ...rehypeCodeDefaultOptions,
       transformers: [
@@ -20,10 +28,15 @@ export default defineConfig({
           throws: false,
           twoslashOptions: {
             handbookOptions: {
-              // These docs contain sample snippets that intentionally omit
-              // required props (e.g. `description`/`version`). Nextra ignored
-              // them; we keep rendering instead of failing the build, and
-              // surface them as warnings so the content can be fixed later.
+              // These docs contain illustrative snippets that intentionally
+              // omit required props (e.g. `description`/`version`) and
+              // reference undefined placeholders (`myPlugin`, `handler`).
+              //
+              // `noErrors` suppresses the red squiggle output entirely.
+              // Note: `noErrorValidation` alone is NOT enough — it only skips
+              // the "expected errors must be annotated" check and still
+              // renders diagnostics.
+              noErrors: true,
               noErrorValidation: true,
             },
           },

@@ -1,6 +1,7 @@
 import type { FC, ReactNode } from 'react';
 import type { Folder, Item, Node } from 'fumadocs-core/page-tree';
 import { Card, Cards } from 'fumadocs-ui/components/card';
+import { icons as lucideIcons } from 'lucide-react';
 import { source } from '@/lib/source';
 
 const collectItems = (nodes: Node[]): Item[] => {
@@ -37,7 +38,26 @@ const groupByFolder = (
   return groups;
 };
 
+/**
+ * Resolves a page's `icon` frontmatter value.
+ *
+ * The `lucideIconsPlugin` on the source loader turns these into elements for
+ * the sidebar, but `getPageTree()` output here is serialized, so we resolve the
+ * name to a Lucide component directly. Falls back to any icon passed via the
+ * legacy `icons` prop.
+ */
+const resolveIcon = (
+  iconKey: string | undefined,
+  fallback?: Record<string, FC<{ className?: string }>>
+) => {
+  if (!iconKey) return undefined;
+  const fromProp = fallback?.[iconKey];
+  if (fromProp) return fromProp;
+  return lucideIcons[iconKey as keyof typeof lucideIcons];
+};
+
 export const OverviewPage: FC<{
+  /** Legacy escape hatch: explicit icon components keyed by icon name. */
   icons?: Record<string, FC<{ className?: string }>>;
 }> = ({ icons }) => {
   const tree = source.getPageTree();
@@ -51,7 +71,7 @@ export const OverviewPage: FC<{
           <Cards>
             {group.items.map((item) => {
               const iconKey = (item as Item & { icon?: string }).icon;
-              const Icon = iconKey ? icons?.[iconKey] : undefined;
+              const Icon = resolveIcon(iconKey, icons);
               return (
                 <Card
                   key={item.url}

@@ -10,10 +10,10 @@ export const gitConfig = {
 export const baseOptions: BaseLayoutProps = {
   nav: {
     title: (
-      <div className="flex items-center gap-2">
+      <span className="flex items-center gap-2">
         <Logo height="20" />
         <span className="font-extralight">Hyperse Wizard</span>
-      </div>
+      </span>
     ),
   },
   githubUrl: `https://github.com/${gitConfig.user}/${gitConfig.repo}`,
@@ -25,7 +25,7 @@ export const baseOptions: BaseLayoutProps = {
     },
     {
       text: 'About',
-      url: '/about',
+      url: '/docs/about',
     },
   ],
 };

@@ -1,4 +1,12 @@
 {
   "title": "Documentation",
-  "pages": ["index", "getting-started", "core-api", "custom-plugin", "builtin-plugins"]
+  "pages": [
+    "index",
+    "getting-started",
+    "core-api",
+    "custom-plugin",
+    "builtin-plugins",
+    "---",
+    "about"
+  ]
 }

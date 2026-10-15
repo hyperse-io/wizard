@@ -1,6 +1,7 @@
 import type { FC, ReactNode } from 'react';
 import type { Metadata } from 'next';
 import { RootProvider } from 'fumadocs-ui/provider/next';
+import { basePath } from '@/lib/base-path';
 import '@/styles/globals.css';
 
 export const metadata: Metadata = {
@@ -49,14 +50,24 @@ const RootLayout: FC<{
       <head>
         <link
           rel="icon"
-          href="/wizard/favicon.svg"
+          href={`${basePath}/favicon.svg`}
           type="image/png"
           sizes="32x32"
         />
       </head>
       <body className="flex min-h-screen flex-col">
+        {/*
+          Fumadocs' static search client builds its URL as
+          `join(BASE_PATH, api)`, and `BASE_PATH` comes from Vite's
+          `import.meta.env.BASE_URL` — which does not exist in Next.js, so it is
+          always `'/'`. Next.js' `basePath` is therefore NOT applied
+          automatically, and omitting it makes the client request
+          `/api/search` (404) instead of `${basePath}/api/search`.
+        */}
         <RootProvider
-          search={{ options: { type: 'static', api: '/api/search' } }}
+          search={{
+            options: { type: 'static', api: `${basePath}/api/search` },
+          }}
         >
           {children}
         </RootProvider>

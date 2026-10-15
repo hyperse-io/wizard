@@ -30,8 +30,7 @@ export type FlagsWithBuiltin = Flags & ReturnType<typeof createBuiltinFlags>;
  * @returns {T} The flag type or schema.
  */
 export type FlagType<ReturnType = any> =
-  | TypeFunction<ReturnType>
-  | TypeFunctionArray<ReturnType>;
+  TypeFunction<ReturnType> | TypeFunctionArray<ReturnType>;
 
 /**
  * @description
@@ -125,8 +124,7 @@ export type FlagSchemaDefault<TF, DefaultType = any> = FlagSchemaBase<TF> &
  * @returns {T} The flag type or schema.
  */
 export type FlagSchema<TF = FlagType> =
-  | FlagSchemaBase<TF>
-  | FlagSchemaDefault<TF>;
+  FlagSchemaBase<TF> | FlagSchemaDefault<TF>;
 
 /**
  * @description
@@ -136,8 +134,7 @@ export type FlagSchema<TF = FlagType> =
  * @returns {T} The flag type.
  */
 export type InferFlagType<Flag extends FlagTypeOrSchema> = Flag extends
-  | TypeFunctionArray<infer T>
-  | FlagSchema<TypeFunctionArray<infer T>>
+  TypeFunctionArray<infer T> | FlagSchema<TypeFunctionArray<infer T>>
   ? Flag extends FlagSchemaDefault<TypeFunctionArray<T>, infer D>
     ? T[] | D
     : T[]
@@ -155,8 +152,7 @@ export type InferFlagType<Flag extends FlagTypeOrSchema> = Flag extends
  * @returns {T} The flag type or schema.
  */
 export type FlagTypeOrSchema<ExtraOptions = Record<string, unknown>> =
-  | FlagType
-  | (FlagSchema & ExtraOptions);
+  FlagType | (FlagSchema & ExtraOptions);
 
 /**
  * @description
@@ -166,3 +162,13 @@ export type FlagTypeOrSchema<ExtraOptions = Record<string, unknown>> =
 export type ParseFlags<DefinedFlags extends Flags = Flags> = ReturnType<
   typeof typeFlag<DefinedFlags>
 >['flags'];
+
+/**
+ * @description
+ * The runtime output of {@link parseFlags}: flag values keyed by flag name.
+ *
+ * This is intentionally wider than {@link Flags} (which describes flag
+ * *definitions*); `type-flag` resolves values at runtime and its inference of
+ * `Flags` itself degrades to `unknown` under some TypeScript versions.
+ */
+export type ParsedFlags = Record<string, unknown>;

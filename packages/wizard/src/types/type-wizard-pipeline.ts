@@ -1,7 +1,7 @@
 import type { Pipeline } from '@hyperse/pipeline';
 import type { ParseOptions } from './type-argv.js';
 import type { CommandContext } from './type-command.js';
-import type { Flags } from './type-flag.js';
+import type { ParsedFlags } from './type-flag.js';
 
 /**
  * @description
@@ -25,9 +25,9 @@ export type CliPipelineContext = {
    */
   eofArgs: string[];
   /**
-   * The flags.
+   * The parsed flag values, keyed by flag name.
    */
-  flags: Flags;
+  flags: ParsedFlags;
   /**
    * The unknown flags.
    */
