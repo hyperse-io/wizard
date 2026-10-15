@@ -74,9 +74,10 @@ export const loadConfigFile = async <ConfigOptions extends object>(
     if (!hiddenLoadSpinner && spinner) {
       spinner.error(`Failed to load ${configFile} configuration`);
     }
-    throw new Error(
-      `Failed to load configuration file: ${error instanceof Error ? error.message : String(error)}`,
-      { cause: error }
+    const loadError = new Error(
+      `Failed to load configuration file: ${error instanceof Error ? error.message : String(error)}`
     );
+    (loadError as Error & { cause?: unknown }).cause = error;
+    throw loadError;
   }
 };
