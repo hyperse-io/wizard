@@ -75,9 +75,7 @@ describe('createHelpPlugin', () => {
       cli.use(createHelpPlugin({ flag: false }));
 
       // Should not throw error when help flag is not registered
-      expect(async () => {
-        await cli.parse(['--help']);
-      }).not.toThrow();
+      await expect(cli.parse(['--help'])).resolves.not.toThrow();
     });
 
     it('should display banner when provided in help flag', async () => {

@@ -9,11 +9,13 @@ import type { buildPluginMessages } from './i18n/message.js';
 import { helpCliMessages } from './i18n/message.js';
 
 declare module '@hyperse/wizard' {
-  export interface CliLocaleMessages
-    extends DefineMessageType<typeof helpCliMessages> {}
+  export interface CliLocaleMessages extends DefineMessageType<
+    typeof helpCliMessages
+  > {}
 
-  export interface PluginLocaleMessages
-    extends DefineMessageType<typeof buildPluginMessages> {}
+  export interface PluginLocaleMessages extends DefineMessageType<
+    typeof buildPluginMessages
+  > {}
 }
 
 const printer = vi.fn();

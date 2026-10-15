@@ -25,8 +25,7 @@ class CommandImpl<
   Context extends CommandContext = CommandContext,
   SubCommandContext extends object = object,
   CommandFlags extends Flags = Flags,
-> implements Command<Name, Context, SubCommandContext, CommandFlags>
-{
+> implements Command<Name, Context, SubCommandContext, CommandFlags> {
   private cmdName: Name;
   private cmdDescription: LocaleMessageResolver;
   private cmdExample: LocaleMessageResolver | undefined;

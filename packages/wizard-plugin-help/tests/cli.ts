@@ -6,11 +6,13 @@ import { buildPluginMessages, helpCliMessages } from './i18n/message.js';
 process.env.HPS_WIZARD_LOCALE = 'en';
 
 declare module '@hyperse/wizard' {
-  export interface CliLocaleMessages
-    extends DefineMessageType<typeof helpCliMessages> {}
+  export interface CliLocaleMessages extends DefineMessageType<
+    typeof helpCliMessages
+  > {}
 
-  export interface PluginLocaleMessages
-    extends DefineMessageType<typeof buildPluginMessages> {}
+  export interface PluginLocaleMessages extends DefineMessageType<
+    typeof buildPluginMessages
+  > {}
 }
 
 const evolve = defineCommand('evolve', {

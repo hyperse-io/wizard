@@ -17,7 +17,7 @@ export const commandTreeToMap = <Name extends CommandName>(
     command: Command<Name>,
     parentCommandName?: string
   ): any {
-    let commandName = '';
+    let commandName: string;
     if (!parentCommandName) {
       commandName = formatCommandName(command.name);
     } else if (parentCommandName === formatCommandName(Root)) {

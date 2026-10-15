@@ -1890,7 +1890,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hyperse/deep-merge@npm:^1.0.1, @hyperse/deep-merge@npm:^1.0.2":
+"@hyperse/deep-merge@npm:^1.0.2":
   version: 1.0.2
   resolution: "@hyperse/deep-merge@npm:1.0.2"
   checksum: 10c0/45c1297665e9d78a16f83f2e6258effa02edab360b244fe63fdbe07d67871e3f40f65441b7e0198fe25d66a60b85259d5653142ac8809efee0e07913c2b5f0b3
@@ -1943,24 +1943,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hyperse/logger-plugin-stdout@npm:^1.0.11":
-  version: 1.0.11
-  resolution: "@hyperse/logger-plugin-stdout@npm:1.0.11"
+"@hyperse/logger-plugin-stdout@npm:^1.0.12":
+  version: 1.0.12
+  resolution: "@hyperse/logger-plugin-stdout@npm:1.0.12"
   dependencies:
-    "@hyperse/deep-merge": "npm:^1.0.1"
-    "@hyperse/logger": "npm:1.1.7"
+    "@hyperse/deep-merge": "npm:^1.0.2"
+    "@hyperse/logger": "npm:1.1.8"
     picocolors: "npm:^1.1.1"
-  checksum: 10c0/aebfaeeedbae312d7f75a45f54e1c0e423b9c75e44ad2945da0d691102d4232d8f3a8e7d1d923bd310c6f4da92f7c740ed0480a5034a74239cfee31eb899b1a9
+  checksum: 10c0/5654d65e495bdc1eae62f825cb6c2f5e6af37270ecf9214dd583b0146a6e8e15872d038264f3ce8f96eb6ad396f9b70cf40e0b7df82003e569b02b41f28578eb
   languageName: node
   linkType: hard
 
-"@hyperse/logger@npm:1.1.7, @hyperse/logger@npm:^1.1.7":
-  version: 1.1.7
-  resolution: "@hyperse/logger@npm:1.1.7"
+"@hyperse/logger@npm:1.1.8, @hyperse/logger@npm:^1.1.8":
+  version: 1.1.8
+  resolution: "@hyperse/logger@npm:1.1.8"
   dependencies:
-    "@hyperse/deep-merge": "npm:^1.0.1"
-    "@hyperse/pipeline": "npm:^1.0.6"
-  checksum: 10c0/224455f8be2d6cbe8e4082596e035c9748c942647756c666d51b6e9325347ea0399617c0a9cdc2abaf206e147fc455d1e4fc5b2a31e464321c3dfd0425137c75
+    "@hyperse/deep-merge": "npm:^1.0.2"
+    "@hyperse/pipeline": "npm:^1.0.8"
+  checksum: 10c0/b76c0e4aa8e67514aa18ca33c00f53694f3628a3a2efa1bf8e1084834a5777689765f8a4e41673e7ccb79e93000ea3534af7d62201f7d119365f775173a4e7df
   languageName: node
   linkType: hard
 
@@ -1976,12 +1976,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hyperse/pipeline@npm:^1.0.6":
-  version: 1.0.6
-  resolution: "@hyperse/pipeline@npm:1.0.6"
+"@hyperse/pipeline@npm:^1.0.8":
+  version: 1.0.8
+  resolution: "@hyperse/pipeline@npm:1.0.8"
   dependencies:
     monet: "npm:^0.9.3"
-  checksum: 10c0/56d0468d91826319151ce4bd4ebf2fd4808d972e94bb6393ecd18baca133ae16a0e958ad4fdc2ca0fd589461ccbfe0ab1d53dde1608885614df501ed0ffd3c3b
+  checksum: 10c0/715130977c2c0e000776b767961dde37993f91ff3125562d8085adee7ba34a0fd11bb221bb2a8cc492161cd560fb82573cf9ad987a73457453455fc7c1d93e90
   languageName: node
   linkType: hard
 
@@ -2191,6 +2191,7 @@ __metadata:
     postcss: "npm:^8.5.30"
     react: "npm:^19.3.1"
     react-dom: "npm:^19.3.1"
+    shiki: "npm:^4.5.0"
     tailwindcss: "npm:^4.3.3"
     typescript: "npm:6.0.3"
     vite: "npm:^8.3.4"
@@ -2207,9 +2208,9 @@ __metadata:
     "@hyperse/deep-merge": "npm:^1.0.2"
     "@hyperse/eslint-config-hyperse": "npm:^1.7.5"
     "@hyperse/hyper-env": "npm:^1.1.1"
-    "@hyperse/logger": "npm:^1.1.7"
-    "@hyperse/logger-plugin-stdout": "npm:^1.0.11"
-    "@hyperse/pipeline": "npm:^1.0.6"
+    "@hyperse/logger": "npm:^1.1.8"
+    "@hyperse/logger-plugin-stdout": "npm:^1.0.12"
+    "@hyperse/pipeline": "npm:^1.0.8"
     "@hyperse/translator": "npm:^1.4.0"
     "@types/node": "npm:^26.6.5"
     "@vitest/coverage-istanbul": "npm:^5.0.4"

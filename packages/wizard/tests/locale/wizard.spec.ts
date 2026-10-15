@@ -3,8 +3,9 @@ import { createWizard } from '../../src/create-wizard.js';
 import type { DefineMessageType } from '../../src/types/type-locale-messages.js';
 
 declare module '../../src/types/type-locale-messages.js' {
-  export interface CliLocaleMessages
-    extends DefineMessageType<typeof messages> {}
+  export interface CliLocaleMessages extends DefineMessageType<
+    typeof messages
+  > {}
 }
 
 const messages = {

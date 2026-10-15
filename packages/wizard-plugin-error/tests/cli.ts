@@ -9,8 +9,9 @@ import { errorCliMessages } from './i18n/message.js';
 process.env.HPS_WIZARD_LOCALE = 'zh';
 
 declare module '@hyperse/wizard' {
-  export interface CliLocaleMessages
-    extends DefineMessageType<typeof errorCliMessages> {}
+  export interface CliLocaleMessages extends DefineMessageType<
+    typeof errorCliMessages
+  > {}
 }
 
 const plugin = createErrorPlugin();

@@ -6,8 +6,9 @@ import { versionCliMessages } from './i18n/message.js';
 process.env.HPS_WIZARD_LOCALE = 'en';
 
 declare module '@hyperse/wizard' {
-  export interface CliLocaleMessages
-    extends DefineMessageType<typeof versionCliMessages> {}
+  export interface CliLocaleMessages extends DefineMessageType<
+    typeof versionCliMessages
+  > {}
 }
 
 const cli = createWizard({

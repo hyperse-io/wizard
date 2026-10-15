@@ -40,15 +40,13 @@ class CommandBuilderImpl<
       flags: ParseFlags<CommandFlags & FlagsWithBuiltin>;
     };
   },
-> implements
-    CommandBuilder<
-      Name,
-      Context,
-      SubCommandContext,
-      CommandFlags,
-      NameToContext
-    >
-{
+> implements CommandBuilder<
+  Name,
+  Context,
+  SubCommandContext,
+  CommandFlags,
+  NameToContext
+> {
   private name: Name;
   private options: CommandBuilderOptions;
   private command: CommandType<Name, Context, SubCommandContext, CommandFlags>;

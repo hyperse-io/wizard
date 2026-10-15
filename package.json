@@ -37,7 +37,7 @@
   ],
   "scripts": {
     "clean:global-cache": "rimraf --no-glob ./dist ./coverage ./__data__ ./config/__data__ ./tsconfig.tsbuildinfo",
-    "g:build": "yarn g:build",
+    "g:build": "yarn g:build-local",
     "g:build-local": "yarn workspaces foreach -At run build",
     "g:build-website": "yarn workspace @hyperse/wizard-website run build:ghpage",
     "g:changeset": "changeset",

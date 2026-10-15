@@ -75,7 +75,8 @@ export const loadConfigFile = async <ConfigOptions extends object>(
       spinner.error(`Failed to load ${configFile} configuration`);
     }
     throw new Error(
-      `Failed to load configuration file: ${error instanceof Error ? error.message : String(error)}`
+      `Failed to load configuration file: ${error instanceof Error ? error.message : String(error)}`,
+      { cause: error }
     );
   }
 };

@@ -14,14 +14,14 @@ jobs:
 
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           # To run comparison we need more than the latest commit.
           # @link https://github.com/actions/checkout#fetch-all-history-for-all-tags-and-branches
           fetch-depth: 0
 
-      - name: Use Node.js 20.x
-        uses: actions/setup-node@v4
+      - name: Use Node.js 24.x
+        uses: actions/setup-node@v5
         with:
           node-version: 24.x
 
@@ -47,3 +47,8 @@ jobs:
           # Allows to download / query / comment packages
           # Allows to publish packages
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          # Yarn (Berry) doesn't read NPM_TOKEN; it maps this variable onto
+          # `npmAuthToken`. Without it publishing fails with
+          # "YN0033: No authentication configured for request".
+          # @link https://yarnpkg.com/configuration/yarnrc#npmAuthToken
+          YARN_NPM_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

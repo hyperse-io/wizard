@@ -8,8 +8,9 @@ import { createErrorPlugin } from '../src/create-error-plugin.js';
 import { errorCliMessages } from './i18n/message.js';
 
 declare module '@hyperse/wizard' {
-  export interface CliLocaleMessages
-    extends DefineMessageType<typeof errorCliMessages> {}
+  export interface CliLocaleMessages extends DefineMessageType<
+    typeof errorCliMessages
+  > {}
 }
 
 const printer = vi.fn();

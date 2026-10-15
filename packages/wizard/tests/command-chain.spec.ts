@@ -1,6 +1,5 @@
 import { describe, expect, it } from 'vitest';
 import { createCommand } from '../src/core/Command.js';
-import { CommandNotFoundError } from '../src/errors/CommandNotFoundError.js';
 import { searchCommandChain } from '../src/helpers/helper-search-command-chain.js';
 import { formatCommandName } from '../src/index.js';
 import type { Command } from '../src/types/type-command.js';
@@ -81,12 +80,10 @@ describe('searchCommandChain', () => {
     expect(result_childB[1]).toBe(child);
     expect(result_childB[2]).toBe(childB);
 
-    try {
-      searchCommandChain('childNull', commandMap);
-    } catch (error: any) {
-      expect(error).toBeInstanceOf(CommandNotFoundError);
-      expect(error.message).toBe('Command childNull not found.');
-    }
+    // `searchCommandChain` is a pure lookup helper: an unknown name yields no
+    // matching entry, and since this map registers no root command either, the
+    // result is simply empty. It does not throw.
+    expect(searchCommandChain('childNull', commandMap)).toEqual([]);
   });
 
   it('should return only the command if it has no parent', () => {

@@ -6,8 +6,9 @@ import { completionMessages } from '../src/index.js';
 process.env.HPS_WIZARD_LOCALE = 'en';
 
 declare module '@hyperse/wizard' {
-  export interface CliLocaleMessages
-    extends DefineMessageType<typeof completionMessages> {}
+  export interface CliLocaleMessages extends DefineMessageType<
+    typeof completionMessages
+  > {}
 }
 
 const cliTest = createWizard({
