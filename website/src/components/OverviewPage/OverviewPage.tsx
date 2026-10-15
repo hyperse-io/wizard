@@ -1,4 +1,5 @@
 import type { FC, ReactNode } from 'react';
+import { createElement } from 'react';
 import type { Folder, Item, Node } from 'fumadocs-core/page-tree';
 import { Card, Cards } from 'fumadocs-ui/components/card';
 import { icons as lucideIcons } from 'lucide-react';
@@ -39,7 +40,7 @@ const groupByFolder = (
 };
 
 /**
- * Resolves a page's `icon` frontmatter value.
+ * Resolves a page's `icon` frontmatter value into a rendered element.
  *
  * The `lucideIconsPlugin` on the source loader turns these into elements for
  * the sidebar, but `getPageTree()` output here is serialized, so we resolve the
@@ -49,11 +50,11 @@ const groupByFolder = (
 const resolveIcon = (
   iconKey: string | undefined,
   fallback?: Record<string, FC<{ className?: string }>>
-) => {
+): ReactNode => {
   if (!iconKey) return undefined;
-  const fromProp = fallback?.[iconKey];
-  if (fromProp) return fromProp;
-  return lucideIcons[iconKey as keyof typeof lucideIcons];
+  const Icon =
+    fallback?.[iconKey] ?? lucideIcons[iconKey as keyof typeof lucideIcons];
+  return Icon ? createElement(Icon) : undefined;
 };
 
 export const OverviewPage: FC<{
@@ -71,13 +72,12 @@ export const OverviewPage: FC<{
           <Cards>
             {group.items.map((item) => {
               const iconKey = (item as Item & { icon?: string }).icon;
-              const Icon = resolveIcon(iconKey, icons);
               return (
                 <Card
                   key={item.url}
                   title={item.name}
                   href={item.url}
-                  icon={Icon ? <Icon /> : undefined}
+                  icon={resolveIcon(iconKey, icons)}
                 />
               );
             })}
