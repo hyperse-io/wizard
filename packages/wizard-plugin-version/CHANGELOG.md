@@ -1,5 +1,13 @@
 # @hyperse/wizard-plugin-version
 
+## 1.0.7
+
+### Patch Changes
+
+- [`3b8bb7e`](https://github.com/hyperse-io/wizard/commit/3b8bb7e999a0b75ed98edec9348fa4d5b84b7df9) Thanks [@tianyingchun](https://github.com/tianyingchun)! - chore: 🔄 update CI workflows to Node.js 24 / actions@v5 and fix lint issues across packages
+- Updated dependencies [[`3b8bb7e`](https://github.com/hyperse-io/wizard/commit/3b8bb7e999a0b75ed98edec9348fa4d5b84b7df9), [`3b8bb7e`](https://github.com/hyperse-io/wizard/commit/3b8bb7e999a0b75ed98edec9348fa4d5b84b7df9)]:
+  - @hyperse/wizard@1.0.7
+
 ## 1.0.6
 
 ### Patch Changes
