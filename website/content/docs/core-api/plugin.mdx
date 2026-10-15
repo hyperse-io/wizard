@@ -1,0 +1,64 @@
+---
+title: plugin
+description: Plugin support
+icon: LightningIcon
+---
+
+# Plugin
+
+The Plugin System provides a modular architecture that allows the Wizard framework to be extended with additional functionality through dynamically loaded plugins.
+
+## DefinePlugin
+
+<AutoTypeTable
+  type={`/** see {@link https://github.com/hyperse-io/wizard | @hyperse/wizard} */`}
+  name="__fn"
+/>
+
+### Plugin
+
+<AutoTypeTable path="../packages/wizard/dist/index.d.ts" name="Plugin" />
+
+## Plugin Architecture
+
+The plugin system is designed with security and encapsulation in mind. When a plugin's `setup` method is called, it receives a **restricted Wizard instance** (`PluginSetupWizard`) that only exposes the essential methods needed for plugin functionality.
+
+### PluginSetupWizard Type
+
+The `PluginSetupWizard` type is a restricted version of the full `Wizard` instance that excludes three critical methods:
+
+- **`use`** - Plugin registration method
+- **`on`** - Event listening method
+- **`parse`** - Command parsing and execution method
+
+This restriction prevents plugins from:
+
+- Registering additional plugins during setup (which could cause infinite loops)
+- Setting up event listeners during setup (which could interfere with core execution)
+- Triggering command parsing during setup (which could cause premature execution)
+
+### Available Methods in PluginSetupWizard
+
+Plugins can access these methods and properties during setup:
+
+- **Command Register**: `register()`
+- **Configuration**: `name`, `description`, `version`, `locale`, `i18n`
+- **Global Settings**: `globalFlags`, `commandMap`, `commandChain` `flags()`
+- **Utilities**: `interceptor()`, `errorHandler()`
+
+## Advanced Usage
+
+To separate handlers from the plugin definition, you can use the `definePlugin` utility function:
+
+```ts twoslash
+// @filename: @hyperse/wizard/dist/index.d.ts
+import { definePlugin } from '@hyperse/wizard';
+
+const deployPlugin = definePlugin({
+  name: 'deploy plugin',
+  localeMessages: helpMessages,
+  setup: (wizard, pluginCtx) => {
+    return wizard.register(deployCmd);
+  },
+});
+```

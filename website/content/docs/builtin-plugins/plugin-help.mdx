@@ -1,0 +1,139 @@
+---
+title: Help Plugin
+description: Comprehensive help information plugin with customizable output formats
+icon: LightningIcon
+---
+
+# Help Plugin
+
+The Help Plugin provides comprehensive help information for CLI applications built with Wizard.
+
+## Installation
+
+```sh npm2yarn
+npm install @hyperse/wizard-plugin-help
+```
+
+## Quick Start
+
+```ts twoslash
+// @filename: @hyperse/wizard-plugin-help/dist/index.d.ts
+import { createWizard, defineCommand, definePlugin } from '@hyperse/wizard';
+import { createHelpPlugin } from '@hyperse/wizard-plugin-help';
+
+const evolve = defineCommand('evolve', {
+  description: 'plugins.evolvePlugin.description',
+}).flags({
+  evolveName: {
+    type: String,
+    default: 'evolveName',
+    description: 'plugins.evolvePlugin.flags.evolveName',
+  },
+});
+
+const migrate = defineCommand('migrate', {
+  description: 'plugins.migratePlugin.description',
+}).flags({
+  migrateName: {
+    type: String,
+    default: 'evolveName',
+    description: 'plugins.migratePlugin.flags.migrateName',
+  },
+});
+
+const cli = createWizard({
+  name: 'hps_cli',
+  description: 'cli.helpCli.description',
+  version: 'cli.helpCli.version',
+  localeMessages: helpCliMessages,
+  errorHandler: (e) => {
+    console.log('CLI errorHandler \n', e);
+  },
+})
+  .use(
+    createHelpPlugin({
+      showBanner: true,
+      showFooter: true,
+      overrideLocaleMessages: {
+        en: {
+          helpPlugin: {
+            banner: '🎉🎉🎉Wizard cli is published by hps🎉🎉🎉',
+            footer: '@2025 wizard-plugin-help English version',
+          },
+        },
+        zh: {
+          helpPlugin: {
+            banner: '🎉🎉🎉Wizard cli 正在发布🎉🎉🎉',
+            footer: '@2025 wizard-plugin-help 中文版本',
+          },
+        },
+      },
+    })
+  )
+  .use(
+    definePlugin({
+      name: () => 'test plugin',
+      localeMessages: buildPluginMessages,
+      setup: (cli) => {
+        return cli.register(
+          defineCommand('build', {
+            description: 'plugins.buildPlugin.description',
+            example: 'plugins.buildPlugin.example',
+            help: 'plugins.buildPlugin.help',
+          })
+            .flags({
+              projectCwd: {
+                type: String,
+                default: 'projectCwd',
+                alias: 'p',
+                description: 'plugins.buildPlugin.flags.projectCwd',
+              },
+              type: {
+                type: Boolean,
+                alias: 't',
+                required: true,
+                default: true,
+                description: 'plugins.buildPlugin.flags.type',
+              },
+              timeout: {
+                type: Number,
+                description: 'plugins.buildPlugin.flags.timeout',
+              },
+            })
+            .use(evolve, migrate)
+        );
+      },
+    })
+  )
+  .flag('version', {
+    type: Boolean,
+    default: false,
+    alias: 'v',
+    description: 'plugins.versionPlugin.description',
+  });
+
+// execute command
+// node ./cli.js -h
+```
+
+- English
+
+![help](/assets/docs/help-en.png)
+
+- Chinese
+
+![help](/assets/docs/help-zh.png)
+
+## API Reference
+
+<Callout type="info">
+  `createHelpPlugin` is a factory function exported by
+  [`@hyperse/wizard-plugin-help`](https://github.com/hyperse-io/wizard).
+</Callout>
+
+- HelpPluginOptions
+
+<AutoTypeTable
+  path="../packages/wizard-plugin-help/dist/index.d.ts"
+  name="HelpPluginOptions"
+/>

@@ -1,0 +1,45 @@
+---
+title: Error Plugin
+description: Advanced error handling plugin with error recovery and reporting
+icon: LightningIcon
+---
+
+# Error Plugin
+
+The Error Plugin provides intelligent error handling for CLI applications built with Wizard. It automatically detects command not found errors and suggests similar commands using fuzzy matching, making your CLI more user-friendly.
+
+## Installation
+
+```sh npm2yarn
+npm install @hyperse/wizard-plugin-error
+```
+
+## Quick Start
+
+```ts twoslash
+// @filename: @hyperse/wizard-plugin-error/dist/index.d.ts
+import { createWizard } from '@hyperse/wizard';
+import { createErrorPlugin } from '@hyperse/wizard-plugin-error';
+
+const cli = createWizard({
+  name: 'my-cli',
+  description: 'My CLI application',
+  version: '1.0.0',
+});
+
+cli.use(createErrorPlugin()).parse();
+```
+
+## API Reference
+
+<Callout type="info">
+  `createErrorPlugin` is a factory function exported by
+  [`@hyperse/wizard-plugin-error`](https://github.com/hyperse-io/wizard).
+</Callout>
+
+- ErrorPluginOptions
+
+<AutoTypeTable
+  path="../packages/wizard-plugin-error/dist/index.d.ts"
+  name="ErrorPluginOptions"
+/>

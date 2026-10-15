@@ -1,0 +1,4 @@
+{
+  "title": "Core API",
+  "pages": ["wizard", "i18n", "env", "command", "plugin"]
+}

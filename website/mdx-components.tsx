@@ -1,24 +1,29 @@
-import {
-  Bleed,
-  Callout,
-  Cards,
-  Collapse,
-  FileTree,
-  Steps,
-  Tabs,
-} from 'nextra/components';
-import type { MDXComponents } from 'nextra/mdx-components';
-import { useMDXComponents as getDocsMDXComponents } from 'nextra-theme-docs';
-const docsComponents = getDocsMDXComponents();
+import { Popup, PopupContent, PopupTrigger } from 'fumadocs-twoslash/ui';
+import { AutoTypeTable } from 'fumadocs-typescript/ui';
+import { Step, Steps } from 'fumadocs-ui/components/steps';
+import defaultMdxComponents from 'fumadocs-ui/mdx';
+import type { MDXComponents } from 'mdx/types';
+import { OverviewPage } from '@/components/OverviewPage';
+import { generator } from '@/lib/generator';
 
-export const useMDXComponents = (components?: Readonly<MDXComponents>) => ({
-  ...docsComponents,
-  ...components,
-  Cards,
-  Callout,
-  Collapse,
-  FileTree,
-  Steps,
-  Tabs,
-  Bleed,
-});
+export function getMDXComponents(components?: MDXComponents) {
+  return {
+    ...defaultMdxComponents,
+    Steps,
+    Step,
+    Popup,
+    PopupContent,
+    PopupTrigger,
+    AutoTypeTable: (props: Record<string, unknown>) => (
+      <AutoTypeTable {...props} generator={generator} />
+    ),
+    OverviewPage,
+    ...components,
+  } satisfies MDXComponents;
+}
+
+export const useMDXComponents = getMDXComponents;
+
+declare global {
+  type MDXProvidedComponents = ReturnType<typeof getMDXComponents>;
+}

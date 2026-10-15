@@ -1,0 +1,51 @@
+---
+title: Version Plugin
+description: Version information plugin with semantic versioning support
+icon: LightningIcon
+---
+
+# Version Plugin
+
+The Version Plugin provides version information for CLI applications built with Wizard.
+
+## Installation
+
+```sh npm2yarn
+npm install @hyperse/wizard-plugin-version
+```
+
+## Quick Start
+
+```ts twoslash
+// @filename: @hyperse/wizard-plugin-version/dist/index.d.ts
+import { createWizard } from '@hyperse/wizard';
+import { createVersionPlugin } from '@hyperse/wizard-plugin-version';
+
+const cli = createWizard({
+  name: 'my-cli',
+  description: 'My CLI application',
+  version: '1.0.0',
+});
+
+cli.use(createVersionPlugin()).parse();
+
+// execute command
+// node ./cli.js --version
+
+// print version information
+// v1.0.0
+```
+
+## API Reference
+
+<Callout type="info">
+  `createVersionPlugin` is a factory function exported by
+  [`@hyperse/wizard-plugin-version`](https://github.com/hyperse-io/wizard).
+</Callout>
+
+- VersionPluginOptions
+
+<AutoTypeTable
+  path="../packages/wizard-plugin-version/dist/index.d.ts"
+  name="VersionPluginOptions"
+/>

@@ -1,0 +1,60 @@
+---
+title: Loader Plugin
+description: Plugin loader with automatic discovery and dependency management
+icon: LightningIcon
+---
+
+# Loader Plugin
+
+The Loader Plugin provides automatic discovery and dependency management for CLI applications built with Wizard.
+
+## Installation
+
+```sh npm2yarn
+npm install @hyperse/wizard-plugin-loader
+```
+
+## Quick Start
+
+```ts twoslash
+// @filename: @hyperse/wizard-plugin-loader/dist/index.d.ts
+import { createWizard } from '@hyperse/wizard';
+import { createLoaderPlugin } from '@hyperse/wizard-plugin-loader';
+
+const cli = createWizard({
+  name: 'my-cli',
+  description: 'My CLI application',
+  version: '1.0.0',
+});
+
+cli
+  .use(
+    createLoaderPlugin({
+      plugins: ['version-plugin'],
+      pluginPackPattern: ['help-*/package.json'],
+      pluginSearchDirs: ['./plugins'],
+      cwd: process.cwd(),
+    })
+  )
+  .parse();
+
+// execute command
+// node ./cli.js --version
+
+// print version information
+// v1.0.0
+```
+
+## API Reference
+
+<Callout type="info">
+  `createLoaderPlugin` is a factory function exported by
+  [`@hyperse/wizard-plugin-loader`](https://github.com/hyperse-io/wizard).
+</Callout>
+
+- LoaderPluginOptions
+
+<AutoTypeTable
+  path="../packages/wizard-plugin-loader/dist/index.d.ts"
+  name="LoaderPluginOptions"
+/>
